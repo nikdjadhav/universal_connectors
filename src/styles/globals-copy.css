@@ -1,0 +1,181 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    color: white;
+    background: black;
+  }
+}
+
+.space-childern-sm>* {
+  margin: auto 0.3rem;
+}
+
+.space-childern>* {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.vertical-children-space>* {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* TODO: try removing this !important , this class applies styles to create task modal in timesheet and other modals tou can global serach class name */
+.timesheet-task-modal {
+  max-width: 40rem !important;
+}
+
+.input-width-sm {
+  max-width: 15rem;
+}
+
+.day-start-forms>div:first-of-type {
+  margin-top: 0px !important;
+}
+
+/* task row icon style in timesheet */
+.task-row-icon {
+  font-size: 22px;
+  color: #405189;
+}
+
+.form-error-text {
+  color: var(--vz-dark-red, red);
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.form-error-icon {
+  color: var(--vz-dark-red, red);
+  font-size: 1.15rem;
+  padding-right: 0.5rem;
+}
+
+.form-control-password-input.is-invalid {
+  background-image: none !important;
+}
+
+.hover-cursor:hover {
+  cursor: pointer;
+}
+
+/*TkLoader CSS*/
+
+.tkloader-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.tkloader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 5px solid;
+  border-color: #405189 #0000;
+  animation: s1 1s infinite;
+}
+
+@keyframes s1 {
+  to {
+    transform: rotate(0.5turn);
+  }
+}
+
+/* .radio-btn-container {
+  display: flex;
+} */
+
+.radio-btn {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #dee0e3;
+}
+
+.radio-btn:hover {
+  /* margin: 10px;
+  padding: 10px; */
+  border-radius: 8px;
+  background: #d6d6d6;
+  cursor: pointer;
+}
+
+.right-design {
+  width: 70vw;
+  height: 90vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 50%;
+  transform: rotate(149deg);
+  top: -450px;
+  left: 70px;
+  background: rgb(8, 137, 170);
+  background: linear-gradient(90deg,
+      rgba(8, 112, 170, 1) 0%,
+      rgba(1, 203, 255, 1) 73%,
+      rgba(102, 252, 241, 1) 93%);
+}
+
+.question-page-width {
+  max-width: 1400px;
+  background-color: aliceblue;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.no-data {
+  margin: auto;
+  width: 50%;
+}
+
+.no-data-text {
+  text-align: center;
+  margin: 30px;
+}
+
+.text-red {
+  color: var(--vz-dark-red, red) !important;
+}
+
+.form-error-box {
+  border: 1px solid var(--vz-dark-red, red) !important;
+  border-left: 4px solid var(--vz-dark-red, red) !important;
+}
+
+/* TODO: adjust it for dark mode, currently we only have light mode do left it */
+.light-gray-bg {
+  background-color: #f3f6f9;
+  color: #878a89;
+}
+
+.mx-negative-1rem {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}

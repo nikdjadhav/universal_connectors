@@ -1,0 +1,31 @@
+{
+  "name": "netsuite-connecters",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^2.9.10",
+    "@next/font": "13.1.4",
+    "@react-hook/switch": "^1.3.3",
+    "@tanstack/react-query": "^4.22.4",
+    "bootstrap": "^5.2.3",
+    "eslint": "8.32.0",
+    "eslint-config-next": "13.1.4",
+    "next": "13.1.4",
+    "next-auth": "^4.18.8",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.42.1",
+    "react-toastify": "^9.1.1",
+    "reactstrap": "^9.1.5",
+    "sass": "^1.57.1",
+    "simplebar": "^6.2.0",
+    "yup": "^0.32.11",
+    "zustand": "^4.3.2"
+  }
+}

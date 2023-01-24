@@ -1,0 +1,69 @@
+.table-padding .table-card {
+
+    th,
+    td {
+        &:first-child {
+            padding-left: 40px;
+        }
+
+        &:last-child {
+            padding-right: 40px;
+        }
+    }
+}
+
+.first-child-max-width-100 .table-card {
+
+    th,
+    td {
+        &:first-child {
+            max-width: 100px;
+        }
+    }
+}
+
+
+.tk-date-select-field {
+    padding-right: calc(1.5em + 1rem);
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjI4OCIgaGVpZ2h0PSIyODgiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjg4IiBoZWlnaHQ9IjI4OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+PHBhdGggZmlsbD0iIzM3NDE0OCIgZD0iTTE3IDNoNGExIDEgMCAwIDEgMSAxdjE2YTEgMSAwIDAgMS0xIDFIM2ExIDEgMCAwIDEtMS0xVjRhMSAxIDAgMCAxIDEtMWg0VjFoMnYyaDZWMWgydjJ6bS0yIDJIOXYySDdWNUg0djRoMTZWNWgtM3YyaC0yVjV6bTUgNkg0djhoMTZ2LTh6IiBjbGFzcz0iY29sb3IwMDAgc3ZnU2hhcGUiLz48L3N2Zz48L3N2Zz4=);
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.25rem) center;
+    background-size: calc(0.75em + 0.5rem) calc(0.75em + 0.5rem);
+}
+
+// dark mode
+[data-layout-mode="dark"] {
+    .logo-text {
+        color: var(--vz-gray-700) !important;
+    }
+
+    .tkloader {
+        border-color: #929294 #0000;
+    }
+
+    // making the color of calenedr icon light in dark mode
+    .tk-date-select-field {
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjI4OCIgaGVpZ2h0PSIyODgiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjg4IiBoZWlnaHQ9IjI4OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+PHBhdGggZmlsbD0iI2ExYWJiOSIgZD0iTTE3IDNoNGExIDEgMCAwIDEgMSAxdjE2YTEgMSAwIDAgMS0xIDFIM2ExIDEgMCAwIDEtMS0xVjRhMSAxIDAgMCAxIDEtMWg0VjFoMnYyaDZWMWgydjJ6bS0yIDJIOXYySDdWNUg0djRoMTZWNWgtM3YyaC0yVjV6bTUgNkg0djhoMTZ2LTh6IiBjbGFzcz0iY29sb3IwMDAgc3ZnU2hhcGUiLz48L3N2Zz48L3N2Zz4=);
+    }
+
+}
+
+.react-window-list {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+#clientList {
+    tr {
+        .client-list-menu {
+            opacity: 0;
+        }
+
+        &:hover {
+            .client-list-menu {
+                opacity: 1;
+            }
+        }
+    }
+}
