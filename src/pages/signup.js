@@ -65,41 +65,47 @@ const Register = () => {
   });
 
   const OnSubmit = (formData) => {
-    // TODO: upadte this fetch call with react query wrapper
-    const user = fetch("/api/v1/users/new-admin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(async (res) => {
-        if (res.error) {
-          TkToastError(res.error, { autoClose: 5000 });
-          console.log("error", res.error);
-        } else {
-          const data = await res.json();
-          if (data.success) {
-            try {
-              await signIn("credentials", {
-                email: formData.email,
-                password: formData.password,
-                redirect: false,
-              });
-              router.push("/start");
-            } catch (err) {
-              console.log(err, "error occured");
-              TkToastError("Some Error occured while creating user. Please try again", { autoClose: 5000 });
-            }
-          } else {
-            TkToastError(data.message, { autoClose: 5000 });
-          }
-        }
-      })
-      .catch((err) => {
-        TkToastError("Some Error occured while creating user. Please try again Later.", { autoClose: 5000 });
-        console.log("err", err);
-      });
+    console.log('user data', formData);
+    // const user = fetch("http://localhost:4000/createUser", {
+    //   method: "POST",
+    //   body: JSON.stringify(formData),
+    // });
+
+    // // TODO: upadte this fetch call with react query wrapper
+    // const user = fetch("/api/v1/users/new-admin", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(formData),
+    // })
+    //   .then(async (res) => {
+    //     if (res.error) {
+    //       TkToastError(res.error, { autoClose: 5000 });
+    //       console.log("error", res.error);
+    //     } else {
+    //       const data = await res.json();
+    //       if (data.success) {
+    //         try {
+    //           await signIn("credentials", {
+    //             email: formData.email,
+    //             password: formData.password,
+    //             redirect: false,
+    //           });
+    //           router.push("/start");
+    //         } catch (err) {
+    //           console.log(err, "error occured");
+    //           TkToastError("Some Error occured while creating user. Please try again", { autoClose: 5000 });
+    //         }
+    //       } else {
+    //         TkToastError(data.message, { autoClose: 5000 });
+    //       }
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     TkToastError("Some Error occured while creating user. Please try again Later.", { autoClose: 5000 });
+    //     console.log("err", err);
+    //   });
   };
 
   // const { status } = useSession({
