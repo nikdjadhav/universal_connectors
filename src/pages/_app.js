@@ -3,8 +3,6 @@ import { SessionProvider, useSession } from "next-auth/react";
 import "@/styles/globals.css";
 import "@/styles/scss/themes.scss";
 import "@/styles/custom.scss";
-// import Layout from "../src/components/layout";
-// import { AuthContext } from "../src/utils/Contexts";
 import { Slide, ToastContainer } from "react-toastify";
 import { useRouter } from "next/router";
 
@@ -18,12 +16,10 @@ const queryClient = new QueryClient({
   },
 });
 
-// import TkNetworkStatus from "../src/components/TkNetworkStatus";
-// import useGlobalStore from "../src/utils/globalStore";
 import Layout from "@/components/layout";
-import { AuthContext } from "@/globalComponents/Contexts";
+import { AuthContext } from "@/utils/Contexts";
 import TkNetworkStatus from "@/globalComponents/TkNetworkStatus";
-import useGlobalStore from "@/globalComponents/globalStore";
+import useGlobalStore from "@/utils/globalStore";
 
 export default function MyApp({ Component, pageProps }) {
   console.log("App rerendered");

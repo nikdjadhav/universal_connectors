@@ -1,38 +1,20 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { getSession, signIn, useSession } from "next-auth/react";
-// import ParticlesAuth from "../src/utils/ParticlesAuth";
-
-// import TkInput from "../src/components/forms/TkInput";
-// import TkLabel from "../src/components/forms/TkLabel";
-// import TkForm, { TkFormFeedback } from "../src/components/forms/TkForm";
-// import TkRow, { TkCol } from "../src/components/TkRow";
-// import TkCard, { TkCardBody } from "../src/components/TkCard";
-// import TkContainer from "../src/components/TkContainer";
-// import TkButton from "../src/components/TkButton";
-// import TkIcon from "../src/components/TkIcon";
-// import TkAlert from "../src/components/TkAlert";
-// import TkPageHead from "../src/components/TkPageHead";
-// import TkCheckBox from "../src/components/forms/TkCheckBox";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import FormErrorText from "../src/components/forms/ErrorText";
-// import { MinPasswordLength, MaxPasswordLength, MinEmailLength, MaxEmailLength } from "../src/utils/Constants";
 import { useRouter } from "next/router";
-// import { TkToastError, TkToastSuccess } from "../src/components/TkToastContainer";
-// import GoogleLoginBtn from "../src/components/googleLoginBtn";
-import ParticlesAuth from "@/globalComponents/ParticlesAuth";
+import ParticlesAuth from "@/utils/ParticlesAuth";
 import TkInput from "@/globalComponents/TkInput";
 import TkLabel from "@/globalComponents/TkInput";
-// import TkForm, { TkFormFeedback } from "../src/components/forms/TkForm";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkContainer from "@/globalComponents/TkContainer";
 import TkButton from "@/globalComponents/TkContainer";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import FormErrorText from "@/globalComponents/ErrorText";
-import { MaxEmailLength, MaxPasswordLength, MinEmailLength, MinPasswordLength } from "@/globalComponents/Constants";
+import { MaxEmailLength, MaxPasswordLength, MinEmailLength, MinPasswordLength } from "@/utils/Constants";
 import { TkToastError } from "@/globalComponents/TkToastContainer";
 import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
 import TkForm from "@/globalComponents/TkForm";
@@ -115,9 +97,7 @@ const Login = () => {
                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                   <div>
                     <Link href="/" className="d-inline-block auth-logo">
-                      {/* <a className="d-inline-block auth-logo"> */}
                         <h2 className="logo-text text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h2>
-                      {/* </a> */}
                     </Link>
                   </div>
                 </div>
@@ -153,9 +133,7 @@ const Login = () => {
                         <div className="mb-3">
                           <div className="float-end">
                             <Link href="/forgot-password" className="text-muted">
-                              {/* <a className="text-muted"> */}
                                 Forgot password? 
-                                {/* </a> */}
                             </Link>
                           </div>
                           <TkInput
@@ -208,9 +186,7 @@ const Login = () => {
                   <p className="mb-0">
                     Don&apos;t have an account ?
                     <Link href="/signup" className="fw-semibold text-primary text-decoration-underline">
-                      {/* <a className="fw-semibold text-primary text-decoration-underline"> */}
                          Signup
-                         {/* </a> */}
                     </Link>
                   </p>
                 </div>

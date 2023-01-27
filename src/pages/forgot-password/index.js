@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ParticlesAuth from "@/globalComponents/ParticlesAuth";
+import ParticlesAuth from "@/utils/ParticlesAuth";
 import TkInput from "@/globalComponents/TkInput";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import TkContainer from "@/components/TkContainer";
@@ -16,7 +16,7 @@ import TkForm from "@/globalComponents/TkForm";
 import FormErrorText from "@/globalComponents/ErrorText";
 import TkButton from "@/globalComponents/TkButton";
 import TkIcon from "@/globalComponents/TkIcon";
-import { MaxEmailLength, MinEmailLength } from "@/globalComponents/Constants";
+import { MaxEmailLength, MinEmailLength } from "@/utils/Constants";
 import { TkToastError, TkToastSuccess } from "@/globalComponents/TkToastContainer";
 
 
@@ -75,9 +75,7 @@ const ForgetPasswordPage = () => {
               <div className="text-center mt-sm-5 mb-4">
                 <div>
                   <Link href="/">
-                    {/* <a> */}
                     <h1 className="text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
-                    {/* </a> */}
                   </Link>
                 </div>
               </div>
@@ -121,13 +119,11 @@ const ForgetPasswordPage = () => {
             </TkCol>
           </TkRow>
           <Link href="/login" className="font-weight-bold">
-            {/* <a className="font-weight-bold"> */}
             {" "}
             <b className="d-flex align-items-center justify-content-center">
               <TkIcon className={"ri-arrow-left-s-line me-1"} />
               Back to Login
             </b>
-            {/* </a> */}
           </Link>
         </TkContainer>
       </div>

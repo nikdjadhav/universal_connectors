@@ -1,34 +1,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
-// import ParticlesAuth from "../src/utils/ParticlesAuth";
-
-// import TkInput from "../src/components/forms/TkInput";
-// import TkForm from "../src/components/forms/TkForm";
-// import TkRow, { TkCol } from "../src/components/TkRow";
-// import TkCard, { TkCardBody } from "../src/components/TkCard";
-// import TkContainer from "../src/components/TkContainer";
-// import TkButton from "../src/components/TkButton";
-// import TkIcon from "../src/components/TkIcon";
-// import TkPageHead from "../src/components/TkPageHead";
-
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import FormErrorText from "../src/components/forms/ErrorText";
-// import {
-//   MinPasswordLength,
-//   MaxPasswordLength,
-//   MinEmailLength,
-//   MaxEmailLength,
-//   MinNameLength,
-//   MaxNameLength,
-// } from "../src/utils/Constants";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-// import { TkToastError } from "../src/components/TkToastContainer";
-// import GoogleLoginBtn from "../src/components/googleLoginBtn";
-import ParticlesAuth from "@/globalComponents/ParticlesAuth";
+import ParticlesAuth from "@/utils/ParticlesAuth";
 import TkInput from "@/globalComponents/TkInput";
 import TkForm from "@/globalComponents/TkForm";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
@@ -37,7 +15,7 @@ import TkContainer from "@/globalComponents/TkContainer";
 import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import FormErrorText from "@/globalComponents/ErrorText";
-import { MaxEmailLength, MaxNameLength, MaxPasswordLength, MinEmailLength, MinNameLength, MinPasswordLength } from "@/globalComponents/Constants";
+import { MaxEmailLength, MaxNameLength, MaxPasswordLength, MinEmailLength, MinNameLength, MinPasswordLength } from "@/utils/Constants";
 import { TkToastError } from "@/globalComponents/TkToastContainer";
 import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
 
@@ -149,9 +127,7 @@ const Register = () => {
                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                   <div>
                     <Link href="/" className="d-inline-block auth-logo">
-                      {/* <a className="d-inline-block auth-logo"> */}
                         <h2 className="logo-text text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h2>
-                      {/* </a> */}
                     </Link>
                   </div>
                 </div>
@@ -257,9 +233,7 @@ const Register = () => {
                           <p className="mb-0 fs-12 text-muted fst-italic">
                             By registering you agree to the {process.env.NEXT_PUBLIC_APP_NAME}{" "}
                             <Link href="/terms-and-conditions" className="text-primary text-decoration-underline fst-normal fw-medium">
-                              {/* <a className="text-primary text-decoration-underline fst-normal fw-medium"> */}
                                 Terms of Use
-                              {/* </a> */}
                             </Link>
                           </p>
                         </div>
@@ -285,9 +259,7 @@ const Register = () => {
                   <p className="mb-0">
                     Already have an account ?{" "}
                     <Link href="/login" className="fw-semibold text-primary text-decoration-underline">
-                      {/* <a className="fw-semibold text-primary text-decoration-underline">  */}
                       Login
-                      {/* </a> */}
                     </Link>
                   </p>
                 </div>

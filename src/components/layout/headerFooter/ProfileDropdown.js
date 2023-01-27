@@ -9,7 +9,7 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 // import useGlobalStore from "../../../utils/globalStore";
 import { TkDropdown, TkDropdownItem, TkDropdownMenu, TkDropdownToggle } from "@/globalComponents/TkDropdown";
-import useGlobalStore from "@/globalComponents/globalStore";
+import useGlobalStore from "@/utils/globalStore";
 
 const themeModeTypes = {
   LIGHTMODE: "light",
