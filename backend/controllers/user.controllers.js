@@ -1,13 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
-// const bodyParser = require('body-parser');
-// const { response } = require('express');
-const response = require('./response');
+const response = require('../lib/response');
 
 const prisma = new PrismaClient();
 
 // *** to create a new user in the database ***
 const createUser = async (req, res) => {
-    // console.log('b',req.body);
+    // console.log('requestd body',req.body);
     try {
         const user = await prisma.users.create({
             data: {
@@ -35,12 +33,9 @@ const createUser = async (req, res) => {
     }
 }
 
-
-
-
 // *** to fetch all the users from the database ***
 const getUsers = async (req, res) => {
-    try{
+    try {
         const users = await prisma.users.findMany();
         response({
             res,
@@ -49,22 +44,24 @@ const getUsers = async (req, res) => {
             data: users,
             message: 'Users fetched successfully',
         })
-    // res.json(users);
-    }catch(error){
+        // res.json(users);
+    } catch (error) {
         response({
             res,
             success: false,
             status: 400,
             data: [],
-            message: 'Error fetching users',
+            message: 'user not fetched',
         })
     }
 }
 
+
+
 module.exports = {
     prisma,
     createUser,
-    getUsers
+    getUsers,
 };
 
 

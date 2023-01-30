@@ -12,9 +12,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// *** user route ***
-app.use('/createUser', userRoute);
-app.use('/getUsers', userRoute);
+// *** routes ***
+app.use('/', userRoute);
 
 app.listen(port, () => {
     console.log('Server is running on port ' + port);
