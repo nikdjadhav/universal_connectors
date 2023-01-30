@@ -1,23 +1,18 @@
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoute = require('./routes/user.routes');
-const { PrismaClient } = require('@prisma/client');
-const bodyParser = require('body-parser');
 // const prisma = require('./db/prisma');
 
-const prisma = new PrismaClient();
+const app = express();
 dotenv.config();
 const port = 4000;
-const app = express();
 
-// app.get('/', (req, res) => {
-//     // res.send('Working...')
-//     prisma.users.findMany();
-// });
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
+// *** user route ***
 app.use('/createUser', userRoute);
 app.use('/getUsers', userRoute);
 
