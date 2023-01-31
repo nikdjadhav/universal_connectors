@@ -87,15 +87,15 @@ const SearchOption = () => {
             </div>
 
             <div className="dropdown-item bg-transparent text-wrap">
-              <Link href="/">
-                <a className="btn btn-soft-secondary btn-sm btn-rounded">
+              <Link href="/" className="btn btn-soft-secondary btn-sm btn-rounded">
+                {/* <a > */}
                   how to setup <i className="mdi mdi-magnify ms-1"></i>
-                </a>
+                {/* </a> */}
               </Link>
-              <Link href="/">
-                <a className="btn btn-soft-secondary btn-sm btn-rounded">
+              <Link href="/" className="btn btn-soft-secondary btn-sm btn-rounded">
+                {/* <a > */}
                   buttons <i className="mdi mdi-magnify ms-1"></i>
-                </a>
+                {/* </a> */}
               </Link>
             </div>
 
@@ -112,18 +112,18 @@ const SearchOption = () => {
               </a>
             </Link>
 
-            <Link href="#">
-              <a className="dropdown-item notify-item">
+            <Link href="#" className="dropdown-item notify-item">
+              {/* <a > */}
                 <i className="ri-lifebuoy-line align-middle fs-18 text-muted me-2"></i>
                 <span>Help Center</span>
-              </a>
+              {/* </a> */}
             </Link>
 
-            <Link href="#">
-              <a className="dropdown-item notify-item">
+            <Link href="#" className="dropdown-item notify-item">
+              {/* <a > */}
                 <i className="ri-user-settings-line align-middle fs-18 text-muted me-2"></i>
                 <span>My account settings</span>
-              </a>
+              {/* </a> */}
             </Link>
 
             <div className="dropdown-header mt-2">
@@ -133,8 +133,8 @@ const SearchOption = () => {
             </div>
 
             <div className="notification-list">
-              <Link href="#">
-                <a className="dropdown-item notify-item py-2">
+              <Link href="#" className="dropdown-item notify-item py-2">
+                {/* <a > */}
                   <div className="d-flex">
                     <Image
                       src={image2}
@@ -149,11 +149,11 @@ const SearchOption = () => {
                       <span className="fs-11 mb-0 text-muted">Manager</span>
                     </div>
                   </div>
-                </a>
+                {/* </a> */}
               </Link>
 
-              <Link href="#">
-                <a className="dropdown-item notify-item py-2">
+              <Link href="#" className="dropdown-item notify-item py-2">
+                {/* <a > */}
                   <div className="d-flex">
                   <Image 
                         src={image3}
@@ -174,11 +174,11 @@ const SearchOption = () => {
                       </span>
                     </div>
                   </div>
-                </a>
+                {/* </a> */}
               </Link>
 
-              <Link href="#">
-                <a className="dropdown-item notify-item py-2">
+              <Link href="#" className="dropdown-item notify-item py-2">
+                {/* <a > */}
                   <div className="d-flex">
                   <Image 
                         src={image5}
@@ -199,16 +199,16 @@ const SearchOption = () => {
                       </span>
                     </div>
                   </div>
-                </a>
+                {/* </a> */}
               </Link>
             </div>
           </SimpleBar>
 
           <div className="text-center pt-3 pb-1">
-            <Link href="/pages-search-results">
-              <a className="btn btn-primary btn-sm">
+            <Link href="/pages-search-results" className="btn btn-primary btn-sm">
+              {/* <a > */}
                 View All Results <i className="ri-arrow-right-line ms-1"></i>
-              </a>
+              {/* </a> */}
             </Link>
           </div>
         </div>

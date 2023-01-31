@@ -56,12 +56,44 @@ const getUsers = async (req, res) => {
     }
 }
 
+// *** route to check if the user is logged in or not ***
+// *** to fetch a single user from the database ***
+const userLogin = async (req, res) => {
+    const user = await prisma.users.findUnique({
+        where: {
+            loginUser: {
+                email: req.body.email,
+                password: req.body.password
+            }
+        }
+    })
+    // console.log(user);
+    if (user) {
+        response({
+            res,
+            success: true,
+            status: 200,
+            data: user,
+            message: 'User logged in successfully',
+        })
+    } else {
+        response({
+            res,
+            success: false,
+            status: 400,
+            data: [],
+            message: 'User not found',
+        })
+    }
+}
+
 
 
 module.exports = {
     prisma,
     createUser,
     getUsers,
+    userLogin
 };
 
 

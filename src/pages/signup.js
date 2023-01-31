@@ -18,6 +18,8 @@ import FormErrorText from "@/globalComponents/ErrorText";
 import { MaxEmailLength, MaxNameLength, MaxPasswordLength, MinEmailLength, MinNameLength, MinPasswordLength } from "@/utils/Constants";
 import { TkToastError } from "@/globalComponents/TkToastContainer";
 import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
 
 
 const schema = Yup.object({
@@ -51,17 +53,21 @@ const schema = Yup.object({
 
 const Register = () => {
   const router = useRouter();
-
+  
   const googleSignupHandler = async () => {
     await signIn("google", { callbackUrl: "/start" }); // it redirects use to dashboard after signIn
   };
-
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+  });
+
+  const user = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1")
   });
 
   const OnSubmit = async (formData) => {
@@ -72,40 +78,60 @@ const Register = () => {
       email: formData.email,
       password: formData.password,
     }
-    const user = await fetch("http://localhost:4000/createUser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newUser),
-    }).then(async (res) => {
-      if (res.error) {
-        // TkToastError(res.error, { autoClose: 5000 });
-        console.log("error", res.error);
-      } else {
-        const data = await res.json();
+
+    user.mutate(newUser,{
+      onSuccess: (data) => {
         console.log('user created', data);
-        if (data.success) {
-          try {
-            // await signIn("credentials", {
-            //   email: formData.email,
-            //   password: formData.password,
-            //   redirect: false,
-            // });
-            // router.push("/start");
-            router.push("/login");
-          } catch (err) {
-            console.log(err, "error occured");
-            TkToastError("Some Error occured while creating user. Please try again", { autoClose: 5000 });
-          }
-        } else {
-          TkToastError(data.message, { autoClose: 5000 });
+        const user = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password,
         }
+        localStorage.setItem("loginCredentials", JSON.stringify(user));
+        router.push("/dashboard");
+      },
+      onError: (err) => {
+        console.log(err);
+        TkToastError("Invalid Credentials");
       }
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    
+
+    // const user = await fetch("http://localhost:4000/createUser", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(newUser),
+    // }).then(async (res) => {
+    //   if (res.error) {
+    //     // TkToastError(res.error, { autoClose: 5000 });
+    //     console.log("error", res.error);
+    //   } else {
+    //     const data = await res.json();
+    //     console.log('user created', data);
+    //     if (data.success) {
+    //       try {
+    //         // await signIn("credentials", {
+    //         //   email: formData.email,
+    //         //   password: formData.password,
+    //         //   redirect: false,
+    //         // });
+    //         // router.push("/start");
+    //         router.push("/dashboard");
+    //       } catch (err) {
+    //         console.log(err, "error occured");
+    //         TkToastError("Some Error occured while creating user. Please try again", { autoClose: 5000 });
+    //       }
+    //     } else {
+    //       TkToastError(data.message, { autoClose: 5000 });
+    //     }
+    //   }
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
 
 
     // // *** 

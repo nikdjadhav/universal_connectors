@@ -24,6 +24,7 @@ export function TkToastSuccess(message, options) {
 }
 
 export function TkToastError(message, options) {
+  // console.log("message", message);
   if (typeof message === "string") {
     message = convertToH6(message);
   }

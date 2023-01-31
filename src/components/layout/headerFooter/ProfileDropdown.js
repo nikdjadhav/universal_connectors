@@ -48,14 +48,16 @@ const ProfileDropdown = () => {
   };
 
   const signOutHandler = async () => {
-    setUserAuthenticated(false);
-    setUserSessionData(null);
-    // dont keep redirect to false, as it creates a problem currently
-    // if we keep redirect redirect to false, it dont refresh the tab and setuserauthenticated cals with false, this rerender the Auth Component in _app.js,
-    // and useSession hooks returns the cached version of session, though user gets logged out.
-    // so we need to refresh the page and take user to login screen
-    //TODO: its a workarounnd but later may find some other solution
-    await signOut({ callbackUrl: "/login" });
+    // setUserAuthenticated(false);
+    // setUserSessionData(null);
+    // // dont keep redirect to false, as it creates a problem currently
+    // // if we keep redirect redirect to false, it dont refresh the tab and setuserauthenticated cals with false, this rerender the Auth Component in _app.js,
+    // // and useSession hooks returns the cached version of session, though user gets logged out.
+    // // so we need to refresh the page and take user to login screen
+    // //TODO: its a workarounnd but later may find some other solution
+    // await signOut({ callbackUrl: "/login" });
+    localStorage.removeItem("loginCredentials");
+    router.push("/login");
   };
   return (
     <>
@@ -73,7 +75,7 @@ const ProfileDropdown = () => {
               // height={22}
               className="rounded-circle header-profile-user"
               placeholder="blur"
-              layout="responsive"
+              // layout="responsive"
             />
             {/* <span className="text-start ms-xl-2">
               <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
@@ -88,12 +90,12 @@ const ProfileDropdown = () => {
         <TkDropdownMenu className="dropdown-menu-end">
           {/* <h6 className="dropdown-header">Welcome Nancy !</h6> */}
           <Link href="/profile">
-            <a>
-              <TkDropdownItem>
-                <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
-                <span className="align-middle">Profile</span>
-              </TkDropdownItem>
-            </a>
+            {/* <a> */}
+            <TkDropdownItem>
+              <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+              <span className="align-middle">Profile</span>
+            </TkDropdownItem>
+            {/* </a> */}
           </Link>
           {/* <TkDropdownItem onClick={changeThemeMode}>
             <div>

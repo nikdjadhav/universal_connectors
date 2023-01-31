@@ -77,8 +77,8 @@ const Header = (props) => {
           <div className="navbar-header">
             <div className="d-flex">
               <div className="navbar-brand-box horizontal-logo">
-                <Link href="/">
-                  <a className="logo logo-dark">
+                <Link href="/" className="logo logo-dark">
+                  {/* <a > */}
                     <span className="logo-sm">
                       <Image
                         src={logoSm}
@@ -93,11 +93,11 @@ const Header = (props) => {
                       <Image src={logoDark} alt="logo small" placeholder="blur" height={17} className="w-auto" />
                       {/* <img src={logoDark} alt="" height="17" /> */}
                     </span>
-                  </a>
+                  {/* </a> */}
                 </Link>
 
-                <Link href="/">
-                  <a className="logo logo-light">
+                <Link href="/" className="logo logo-light">
+                  {/* <a > */}
                     <span className="logo-sm">
                       <Image
                         src={logoSm}
@@ -112,7 +112,7 @@ const Header = (props) => {
                       <Image src={logoLight} alt="logo small" placeholder="blur" height={17} className="w-auto" />
                       {/* <img src={logoLight} alt="" height="17" /> */}
                     </span>
-                  </a>
+                  {/* </a> */}
                 </Link>
               </div>
 

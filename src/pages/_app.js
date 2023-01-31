@@ -43,7 +43,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      {/* <ToastContainer
+      <ToastContainer
         position="top-center"
         autoClose={10000}
         closeButton={true}
@@ -56,9 +56,9 @@ export default function MyApp({ Component, pageProps }) {
         pauseOnHover={true}
         theme="light"
         transition={Slide}
-      /> */}
+      />
       {/* <TkNetworkStatus /> */}
-      {/* <QueryClientProvider client={queryClient}> */}
+      <QueryClientProvider client={queryClient}>
         {/* <SessionProvider session={pageProps.session}> */}
           <AuthWrap wrap={Component?.options?.auth}>
             <LayoutWrap wrap={Component?.options?.layout}>
@@ -66,7 +66,7 @@ export default function MyApp({ Component, pageProps }) {
             </LayoutWrap>
           </AuthWrap>
         {/* </SessionProvider> */}
-      {/* </QueryClientProvider> */}
+      </QueryClientProvider>
     </>
   );
 }

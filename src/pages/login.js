@@ -11,13 +11,18 @@ import TkLabel from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkContainer from "@/globalComponents/TkContainer";
-import TkButton from "@/globalComponents/TkContainer";
+import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import FormErrorText from "@/globalComponents/ErrorText";
 import { MaxEmailLength, MaxPasswordLength, MinEmailLength, MinPasswordLength } from "@/utils/Constants";
-import { TkToastError } from "@/globalComponents/TkToastContainer";
+import { TkToastError, TkToastSuccess } from "@/globalComponents/TkToastContainer";
 import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
 import TkForm from "@/globalComponents/TkForm";
+// import { ToastContainer, toast, Slide } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
+// "use client";
 
 const schema = Yup.object({
   email: Yup.string()
@@ -39,6 +44,17 @@ const schema = Yup.object({
 }).required();
 
 const Login = () => {
+  // *** get data from backend ***
+  const queryClient = useQueryClient();
+  // const { data, isLoading, isError, error } = useQuery({
+  //   queryKey: ["u"],
+  //   queryFn: tkFetch.get("http://localhost:4000/v1/users"), 
+  //   // fetch("http://localhost:4000/v1/users")
+  // });
+  // console.log("Registered users", data);
+
+
+
   const router = useRouter();
   const {
     register,
@@ -48,25 +64,108 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data) => {
-    //implement auth logic here
-    signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    })
-      .then((res) => {
-        if (res.error) {
-          TkToastError(res.error, { autoClose: 5000 });
-        } else {
-          // console.log("res", res.status);
-          router.push("/dashboard");
+  const notify = () => toast("Wow so easy!");
+
+  const user = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/login"),
+  });
+
+  const onSubmit = async (userData) => {
+    const apiData = {
+      email: userData.email,
+      password: userData.password,
+    };
+    user.mutate(apiData, {
+      onSuccess: (data) => {
+        // TkToastSuccess("User Updated Successfully");
+        console.log("success", data);
+        const user = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password,
         }
-      })
-      .catch((err) => {
-        TkToastError("Some Error occured, Please try again later", { autoClose: 5000 });
-        console.log("err", err);
-      });
+        localStorage.setItem("loginCredentials", JSON.stringify(user));
+        router.push("/dashboard");
+      },
+      onError: (error) => {
+        console.log("error", error);
+        TkToastError("Invalid Credentials");
+        //TODO: report error to error reporting service
+      },
+    });
+
+
+    // console.log("Registered users", data);
+    // if (data.success) {
+    //   const user = {
+    //     email: userData.data.email,
+    //     password: userData.data.password,
+    //   }
+    //   console.log("user", user);
+    //   localStorage.setItem("loginCredentials", JSON.stringify(user));
+    //   // localStorage.setItem("email", userData.data.email);
+    //   // localStorage.setItem("password", userData.data.password);
+    //   router.push("/dashboard");
+    // }else{
+    //   TkToastError("Invalid Credentials");
+    // }
+
+
+    // const loggedInUser = await fetch("http://localhost:4000/login", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // }).then(async (res) => {
+    //   // const data = await res.json();
+    //   if (res.error) {
+    //     // TkToastError(data.message, { autoClose: 5000 });
+    //     console.log("error", res.error);
+    //   }
+    //   else {
+    //     const userData = await res.json();
+    //     if (userData.success) {
+    //       console.log('user login success', userData.data);
+    //       const user = {
+    //         email: userData.data.email,
+    //         password: userData.data.password,
+    //       }
+    //       console.log("user", user);
+    //       // localStorage.setItem("loginCredentials", JSON.stringify(user));
+    //       localStorage.setItem("email", userData.data.email);
+    //       localStorage.setItem("password", userData.data.password);
+    //       router.push("/dashboard");
+    //     } else {
+    //       console.log("api response test", userData);
+    //       // alert("Invalid Credentials");
+    //       TkToastError("Invalid Credentials");
+    //     }
+    //   }
+    // }).catch((err) => {
+    //   TkToastError("Some Error occured, Please try again later");
+    //   console.log("err", err);
+    // });
+
+    // //implement auth logic here
+    // signIn("credentials", {
+    //   email: data.email,
+    //   password: data.password,
+    //   redirect: false,
+    // })
+    //   .then((res) => {
+    //     if (res.error) {
+    //       TkToastError(res.error, { autoClose: 5000 });
+    //     } else {
+    //       // console.log("res", res.status);
+    //       router.push("/dashboard");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     TkToastError("Some Error occured, Please try again later", { autoClose: 5000 });
+    //     console.log("err", err);
+    //   });
   };
 
   const googleLoginHabdler = async () => {
@@ -97,7 +196,7 @@ const Login = () => {
                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                   <div>
                     <Link href="/" className="d-inline-block auth-logo">
-                        <h2 className="logo-text text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h2>
+                      <h2 className="logo-text text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h2>
                     </Link>
                   </div>
                 </div>
@@ -123,9 +222,7 @@ const Login = () => {
                             name="email"
                             id="email"
                             requiredStarOnLabel={true}
-                            required={true}
                             placeholder="Enter Email"
-                            invalid={errors.email?.message ? true : false}
                           />
                           {errors.email?.message ? <FormErrorText>{errors.email?.message}</FormErrorText> : null}
                         </div>
@@ -133,7 +230,7 @@ const Login = () => {
                         <div className="mb-3">
                           <div className="float-end">
                             <Link href="/forgot-password" className="text-muted">
-                                Forgot password? 
+                              Forgot password?
                             </Link>
                           </div>
                           <TkInput
@@ -143,9 +240,7 @@ const Login = () => {
                             name="password"
                             type="password"
                             requiredStarOnLabel={true}
-                            required={true}
                             placeholder="Enter Password"
-                            invalid={errors.password?.message ? true : false}
                           />
                           {errors.password?.message ? <FormErrorText>{errors.password?.message}</FormErrorText> : null}
                         </div>
@@ -186,7 +281,7 @@ const Login = () => {
                   <p className="mb-0">
                     Don&apos;t have an account ?
                     <Link href="/signup" className="fw-semibold text-primary text-decoration-underline">
-                         Signup
+                      Signup
                     </Link>
                   </p>
                 </div>

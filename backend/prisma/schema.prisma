@@ -16,4 +16,6 @@ model Users {
   lastName  String
   email     String @unique
   password  String
+
+  @@unique(fields: [email, password], name: "loginUser")
 }
