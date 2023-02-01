@@ -67,7 +67,7 @@ const Login = () => {
   const notify = () => toast("Wow so easy!");
 
   const user = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/login"),
+    mutationFn: tkFetch.post("http://localhost:4000/v1/login"),
   });
 
   const onSubmit = async (userData) => {

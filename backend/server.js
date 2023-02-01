@@ -31,6 +31,7 @@ app.use('/v1', v1Router);
 
 // *** routes ***
 v1Router.post('/', userController.createUser);
+v1Router.post('/login', userController.userLogin);
 // v1Router.use('/users', userRoute);
 // v1Router.post('/login', userController.userLogin);
 // app.use('/login', userRoute);
