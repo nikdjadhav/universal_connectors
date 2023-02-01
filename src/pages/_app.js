@@ -108,12 +108,6 @@ function AuthenticateUser({ children }) {
   if (session.status === "authenticated") {
     setUserAuthenticated(true);
     setUserSessionData(session.data);
-
-    // if user dont have workspace, means he has signed up but not created workspace, so redirect him to create workspace page
-    if (!session.data.user.workspaceId && !router.asPath.includes("/start")) {
-      router.push("/start");
-      return <div>Loading...</div>;
-    }
   }
   return <AuthContext.Provider value={session.data}>{children}</AuthContext.Provider>;
 }
@@ -167,7 +161,3 @@ function LayoutWrap({ children, wrap }) {
   }
   return children;
 }
-
-// TODO: dont fetch all records of all tables, fetch only some depending on data of table
-// TODO: truncate the text where required ( text-overflow: ellipsis;)
-// TODO: prepare a error screen when our app is unavailable or down

@@ -9,7 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import ParticlesAuth from "@/utils/ParticlesAuth";
 import TkInput from "@/globalComponents/TkInput";
 import TkPageHead from "@/globalComponents/TkPageHead";
-import TkContainer from "@/components/TkContainer";
+import TkContainer from "@/globalComponents/TkContainer";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";

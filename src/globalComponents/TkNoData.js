@@ -1,7 +1,7 @@
 import React from "react";
 import noData from "../../public/images/file.png";
 import Image from "next/image";
-import TkContainer from "../components/TkContainer";
+import TkContainer from "./TkContainer";
 
 function TkNoData() {
   return (

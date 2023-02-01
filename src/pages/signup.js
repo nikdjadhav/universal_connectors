@@ -54,9 +54,9 @@ const schema = Yup.object({
 const Register = () => {
   const router = useRouter();
   
-  const googleSignupHandler = async () => {
-    await signIn("google", { callbackUrl: "/start" }); // it redirects use to dashboard after signIn
-  };
+  // const googleSignupHandler = async () => {
+  //   await signIn("google", { callbackUrl: "/start" }); // it redirects use to dashboard after signIn
+  // };
   
   const {
     register,
@@ -81,7 +81,7 @@ const Register = () => {
 
     user.mutate(newUser,{
       onSuccess: (data) => {
-        console.log('user created', data);
+        // console.log('user created', data);
         const user = {
           firstName: data.firstName,
           lastName: data.lastName,
@@ -315,13 +315,13 @@ return (
                       </div>
                     </TkForm>
                     <div className="mt-4 text-center">
-                      <div className="signin-other-title">
+                      {/* <div className="signin-other-title">
                         <h5 className="fs-13 mb-4 title text-muted">OR</h5>
                       </div>
                       <div>
                         <GoogleLoginBtn onClick={googleSignupHandler} btnText={"SignUp with Google"} />
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </TkCardBody>
               </TkCard>

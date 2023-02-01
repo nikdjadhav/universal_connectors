@@ -9,7 +9,7 @@ import ProjectsStatus from "@/components/dashboard/ProjectsStatus";
 import PendingApprovals from "@/components/dashboard/PendingApprovals";
 import BreadCrumb from "@/utils/BreadCrumb";
 
-import TkContainer from "@/components/TkContainer";
+import TkContainer from "@/globalComponents/TkContainer";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import Widgets from "@/components/dashboard/Widgets";
@@ -31,13 +31,14 @@ const Dashboard = () => {
   //   .then((data) => console.log(data))
   //   .catch((err) => console.log(err));
 
-  useEffect(()=>{
+  useEffect(() => {
     const loggedInUser = localStorage.getItem("loginCredentials");
     console.log("loggedIn User login Credentials", loggedInUser);
-    if(loggedInUser === null){
+    if (loggedInUser === null) {
       router.push("/login");
     }
-  },[])
+  }, []);
+
   return (
     <>
       <TkPageHead>
@@ -63,9 +64,7 @@ const Dashboard = () => {
             <TkCol xl={6}>
               <PendingApprovals />
             </TkCol>
-            <TkCol xl={6}>
-              {/* <ProjectsStatus /> */}
-            </TkCol>
+            <TkCol xl={6}>{/* <ProjectsStatus /> */}</TkCol>
           </TkRow>
         </TkContainer>
       </div>

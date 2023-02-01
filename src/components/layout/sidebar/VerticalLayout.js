@@ -6,8 +6,8 @@ import sidebarOptions from "./LayoutMenuData";
 import classNames from "classnames";
 import TkIcon from "@/globalComponents/TkIcon";
 
-const VerticalLayout = ({ user }) => {
-  const navData = sidebarOptions(user);
+const VerticalLayout = () => {
+  const navData = sidebarOptions();
   const router = useRouter();
 
   // useEffect(() => {
@@ -201,7 +201,7 @@ const VerticalLayout = ({ user }) => {
               <Link href={item.link ? item.link : "/#"}>
                 <a
                   className={classNames("nav-link menu-link", {
-                    active: `${router.asPath}/`.startsWith(`${item.link}/`),
+                    active: `${router.pathname}/`.startsWith(`${item.link}/`),
                   })}
                 >
                   <TkIcon className={item.icon}></TkIcon> <span>{item.label}</span>
