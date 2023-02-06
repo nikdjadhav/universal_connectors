@@ -145,6 +145,59 @@ const expenseStatusOptions = [
   { value: "unapproved", label: "Unapproved" },
 ];
 
+const sourceName = [
+  {
+    value: "netSuite",
+    label: "NetSuite",
+    
+  },
+  {
+    value: "quickBooks",
+    label: "QuickBooks",
+  },
+  {
+    value: "xero",
+    label: "Xero",
+  }
+];
+
+const destinationName = [
+  {
+    value: "googleSheets",
+    label: "Google Sheets",
+  },
+  {
+    value: "microsoftExcel",
+    label: "Microsoft Excel",
+  },
+  {
+    value: "microsoftOneDrive",
+    label: "Microsoft OneDrive",
+  }
+];
+
+const editValue = [
+  {
+    value: "text",
+    label: "Text",
+  },
+  {
+    value: "value",
+    label: "Value",
+  }
+];
+
+const netsuiteValues = [
+  {
+    value: "internalId",
+    label: "Internal Id",
+  },
+  {
+    value: "externalId",
+    label: "External Id",
+  }
+]
+
 // we take maxTake as 100 from database for all queries, but here I have set it to 99 to be safe from any future changes
 const maxDataLengthForUISearch = 99;
 
@@ -156,6 +209,8 @@ const backendDebounceTime = 500;
 const UIDebounceTime = 200;
 
 const environment = process.env.NODE_ENV;
+
+
 
 export {
   MinEmailLength,
@@ -191,4 +246,8 @@ export {
   UIDebounceTime,
   environment,
   minSearchLength,
+  sourceName,
+  destinationName,
+  editValue,
+  netsuiteValues
 };

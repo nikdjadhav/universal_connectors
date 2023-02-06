@@ -197,20 +197,25 @@ const VerticalLayout = () => {
                 </Collapse>
               </li>
             ) : ( */}
+
+            {/* *** side bar menu items *** */}
             <li className="nav-item" id="nav-item">
-              <Link href={item.link ? item.link : "/#"}>
-                <a
-                  className={classNames("nav-link menu-link", {
-                    active: `${router.pathname}/`.startsWith(`${item.link}/`),
-                  })}
-                >
-                  <TkIcon className={item.icon}></TkIcon> <span>{item.label}</span>
-                  {item.badgeName ? (
-                    <span className={"badge badge-pill bg-" + item.badgeColor} data-key="t-new">
-                      {item.badgeName}
-                    </span>
-                  ) : null}
-                </a>
+              <Link
+                href={item.link ? item.link : "/#"}
+                className={classNames("nav-link menu-link", {
+                  active: `${router.pathname}/`.startsWith(`${item.link}/`),
+                })}
+              >
+                <TkIcon className={item.icon}></TkIcon>{" "}
+                <span>{item.label}</span>
+                {item.badgeName ? (
+                  <span
+                    className={"badge badge-pill bg-" + item.badgeColor}
+                    data-key="t-new"
+                  >
+                    {item.badgeName}
+                  </span>
+                ) : null}
               </Link>
             </li>
             {/* )} */}

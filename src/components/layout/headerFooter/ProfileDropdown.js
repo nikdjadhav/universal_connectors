@@ -90,12 +90,10 @@ const ProfileDropdown = () => {
         <TkDropdownMenu className="dropdown-menu-end">
           {/* <h6 className="dropdown-header">Welcome Nancy !</h6> */}
           <Link href="/profile">
-            {/* <a> */}
             <TkDropdownItem>
               <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
               <span className="align-middle">Profile</span>
             </TkDropdownItem>
-            {/* </a> */}
           </Link>
           {/* <TkDropdownItem onClick={changeThemeMode}>
             <div>

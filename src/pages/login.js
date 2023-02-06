@@ -67,7 +67,7 @@ const Login = () => {
   // const notify = () => toast("Wow so easy!");
 
   const user = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/login"),
+    mutationFn: tkFetch.post("http://localhost:4000/v1/login"),
   });
 
   const onSubmit = async (userData) => {
@@ -78,13 +78,14 @@ const Login = () => {
     user.mutate(apiData, {
       onSuccess: (data) => {
         // TkToastSuccess("User Updated Successfully");
-        // console.log("success", data);
+        console.log("success", data);
         const user = {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          password: data.password,
+          firstName: data[0].firstName,
+          lastName: data[0].lastName,
+          email: data[0].email,
+          password: data[0].password,
         }
+        console.log("user", user);
         localStorage.setItem("loginCredentials", JSON.stringify(user));
         router.push("/dashboard");
       },

@@ -1,5 +1,7 @@
-import prisma from "../lib/prisma";
-import response from "../lib/response";
+// import prisma from "../lib/prisma";
+// import response from "../lib/response";
+const prisma = require("../lib/prisma");
+const response = require("../lib/response");
 
 // *** to create a new user in the database ***
 const createUser = async (req, res) => {

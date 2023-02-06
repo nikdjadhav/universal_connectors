@@ -88,9 +88,7 @@ const MyTasks = () => {
           </div>
           <div className="mt-3 text-center">
             <Link href="#" className="text-muted text-decoration-underline">
-              {/* <a > */}
                 Load More
-                {/* </a> */}
             </Link>
           </div>
         </TkCardBody>

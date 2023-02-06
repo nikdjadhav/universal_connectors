@@ -3,7 +3,7 @@ import { Col, Container, Row } from 'reactstrap';
 
 // import TkRow,{TkCol} from '../../TkRow';
 import TkRow, { TkCol } from '@/globalComponents/TkRow';
-import TkContainer from '../../TkContainer';
+import TkContainer from '@/globalComponents/TkContainer';
 
 const Footer = () => {
     return (

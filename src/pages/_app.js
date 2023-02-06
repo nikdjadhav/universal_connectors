@@ -1,6 +1,7 @@
 import { useEffect, createContext } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import "@/styles/globals.css";
+import "@/styles/globals-copy.css";
 import "@/styles/scss/themes.scss";
 import "@/styles/custom.scss";
 import { Slide, ToastContainer } from "react-toastify";

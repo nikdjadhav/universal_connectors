@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { projectTasks } from "../test-data/dashboard";
 
 import TkCard, { TkCardBody, TkCardHeader, TkCardTitle } from "@/globalComponents/TkCard";
-import TkButton from "../TkButton";
+// import TkButton from "../TkButton";
 import TkInput from "@/globalComponents/TkInput";
 import TkForm from "@/globalComponents/TkForm";
 import TkIcon from "@/globalComponents/TkIcon";
 import TkModal, { TkModalBody, TkModalHeader } from "@/globalComponents/TkModal";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
+import TkButton from "@/globalComponents/TkButton";
 
 const PendingApprovals = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

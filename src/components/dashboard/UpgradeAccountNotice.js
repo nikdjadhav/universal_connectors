@@ -26,9 +26,7 @@ const UpgradeAccountNotice = () => {
             </div>
             <div className="flex-shrink-0">
               <Link href="/pages-pricing" className="text-reset text-decoration-underline">
-                {/* <a > */}
                   <b>Upgrade</b>
-                {/* </a> */}
               </Link>
             </div>
           </Alert>
@@ -42,9 +40,7 @@ const UpgradeAccountNotice = () => {
                 </p>
                 <div className="mt-3">
                   <Link href="/pages-pricing" className="btn btn-success">
-                    {/* <a > */}
                       Upgrade Account!
-                    {/* </a> */}
                   </Link>
                 </div>
               </div>

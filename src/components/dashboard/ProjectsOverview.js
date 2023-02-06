@@ -6,7 +6,8 @@ import { DashboardProjectData } from "../test-data/dashboard";
 
 import TkCard,{TkCardBody, TkCardHeader, TkCardTitle} from "@/globalComponents/TkCard";
 import TkRow,{TkCol} from "@/globalComponents/TkRow";
-import TkButton from "../TkButton";
+import TkButton from "@/globalComponents/TkButton";
+// import TkButton from "../TkButton";
 
 const ProjectsOverview = () => {
   // TODO: get data from API

@@ -122,12 +122,10 @@ const NotificationDropdown = () => {
                     </div>
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-2 lh-base">
                             Your <b>Elite</b> author Graphic Optimization{" "}
                             <span className="text-secondary">reward</span> is ready!
                           </h6>
-                        {/* </a> */}
                       </Link>
                       <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
                         <span>
@@ -170,9 +168,7 @@ const NotificationDropdown = () => {
                     />
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-1 fs-13 fw-semibold">Angela Bernier</h6>
-                        {/* </a> */}
                       </Link>
                       <div className="fs-13 text-muted">
                         <p className="mb-1">
@@ -212,12 +208,10 @@ const NotificationDropdown = () => {
                     </div>
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-2 fs-13 lh-base">
                             You have received <b className="text-success">20</b> new messages in the
                             conversation
                           </h6>
-                        {/* </a> */}
                       </Link>
                       <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
                         <span>
@@ -260,9 +254,7 @@ const NotificationDropdown = () => {
                     />
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-1 fs-13 fw-semibold">Maureen Gibson</h6>
-                        {/* </a> */}
                       </Link>
                       <div className="fs-13 text-muted">
                         <p className="mb-1">We talked about a project on linkedin.</p>
@@ -318,9 +310,7 @@ const NotificationDropdown = () => {
                     />
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-1 fs-13 fw-semibold">James Lemire</h6>
-                        {/* </a> */}
                       </Link>
                       <div className="fs-13 text-muted">
                         <p className="mb-1">We talked about a project on linkedin.</p>
@@ -366,9 +356,7 @@ const NotificationDropdown = () => {
                     />
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-1 fs-13 fw-semibold">Angela Bernier</h6>
-                        {/* </a> */}
                       </Link>
                       <div className="fs-13 text-muted">
                         <p className="mb-1">
@@ -416,9 +404,7 @@ const NotificationDropdown = () => {
                     />
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-1 fs-13 fw-semibold">Kenneth Brown</h6>
-                        {/* </a> */}
                       </Link>
                       <div className="fs-13 text-muted">
                         <p className="mb-1">Mentionned you in his comment on 📃 invoice #12501. </p>
@@ -464,9 +450,7 @@ const NotificationDropdown = () => {
                     />
                     <div className="flex-1">
                       <Link href="#" className="stretched-link">
-                        {/* <a > */}
                           <h6 className="mt-0 mb-1 fs-13 fw-semibold">Maureen Gibson</h6>
-                        {/* </a> */}
                       </Link>
                       <div className="fs-13 text-muted">
                         <p className="mb-1">We talked about a project on linkedin.</p>

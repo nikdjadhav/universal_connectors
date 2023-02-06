@@ -17,9 +17,7 @@ const ActiveProjects = () => {
             <TkCardTitle tag='h4' className="flex-grow-1 mb-0">Active Projects</TkCardTitle>
             <div className="flex-shrink-0">
               <Link href="#" className="btn btn-soft-info btn-sm">
-                {/* <a > */}
                 Export Report
-                {/* </a> */}
               </Link>
             </div>
           </TkCardHeader>
@@ -50,9 +48,7 @@ const ActiveProjects = () => {
                           className="avatar-xxs rounded-circle me-1"
                         />
                         <Link href="#" className="text-reset">
-                          {/* <a > */}
                           {item.projectLead}
-                          {/* </a> */}
                         </Link>
                       </td>
                       <td>
@@ -80,7 +76,6 @@ const ActiveProjects = () => {
                           {item.subItem.map((item, key) => (
                             <div className="avatar-group-item" key={key}>
                               <Link href="#" className="d-inline-block">
-                                {/* <a > */}
                                 {/* <img
                                     src={item.assImg}
                                     alt=""
@@ -91,7 +86,6 @@ const ActiveProjects = () => {
                                   alt="project img"
                                   className="avatar-xxs rounded-circle"
                                 />
-                                {/* </a> */}
                               </Link>
                             </div>
                           ))}
@@ -116,37 +110,27 @@ const ActiveProjects = () => {
               <ul className="pagination pagination-separated pagination-sm mb-0">
                 <li className="page-item disabled">
                   <Link href="#" className="page-link">
-                    {/* <a > */}
                     ←
-                    {/* </a> */}
                   </Link>
                 </li>
                 <li className="page-item">
                   <Link href="#" className="page-link">
-                    {/* <a > */}
                     1
-                    {/* </a> */}
                   </Link>
                 </li>
                 <li className="page-item active">
                   <Link href="#" className="page-link">
-                    {/* <a > */}
                     2
-                    {/* </a> */}
                   </Link>
                 </li>
                 <li className="page-item">
                   <Link href="#" className="page-link">
-                    {/* <a > */}
                     3
-                    {/* </a> */}
                   </Link>
                 </li>
                 <li className="page-item">
                   <Link href="#" className="page-link">
-                    {/* <a > */}
                     →
-                    {/* </a> */}
                   </Link>
                 </li>
               </ul>

@@ -27,8 +27,13 @@ const Sidebar = () => {
 
   const addEventListenerOnSmHoverMenu = () => {
     // add listener Sidebar Hover icon on change layout from setting
-    if (document.documentElement.getAttribute("data-sidebar-size") === "sm-hover") {
-      document.documentElement.setAttribute("data-sidebar-size", "sm-hover-active");
+    if (
+      document.documentElement.getAttribute("data-sidebar-size") === "sm-hover"
+    ) {
+      document.documentElement.setAttribute(
+        "data-sidebar-size",
+        "sm-hover-active"
+      );
     } else {
       document.documentElement.setAttribute("data-sidebar-size", "sm-hover");
     }
@@ -58,22 +63,22 @@ const Sidebar = () => {
           </Link> */}
 
           <Link href="/dashboard" className="logo logo-light">
-            {/* <a > */}
-              <span className="logo-sm">
-                <Image
-                  src={logoSm}
-                  height={22}
-                  //   width={120}
-                  // placeholder="blur"
-                  className="w-auto"
-                  // layout="responsive"
-                  alt="logo light"
-                />
-              </span>
-              <span className="logo-lg">
-                <h3 className="mt-4 mb-4 logo-text text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h3>
-              </span>
-            {/* </a> */}
+            <span className="logo-sm">
+              <Image
+                src={logoSm}
+                height={22}
+                //   width={120}
+                // placeholder="blur"
+                className="w-auto"
+                // layout="responsive"
+                alt="logo light"
+              />
+            </span>
+            <span className="logo-lg">
+              <h3 className="mt-4 mb-4 logo-text text-light">
+                {process.env.NEXT_PUBLIC_APP_NAME}
+              </h3>
+            </span>
           </Link>
           <button
             onClick={addEventListenerOnSmHoverMenu}
@@ -84,6 +89,8 @@ const Sidebar = () => {
             <i className="ri-record-circle-line"></i>
           </button>
         </div>
+
+        {/* *** sidebar menu *** */}
         <>
           <SimpleBar id="scrollbar" className="h-100">
             <Container fluid>

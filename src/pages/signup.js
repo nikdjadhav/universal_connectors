@@ -81,13 +81,14 @@ const Register = () => {
 
     user.mutate(newUser,{
       onSuccess: (data) => {
-        // console.log('user created', data);
+        console.log('user created', data);
         const user = {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          password: data.password,
+          firstName: data[0].firstName,
+          lastName: data[0].lastName,
+          email: data[0].email,
+          password: data[0].password,
         }
+        console.log('user', user);
         localStorage.setItem("loginCredentials", JSON.stringify(user));
         router.push("/dashboard");
       },
@@ -314,6 +315,7 @@ return (
                         </TkButton>
                       </div>
                     </TkForm>
+                    </div>
                     <div className="mt-4 text-center">
                       {/* <div className="signin-other-title">
                         <h5 className="fs-13 mb-4 title text-muted">OR</h5>

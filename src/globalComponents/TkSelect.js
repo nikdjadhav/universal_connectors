@@ -70,7 +70,7 @@ TkSelect.propTypes = {
 
 TkSelect.defaultProps = {
   isClearable: true,
-  value: null,
+  // value: null,
 };
 
 export default TkSelect;

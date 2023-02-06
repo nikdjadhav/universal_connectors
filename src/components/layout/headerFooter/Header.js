@@ -78,7 +78,6 @@ const Header = (props) => {
             <div className="d-flex">
               <div className="navbar-brand-box horizontal-logo">
                 <Link href="/" className="logo logo-dark">
-                  {/* <a > */}
                     <span className="logo-sm">
                       <Image
                         src={logoSm}
@@ -93,11 +92,9 @@ const Header = (props) => {
                       <Image src={logoDark} alt="logo small" placeholder="blur" height={17} className="w-auto" />
                       {/* <img src={logoDark} alt="" height="17" /> */}
                     </span>
-                  {/* </a> */}
                 </Link>
 
                 <Link href="/" className="logo logo-light">
-                  {/* <a > */}
                     <span className="logo-sm">
                       <Image
                         src={logoSm}
@@ -112,7 +109,6 @@ const Header = (props) => {
                       <Image src={logoLight} alt="logo small" placeholder="blur" height={17} className="w-auto" />
                       {/* <img src={logoLight} alt="" height="17" /> */}
                     </span>
-                  {/* </a> */}
                 </Link>
               </div>
 
