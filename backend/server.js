@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const userController = require("./controllers/user.controllers");
 // require("dotenv").config();
 // const session = require("express-session");
+// const prisma = require("./lib/prisma");
+// const jwt = require("jsonwebtoken");
 
 const app = express();
 dotenv.config();
@@ -55,7 +57,7 @@ v1Router.post("/login", userController.userLogin);
 //   if (authenticated) {
 //     // req.session.authenticated = true;
 //     res.send("Already authenticated");
-    
+
 //   } else {
 //     res.send("Successfully authenticated");
 

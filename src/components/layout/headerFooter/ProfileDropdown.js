@@ -56,7 +56,8 @@ const ProfileDropdown = () => {
     // // so we need to refresh the page and take user to login screen
     // //TODO: its a workarounnd but later may find some other solution
     // await signOut({ callbackUrl: "/login" });
-    localStorage.removeItem("loginCredentials");
+    // localStorage.removeItem("loginCredentials");
+    sessionStorage.removeItem("loginCredentials");
     router.push("/login");
   };
   return (

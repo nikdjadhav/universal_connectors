@@ -75,6 +75,7 @@ const Login = () => {
       email: userData.email,
       password: userData.password,
     };
+    // console.log("apiData", apiData);
     user.mutate(apiData, {
       onSuccess: (data) => {
         // TkToastSuccess("User Updated Successfully");
@@ -84,13 +85,15 @@ const Login = () => {
           lastName: data[0].lastName,
           email: data[0].email,
           password: data[0].password,
+          token: data[0].token,
         }
         console.log("user", user);
-        localStorage.setItem("loginCredentials", JSON.stringify(user));
+        // localStorage.setItem("loginCredentials", JSON.stringify(user.token));
+        sessionStorage.setItem("loginCredentials", JSON.stringify(user.token));
         router.push("/dashboard");
       },
       onError: (error) => {
-        console.log("error", error);
+        console.log("error==>", error);
         TkToastError("Invalid Credentials");
         //TODO: report error to error reporting service
       },

@@ -25,7 +25,8 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("loginCredentials");
+    // const loggedInUser = localStorage.getItem("loginCredentials");
+    const loggedInUser = sessionStorage.getItem("loginCredentials");
     console.log("loggedIn User login Credentials", loggedInUser);
     if (loggedInUser === null) {
       router.push("/login");

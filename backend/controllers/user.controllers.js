@@ -2,6 +2,7 @@
 // import response from "../lib/response";
 const prisma = require("../lib/prisma");
 const response = require("../lib/response");
+const jwt = require("jsonwebtoken");
 
 // *** to create a new user in the database ***
 const createUser = async (req, res) => {
@@ -58,8 +59,11 @@ const getUsers = async (req, res) => {
 
 // *** route to check if the user is logged in or not ***
 // *** to fetch a single user from the database ***
+
+// *** using jwt token ***
 const userLogin = async (req, res) => {
-  const user = await prisma.users.findUnique({
+  // console.log(req.body);
+  const logedinUser = await prisma.users.findUnique({
     where: {
       loginUser: {
         email: req.body.email,
@@ -67,15 +71,26 @@ const userLogin = async (req, res) => {
       },
     },
   });
-  // console.log(user);
-  if (user) {
+  // console.log(logedinUser);
+  if (logedinUser) {
+    const token = jwt.sign(
+      { email: req.body.email, password: req.body.password },
+      process.env.ACCESS_TOKEN_SECRET
+    );
     response({
       res,
       success: true,
       status: 200,
-      data: [user],
+      data: [{
+        success: true,
+        firstName: logedinUser.firstName,
+        lastName: logedinUser.lastName,
+        email: logedinUser.email,
+        verrified: true,
+        token: token,
+      }],
       message: "User logged in successfully",
-    });
+    })
   } else {
     response({
       res,
@@ -85,7 +100,37 @@ const userLogin = async (req, res) => {
       message: "User not found",
     });
   }
-};
+}
+
+// *** 
+// const userLogin = async (req, res) => {
+//   const user = await prisma.users.findUnique({
+//     where: {
+//       loginUser: {
+//         email: req.body.email,
+//         password: req.body.password,
+//       },
+//     },
+//   });
+//   // console.log(user);
+//   if (user) {
+//     response({
+//       res,
+//       success: true,
+//       status: 200,
+//       data: [user],
+//       message: "User logged in successfully",
+//     });
+//   } else {
+//     response({
+//       res,
+//       success: false,
+//       status: 400,
+//       data: [],
+//       message: "User not found",
+//     });
+//   }
+// };
 
 module.exports = {
   createUser,
