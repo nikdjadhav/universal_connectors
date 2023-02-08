@@ -1,3 +1,4 @@
+import TkButton from "@/globalComponents/TkButton";
 import TkCheckBox from "@/globalComponents/TkCheckBox";
 import TkInput from "@/globalComponents/TkInput";
 import TkLabel from "@/globalComponents/TkLabel";
@@ -9,17 +10,21 @@ import SingleEvent from "./SingleEvent";
 const WeeklyEvent = () => {
   return (
     <>
-      <h4 className="text-center mb-4">Weekly Event</h4>
+      <h4 className="text-center mb-4 fw-bold">Weekly Event</h4>
 
       <TkRow>
         <TkCol lg={5} sm={5}>
-          <InputBox className="mb-2" firstLabel="Repeat Every" secondLabel="Week(s)" />
+          <InputBox
+            className="mb-2"
+            firstLabel="Repeat Every"
+            secondLabel="Week(s)"
+          />
         </TkCol>
       </TkRow>
 
       <TkRow>
         <TkCol lg={4} className="my-1">
-        <TkCheckBox
+          <TkCheckBox
             className="form-check-input"
             type="checkbox"
             id="sunday"
@@ -30,7 +35,7 @@ const WeeklyEvent = () => {
         </TkCol>
 
         <TkCol lg={4} className="my-1">
-        <TkCheckBox
+          <TkCheckBox
             className="form-check-input"
             type="checkbox"
             id="monday"
@@ -38,10 +43,9 @@ const WeeklyEvent = () => {
           <TkLabel className="form-check-label mx-2" id="monday">
             Monday
           </TkLabel>
-
         </TkCol>
         <TkCol lg={4} className="my-1">
-        <TkCheckBox
+          <TkCheckBox
             className="form-check-input"
             type="checkbox"
             id="tuesday"
@@ -52,7 +56,7 @@ const WeeklyEvent = () => {
         </TkCol>
 
         <TkCol lg={4} className="my-1">
-        <TkCheckBox
+          <TkCheckBox
             className="form-check-input"
             type="checkbox"
             id="wednesday"
@@ -63,7 +67,7 @@ const WeeklyEvent = () => {
         </TkCol>
 
         <TkCol lg={4} className="my-1">
-        <TkCheckBox
+          <TkCheckBox
             className="form-check-input"
             type="checkbox"
             id="thursday"
@@ -74,7 +78,7 @@ const WeeklyEvent = () => {
         </TkCol>
 
         <TkCol lg={4} className="my-1">
-        <TkCheckBox
+          <TkCheckBox
             className="form-check-input"
             type="checkbox"
             id="friday"
@@ -85,7 +89,7 @@ const WeeklyEvent = () => {
         </TkCol>
 
         <TkCol lg={4} className="my-1">
-        <TkCheckBox
+          <TkCheckBox
             className="form-check-input"
             type="checkbox"
             id="saturday"
@@ -97,6 +101,12 @@ const WeeklyEvent = () => {
       </TkRow>
 
       <SingleEvent />
+
+      {/* <div className="d-flex justify-content-center my-4">
+        <TkButton type="submit" className="btn-success">
+          Save
+        </TkButton>
+      </div> */}
     </>
   );
 };

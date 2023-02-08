@@ -175,6 +175,13 @@ const destinationName = [
   },
 ];
 
+const integrations = [
+  {
+    value: "nsgs",
+    label: "NSGS",
+  },
+];
+
 const editValue = [
   {
     value: "text",
@@ -559,8 +566,8 @@ const months = [
   {
     value: "december",
     label: "December",
-  }
-]
+  },
+];
 
 // we take maxTake as 100 from database for all queries, but here I have set it to 99 to be safe from any future changes
 const maxDataLengthForUISearch = 99;
@@ -610,6 +617,7 @@ export {
   minSearchLength,
   sourceName,
   destinationName,
+  integrations,
   editValue,
   netsuiteValues,
   booleanValues,
@@ -618,5 +626,5 @@ export {
   repeatOptions,
   options,
   days,
-  months
+  months,
 };

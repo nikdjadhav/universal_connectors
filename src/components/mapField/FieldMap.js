@@ -1,7 +1,7 @@
 import TkButton from "@/globalComponents/TkButton";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
-import { destinationName, sourceName } from "@/utils/Constants";
+import { destinationName, integrations, sourceName } from "@/utils/Constants";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -15,7 +15,7 @@ const FieldMap = ({route}) => {
   return (
     <>
       <TkRow className="mt-5">
-        <TkCol lg={4}>
+        {/* <TkCol lg={4}>
           <TkSelect
             id="sourceName"
             name="sourceName"
@@ -23,20 +23,16 @@ const FieldMap = ({route}) => {
             options={sourceName}
             maxMenuHeight="120px"
           />
-        </TkCol>
+        </TkCol> */}
 
         <TkCol lg={4}>
-          {/* <TkCard> */}
-          {/* <TkCardBody> */}
           <TkSelect
-            labelName="Destination Integration Name"
-            id="destinationName"
-            name="destinationName"
-            options={destinationName}
+            labelName="Integration Name"
+            id="integrationName"
+            name="integrationName"
+            options={integrations}
             maxMenuHeight="120px"
           />
-          {/* </TkCardBody> */}
-          {/* </TkCard> */}
         </TkCol>
       </TkRow>
       {/* <TkCol lg={4}> */}

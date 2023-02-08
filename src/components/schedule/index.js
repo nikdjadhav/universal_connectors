@@ -18,7 +18,7 @@ const EventSchedule = () => {
   const [yearlyEvent, setYearlyEvent] = useState(false);
 
   const toggleComponet = (value) => {
-    console.log(value);
+    // console.log(value);
     setShowComponent(value);
     setSingleEvent(value === "singleEvent" ? true : false);
     setDailyEvent(value === "dailyEvent" ? true : false);
@@ -31,9 +31,10 @@ const EventSchedule = () => {
     <>
       <h5>Events</h5>
 
+      {/* *** Radio buttons for selecting event type *** */}
       <TkContainer className="my-5">
         <TkRow>
-          <TkCol lg={4}>
+          <TkCol lg={3}>
             <TkRadioButton
               type="radio"
               name="event"
@@ -91,7 +92,8 @@ const EventSchedule = () => {
             </TkRadioButton>
           </TkCol>
 
-          <TkCol lg={8}>
+          {/* *** Event form *** */}
+          <TkCol lg={9}>
             {showComponent === "singleEvent" ? (
               //   <div>Single Event</div>
               <SingleEvent heading="Single Event" />
@@ -107,6 +109,7 @@ const EventSchedule = () => {
               <SingleEvent />
             )}
 
+            {/* *** common save button for all events *** */}
             <div className="d-flex justify-content-center my-4">
               <TkButton type="submit" className="btn-success">
                 Save

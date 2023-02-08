@@ -31,7 +31,7 @@ export function TwoInputBoxes({ className }) {
   return (
     <>
       <TkRow className={className}>
-        <TkCol lg={1} sm={1} className="align-self-center pe-0">
+        <TkCol lg={1} sm={1} className="align-self-center px-4">
           Day
         </TkCol>
 
@@ -44,7 +44,7 @@ export function TwoInputBoxes({ className }) {
           />
         </TkCol>
 
-        <TkCol lg={2} sm={2} className="align-self-center">
+        <TkCol lg={2} sm={2} className="align-self-center px-4">
           of every
         </TkCol>
 

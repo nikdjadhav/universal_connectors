@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import Dropdown from "@/globalComponents/Dropdown";
 import { booleanValues } from "@/utils/Constants";
+import Link from "next/link";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -50,35 +51,35 @@ const Dashboard = () => {
     },
     {
       Header: "Modified Date",
-      accessor: "modifiedDate", 
+      accessor: "modifiedDate",
     },
     {
       Header: "Action",
       accessor: "action",
       Cell: () => {
-        return(
+        return (
           <>
-          <i className="ri-delete-bin-5-line "></i>
-          <i className="ri-edit-2-fill mx-2"></i>
-          <i className="ri-eye-fill"></i>
+            <i className="ri-delete-bin-5-line "></i>
+            <i className="ri-edit-2-fill mx-2"></i>
+            <i className="ri-eye-fill"></i>
           </>
         );
-      }
+      },
     },
     {
       Header: "Shedule",
       accessor: "shedule",
-      Cell: () => {
-        return <Dropdown data={booleanValues}/>
-      }
+      // Cell: () => {
+      //   return <Dropdown data={booleanValues}/>
+      // }
     },
     {
       Header: "Field Mapping",
       accessor: "fieldMapping",
-      Cell:() => {
-        return <Dropdown data={booleanValues}/>
-      }
-    }
+      // Cell:() => {
+      //   return <Dropdown data={booleanValues}/>
+      // }
+    },
   ];
 
   const data = [
@@ -89,10 +90,24 @@ const Dashboard = () => {
       date: "04-May-2021 02:00 PM",
       modifiedDate: "16-Jan-2022 12:00 PM",
       action: "Action",
-      shedule: "",
-      fieldMapping: ""
-    }
-  ]
+      shedule: (
+        <>
+          <Link href="/schedule/event" className="">
+            <span className="px-1">No</span>
+            <i className="ri-add-fill px-2"></i>
+          </Link>
+        </>
+      ),
+      fieldMapping: (
+        <>
+          <Link href="/fieldMapping/mapTable" className="">
+            <span className="px-2">Yes</span>
+            <i class="ri-edit-2-fill px-2"></i>
+          </Link>
+        </>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -107,10 +122,7 @@ const Dashboard = () => {
           <p>Dashboard</p>
         </TkContainer>   */}
 
-        <TkTableContainer
-          columns={columns}
-          data={data}
-        />
+        <TkTableContainer columns={columns} data={data} />
       </div>
 
       {/* ***** */}

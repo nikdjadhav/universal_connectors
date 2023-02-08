@@ -12,6 +12,8 @@ import TkCheckBox from "@/globalComponents/TkCheckBox";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkButton from "@/globalComponents/TkButton";
 import ModalButton from "./integrationModal";
+import { destinationName, sourceName } from "@/utils/Constants";
+import TkRadioButton from "@/globalComponents/TkRadioButton";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
   const router = useRouter();
@@ -19,6 +21,7 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   const integrationToggle = useCallback(() => {
     if (integrationModal) {
       settntegrationModal(false);
+      toggleModal();
     } else {
       settntegrationModal(true);
     }
@@ -77,42 +80,50 @@ const IntegrationCard = ({ modal, toggleModal }) => {
           <TkRow>
             <TkCol lg={6} className="my-3">
               <TkSelect
-                id=""
-                name=""
-                labelName=""
+                id="source"
+                name="source"
+                labelName="Source"
+                options={sourceName}
                 maxMenuHeight="130px"
               />
             </TkCol>
 
             <TkCol lg={6} className="my-3">
               <TkSelect
-                id=""
-                name=""
-                labelName=""
+                id="destination"
+                name="destination"
+                labelName="Destination"
+                options={destinationName}
                 maxMenuHeight="130px"
               />
             </TkCol>
 
             <TkCol lg={6} className="my-3">
-              <TkCheckBox
-                className="form-check-input"
-                type="checkbox"
-                id="oneWayIntegration"
-              />
-              <TkLabel className="form-check-label mx-2" id="oneWayIntegration">
+              <TkRadioButton
+                type="radio"
+                name="integrationType"
+                label="One Way Integration"
+                // value="singleEvent"
+                className="mb-3"
+                checked={true}
+                // onClick={() => toggleComponet("singleEvent")}
+              >
                 One Way Integration
-              </TkLabel>
+              </TkRadioButton>
             </TkCol>
 
             <TkCol lg={6} className="my-3">
-              <TkCheckBox
-                className="form-check-input"
-                type="checkbox"
-                id="twoWayIntegration"
-              />
-              <TkLabel className="form-check-label mx-2" id="twoWayIntegration">
+            <TkRadioButton
+                type="radio"
+                name="integrationType"
+                label="Two Way Integration"
+                // value="singleEvent"
+                className="mb-3"
+                // checked={singleEvent}
+                // onClick={() => toggleComponet("singleEvent")}
+              >
                 Two Way Integration
-              </TkLabel>
+              </TkRadioButton>
             </TkCol>
 
             <tkCol lg={12} className="my-4 d-flex justify-content-center">
@@ -121,7 +132,6 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                 modal={integrationModal}
                 setModal={settntegrationModal}
                 toggle={integrationToggle}
-                
               >
                 Submit
               </ModalButton>

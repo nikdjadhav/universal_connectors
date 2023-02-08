@@ -1,20 +1,19 @@
+import TkButton from "@/globalComponents/TkButton";
 import TkCheckBox from "@/globalComponents/TkCheckBox";
 import TkDate from "@/globalComponents/TkDate";
-import { TkDropdown } from "@/globalComponents/TkDropdown";
-import TkInput from "@/globalComponents/TkInput";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import { repeatOptions, timeOptions } from "@/utils/Constants";
-import React, { Children } from "react";
+import React from "react";
 
 const SingleEvent = ({ heading }) => {
   return (
     <>
-      <h4 className="text-center mb-4">{ heading }</h4>
+      <h4 className="text-center mb-4 fw-bold">{heading}</h4>
 
       <TkRow>
-        <TkCol lg={4} sm={4} >
+        <TkCol lg={4} sm={4}>
           <TkDate
             labelName="Start Date"
             id="startDate"
@@ -75,6 +74,12 @@ const SingleEvent = ({ heading }) => {
             No End Date
           </TkLabel>
         </TkCol>
+
+        {/* <div className="d-flex justify-content-center my-4">
+          <TkButton type="submit" className="btn-success">
+            Save
+          </TkButton>
+        </div> */}
       </TkRow>
     </>
   );
