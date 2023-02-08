@@ -65,8 +65,7 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
             className="btn btn-primary float-end"
             onClick={onClickHandeler}
           >
-            {/* Next Step */}
-            Authorize
+            Next Step
           </TkButton>
         </TkCol>
       </TkRow>

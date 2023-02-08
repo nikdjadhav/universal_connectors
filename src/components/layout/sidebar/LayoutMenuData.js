@@ -18,12 +18,12 @@ function sidebarOptions() {
       icon: "",
       link: "/fieldMapping",
     },
-    // {
-    //   id: "user",
-    //   label: "User",
-    //   icon: "",
-    //   link: "/user",
-    // },
+    {
+      id: "schedule",
+      label: "Schedule",
+      icon: "",
+      link: "/schedule",
+    },
   ];
   return menuItemsForAll;
 }

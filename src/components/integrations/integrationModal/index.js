@@ -8,7 +8,7 @@ import TkModal, {
 } from "@/globalComponents/TkModal";
 import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
-import Form from "./Form";
+import Integration from "./Integration";
 import NetsuiteComponent from "./NetsuiteComponent";
 import GoogleSheetComponent  from "./GoogleSheetComponent";
 import Verified from "./Verified";
@@ -16,14 +16,14 @@ import TkRow, { TkCol } from "@/globalComponents/TkRow";
 
 const ModalButton = ({ children, modal, toggle }) => {
   // const tabs = [
-  //   { id: 1, name: "Form" },
+  //   { id: 1, name: "Integration" },
   //   { id: 2, name: "Netsuite Configuration" },
   //   { id: 3, name: "Google Sheet Configuration" },
   //   { id: 4, name: "Verified" },
   // ];
 
   const tabs = {
-    Form: 1,
+    Integration: 1,
     NetsuiteConfiguration: 2,
     GoogleSheetConfiguration: 3,
     Verified: 4,
@@ -36,7 +36,7 @@ const ModalButton = ({ children, modal, toggle }) => {
   //   }
   // };
   const [btnText, setBtnText] = useState("Next Step");
-  const [activeTab, setActiveTab] = useState(tabs.Form);
+  const [activeTab, setActiveTab] = useState(tabs.Integration);
   const toggleTab = (tab) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
@@ -64,7 +64,7 @@ const ModalButton = ({ children, modal, toggle }) => {
   // };
 
   const onClickHandeler = () => {
-    if (activeTab === tabs.Form) {
+    if (activeTab === tabs.Integration) {
       setActiveTab(tabs.NetsuiteConfiguration);
     }
     if (activeTab === tabs.NetsuiteConfiguration) {
@@ -93,7 +93,7 @@ const ModalButton = ({ children, modal, toggle }) => {
         modalClassName="modal fade zoomIn"
       >
         <TkModalHeader className="p-3" toggle={toggle}>
-          {"Verify your account"}
+          {"Configuration"}
         </TkModalHeader>
         <div className="px-2 pt-2 bg-soft-info">
           <Nav className="nav-tabs dropdown-tabs nav-tabs-custom">
@@ -101,13 +101,13 @@ const ModalButton = ({ children, modal, toggle }) => {
               <NavLink
                 href="#"
                 className={classnames({
-                  active: activeTab === tabs.Form,
+                  active: activeTab === tabs.Integration,
                 })}
                 onClick={() => {
-                  toggleTab(tabs.Form);
+                  toggleTab(tabs.Integration);
                 }}
               >
-                Form
+                Integration
               </NavLink>
             </NavItem>
 
@@ -156,8 +156,8 @@ const ModalButton = ({ children, modal, toggle }) => {
         <TkModalBody className="modal-body">
           {/* <TkForm onSubmit={handleSubmit(onSubmit)}> */}
           <TabContent activeTab={activeTab}>
-            <TabPane tabId={tabs.Form}>
-              <Form onClickHandeler={onClickHandeler} />
+            <TabPane tabId={tabs.Integration}>
+              <Integration onClickHandeler={onClickHandeler} />
             </TabPane>
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>

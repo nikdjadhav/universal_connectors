@@ -17,6 +17,8 @@ import Widgets from "@/components/dashboard/Widgets";
 import UpgradeAccountNotice from "@/components/dashboard/UpgradeAccountNotice";
 import { useRouter } from "next/router";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
+import Dropdown from "@/globalComponents/Dropdown";
+import { booleanValues } from "@/utils/Constants";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -31,12 +33,12 @@ const Dashboard = () => {
 
   const columns = [
     {
-      Header: "Source Name",
-      accessor: "sourceName",
-    },
-    {
       Header: "Integration Name",
       accessor: "integrationName",
+    },
+    {
+      Header: "Source Name",
+      accessor: "sourceName",
     },
     {
       Header: "Destination Name",
@@ -56,8 +58,9 @@ const Dashboard = () => {
       Cell: () => {
         return(
           <>
-          <i className="ri-delete-bin-5-line mx-1 "></i>
-          <i className="ri-edit-2-fill mx-1"></i>
+          <i className="ri-delete-bin-5-line "></i>
+          <i className="ri-edit-2-fill mx-2"></i>
+          <i className="ri-eye-fill"></i>
           </>
         );
       }
@@ -65,23 +68,29 @@ const Dashboard = () => {
     {
       Header: "Shedule",
       accessor: "shedule",
+      Cell: () => {
+        return <Dropdown data={booleanValues}/>
+      }
     },
     {
       Header: "Field Mapping",
       accessor: "fieldMapping",
+      Cell:() => {
+        return <Dropdown data={booleanValues}/>
+      }
     }
   ];
 
   const data = [
     {
+      integrationName: "NSGS",
       sourceName: "NetSuite",
-      integrationName: "netSuite",
       destinationName: "Google Sheets",
-      date: "2021-05-05",
-      modifiedDate: "2022-08-02",
+      date: "04-May-2021 02:00 PM",
+      modifiedDate: "16-Jan-2022 12:00 PM",
       action: "Action",
-      shedule: "Shedule",
-      fieldMapping: "Field Mapping"
+      shedule: "",
+      fieldMapping: ""
     }
   ]
 

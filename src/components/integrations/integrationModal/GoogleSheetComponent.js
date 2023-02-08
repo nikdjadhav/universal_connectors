@@ -4,6 +4,7 @@ import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
+import { netsuiteRecordTypes } from "@/utils/Constants";
 import React from "react";
 
 const GoogleSheetComponent = ({ onClickHandeler }) => {
@@ -28,8 +29,8 @@ const GoogleSheetComponent = ({ onClickHandeler }) => {
                   id="netsuiteRecordType"
                   name="netsuiteRecordType"
                   labelName="NetSuite Record Type"
-                  // options=""
-                  // defaultValue={sourceName[0]}
+                  options={netsuiteRecordTypes}
+                  defaultValue={netsuiteRecordTypes[0]}
                   maxMenuHeight="130px"
                 />
               </TkCol>

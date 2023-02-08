@@ -5,11 +5,11 @@ import { destinationName, sourceName } from "@/utils/Constants";
 import { useRouter } from "next/router";
 import React from "react";
 
-const MapField = () => {
+const FieldMap = ({route}) => {
   const router = useRouter();
 
   const handleSubmit = () => {
-    router.push("/fieldMapping/mapTable");
+    router.push(route);
   };
 
   return (
@@ -51,4 +51,4 @@ const MapField = () => {
   );
 };
 
-export default MapField;
+export default FieldMap;

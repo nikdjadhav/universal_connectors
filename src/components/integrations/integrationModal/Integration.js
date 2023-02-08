@@ -9,7 +9,7 @@ import { genderOptions, sourceName } from "@/utils/Constants";
 import { destinationName } from "@/utils/Constants";
 import Select from "react-select";
 
-const Form = ({ onClickHandeler }) => {
+const Integration = ({ onClickHandeler }) => {
   return (
     <>
       <TkRow className="justify-content-center">
@@ -61,8 +61,7 @@ const Form = ({ onClickHandeler }) => {
                       className="btn btn-primary float-end"
                       onClick={onClickHandeler}
                     >
-                      {/* Next Step */}
-                      Authorize
+                      Next Step
                     </TkButton>
                   </TkCol>
                 </TkRow>
@@ -75,4 +74,4 @@ const Form = ({ onClickHandeler }) => {
   );
 };
 
-export default Form;
+export default Integration;

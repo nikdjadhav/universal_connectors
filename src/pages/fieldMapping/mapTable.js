@@ -15,7 +15,7 @@ const mapTable = () => {
         <BreadCrumb
         parentTitle="Field Mapping"
         parentLink="/fieldMapping"
-        pageTitle="Mapping table" />
+        pageTitle="Map content" />
 
         <h5>Feild Mapping</h5>
 

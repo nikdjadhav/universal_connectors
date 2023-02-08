@@ -16,7 +16,7 @@ const FeildMapping = () => {
 
         <h5> Feild Mapping </h5>
         <TkContainer>
-          <FieldMap />
+          <FieldMap route="/fieldMapping/mapTable" />
         </TkContainer>
       </div>
     </>

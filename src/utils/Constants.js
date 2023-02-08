@@ -149,7 +149,6 @@ const sourceName = [
   {
     value: "netSuite",
     label: "NetSuite",
-    
   },
   {
     value: "quickBooks",
@@ -158,7 +157,7 @@ const sourceName = [
   {
     value: "xero",
     label: "Xero",
-  }
+  },
 ];
 
 const destinationName = [
@@ -173,7 +172,7 @@ const destinationName = [
   {
     value: "microsoftOneDrive",
     label: "Microsoft OneDrive",
-  }
+  },
 ];
 
 const editValue = [
@@ -184,7 +183,7 @@ const editValue = [
   {
     value: "value",
     label: "Value",
-  }
+  },
 ];
 
 const netsuiteValues = [
@@ -193,8 +192,373 @@ const netsuiteValues = [
     label: "Internal Id",
   },
   {
-    value: "externalId",
-    label: "External Id",
+    value: "name",
+    label: "Name",
+  },
+  {
+    value: "email",
+    label: "Email",
+  },
+];
+
+const booleanValues = [
+  {
+    value: "yes",
+    label: "Y",
+  },
+  {
+    value: "no",
+    label: "N",
+  },
+];
+
+const netsuiteRecordTypes = [
+  {
+    value: "internalId",
+    label: "Internal Id",
+  },
+  {
+    value: "name",
+    label: "Name",
+  },
+  {
+    value: "email",
+    label: "Email",
+  },
+];
+
+const timeOptions = [
+  {
+    value: "12:00 AM",
+    label: "12:00 AM",
+  },
+  {
+    value: "12:30 AM",
+    label: "12:30 AM",
+  },
+  {
+    value: "1:00 AM",
+    label: "1:00 AM",
+  },
+  {
+    value: "1:30 AM",
+    label: "1:30 AM",
+  },
+  {
+    value: "2:00 AM",
+    label: "2:00 AM",
+  },
+  {
+    value: "2:30 AM",
+    label: "2:30 AM",
+  },
+  {
+    value: "3:00 AM",
+    label: "3:00 AM",
+  },
+  {
+    value: "3:30 AM",
+    label: "3:30 AM",
+  },
+  {
+    value: "4:00 AM",
+    label: "4:00 AM",
+  },
+  {
+    value: "4:30 AM",
+    label: "4:30 AM",
+  },
+  {
+    value: "5:00 AM",
+    label: "5:00 AM",
+  },
+  {
+    value: "5:30 AM",
+    label: "5:30 AM",
+  },
+  {
+    value: "6:00 AM",
+    label: "6:00 AM",
+  },
+  {
+    value: "6:30 AM",
+    label: "6:30 AM",
+  },
+  {
+    value: "7:00 AM",
+    label: "7:00 AM",
+  },
+  {
+    value: "7:30 AM",
+    label: "7:30 AM",
+  },
+  {
+    value: "8:00 AM",
+    label: "8:00 AM",
+  },
+  {
+    value: "8:30 AM",
+    label: "8:30 AM",
+  },
+  {
+    value: "9:00 AM",
+    label: "9:00 AM",
+  },
+  {
+    value: "9:30 AM",
+    label: "9:30 AM",
+  },
+  {
+    value: "10:00 AM",
+    label: "10:00 AM",
+  },
+  {
+    value: "10:30 AM",
+    label: "10:30 AM",
+  },
+  {
+    value: "11:00 AM",
+    label: "11:00 AM",
+  },
+  {
+    value: "11:30 AM",
+    label: "11:30 AM",
+  },
+  {
+    value: "12:00 PM",
+    label: "12:00 PM",
+  },
+  {
+    value: "12:30 PM",
+    label: "12:30 PM",
+  },
+  {
+    value: "1:00 PM",
+    label: "1:00 PM",
+  },
+  {
+    value: "1:30 PM",
+    label: "1:30 PM",
+  },
+  {
+    value: "2:00 PM",
+    label: "2:00 PM",
+  },
+  {
+    value: "2:30 PM",
+    label: "2:30 PM",
+  },
+  {
+    value: "3:00 PM",
+    label: "3:00 PM",
+  },
+  {
+    value: "3:30 PM",
+    label: "3:30 PM",
+  },
+  {
+    value: "4:00 PM",
+    label: "4:00 PM",
+  },
+  {
+    value: "4:30 PM",
+    label: "4:30 PM",
+  },
+  {
+    value: "5:00 PM",
+    label: "5:00 PM",
+  },
+  {
+    value: "5:30 PM",
+    label: "5:30 PM",
+  },
+  {
+    value: "6:00 PM",
+    label: "6:00 PM",
+  },
+  {
+    value: "6:30 PM",
+    label: "6:30 PM",
+  },
+  {
+    value: "7:00 PM",
+    label: "7:00 PM",
+  },
+  {
+    value: "7:30 PM",
+    label: "7:30 PM",
+  },
+  {
+    value: "8:00 PM",
+    label: "8:00 PM",
+  },
+  {
+    value: "8:30 PM",
+    label: "8:30 PM",
+  },
+  {
+    value: "9:00 PM",
+    label: "9:00 PM",
+  },
+  {
+    value: "9:30 PM",
+    label: "9:30 PM",
+  },
+  {
+    value: "10:00 PM",
+    label: "10:00 PM",
+  },
+  {
+    value: "10:30 PM",
+    label: "10:30 PM",
+  },
+  {
+    value: "11:00 PM",
+    label: "11:00 PM",
+  },
+  {
+    value: "11:30 PM",
+    label: "11:30 PM",
+  },
+];
+
+const repeatOptions = [
+  {
+    value: "every 15 minutes",
+    label: "Every 15 minutes",
+  },
+  {
+    value: "every 30 minutes",
+    label: "Every 30 minutes",
+  },
+  {
+    value: "every hour",
+    label: "Every hour",
+  },
+  {
+    label: "every 2 hours",
+    value: "every 2 hours",
+  },
+  {
+    label: "every 4 hours",
+    value: "every 4 hours",
+  },
+  {
+    label: "every 6 hours",
+    value: "every 6 hours",
+  },
+  {
+    label: "every 8 hours",
+    value: "every 8 hours",
+  },
+  {
+    label: "every 12 hours",
+    value: "every 12 hours",
+  },
+];
+
+const options = [
+  {
+    value: "1",
+    label: "First",
+  },
+  {
+    value: "2",
+    label: "Second",
+  },
+  {
+    value: "3",
+    label: "Third",
+  },
+  {
+    value: "4",
+    label: "Fourth",
+  },
+  {
+    value: "5",
+    label: "Last",
+  },
+];
+
+const days = [
+  {
+    value: "sunday",
+    label: "Sunday",
+  },
+  {
+    value: "monday",
+    label: "Monday",
+  },
+  {
+    value: "tuesday",
+    label: "Tuesday",
+  },
+  {
+    value: "wednesday",
+    label: "Wednesday",
+  },
+  {
+    value: "thursday",
+    label: "Thursday",
+  },
+  {
+    value: "friday",
+    label: "Friday",
+  },
+  {
+    value: "saturday",
+    label: "Saturday",
+  },
+];
+
+const months = [
+  {
+    value: "january",
+    label: "January",
+  },
+  {
+    value: "february",
+    label: "February",
+  },
+  {
+    value: "march",
+    label: "March",
+  },
+  {
+    value: "april",
+    label: "April",
+  },
+  {
+    value: "may",
+    label: "May",
+  },
+  {
+    value: "june",
+    label: "June",
+  },
+  {
+    value: "july",
+    label: "July",
+  },
+  {
+    value: "august",
+    label: "August",
+  },
+  {
+    value: "september",
+    label: "September",
+  },
+  {
+    value: "october",
+    label: "October",
+  },
+  {
+    value: "november",
+    label: "November",
+  },
+  {
+    value: "december",
+    label: "December",
   }
 ]
 
@@ -209,8 +573,6 @@ const backendDebounceTime = 500;
 const UIDebounceTime = 200;
 
 const environment = process.env.NODE_ENV;
-
-
 
 export {
   MinEmailLength,
@@ -249,5 +611,12 @@ export {
   sourceName,
   destinationName,
   editValue,
-  netsuiteValues
+  netsuiteValues,
+  booleanValues,
+  netsuiteRecordTypes,
+  timeOptions,
+  repeatOptions,
+  options,
+  days,
+  months
 };

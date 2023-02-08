@@ -25,7 +25,7 @@ const NewConnection = () => {
                     />
                   </TkCol>
 
-                  <TkCol lg={6}>
+                  <TkCol lg={12}>
                     <TkInput
                       // {...register("clientName")}
                       id="url"
@@ -37,7 +37,7 @@ const NewConnection = () => {
                     />
                   </TkCol>
 
-                  <TkCol lg={6}>
+                  <TkCol lg={12}>
                     <TkInput
                       // {...register("clientName")}
                       id="accountID"
@@ -49,7 +49,7 @@ const NewConnection = () => {
                     />
                   </TkCol>
 
-                  <TkCol lg={6}>
+                  <TkCol lg={12}>
                     <TkInput
                       // {...register("clientName")}
                       id="consumerKey"
@@ -61,7 +61,7 @@ const NewConnection = () => {
                     />
                   </TkCol>
 
-                  <TkCol lg={6}>
+                  <TkCol lg={12}>
                     <TkInput
                       // {...register("clientName")}
                       id="consumerSecretKey"
@@ -73,7 +73,7 @@ const NewConnection = () => {
                     />
                   </TkCol>
 
-                  <TkCol lg={6}>
+                  <TkCol lg={12}>
                     <TkInput
                       // {...register("clientName")}
                       id="accessToken"
@@ -85,7 +85,7 @@ const NewConnection = () => {
                     />
                   </TkCol>
 
-                  <TkCol lg={6}>
+                  <TkCol lg={12}>
                     <TkInput
                       // {...register("clientName")}
                       id="accessSecretToken"
