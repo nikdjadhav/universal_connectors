@@ -6,6 +6,8 @@ import TkContainer from "@/globalComponents/TkContainer";
 import BreadCrumb from "@/utils/BreadCrumb";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import Image from "next/image";
+// import TkButton from "@/globalComponents/TkButton";
+// import { useRouter } from "next/router";
 
 const Details = () => {
   const [modal, setModal] = useState(false);
@@ -17,6 +19,8 @@ const Details = () => {
       setModal(true);
     }
   }, [modal]);
+
+  // const router = useRouter();
 
   return (
     <>
@@ -73,6 +77,16 @@ const Details = () => {
             </TkCardBody>
           </TkCard>
         </TkContainer>
+
+        {/* <TkButton
+          className="btn-success"
+          onClick={() => {
+            console.log("clicked");
+            router.push("/integrations/NSGS?credentials=1");
+          }}
+        >
+          Info
+        </TkButton> */}
       </div>
     </>
   );

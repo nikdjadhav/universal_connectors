@@ -5,7 +5,7 @@ import { destinationName, integrations, sourceName } from "@/utils/Constants";
 import { useRouter } from "next/router";
 import React from "react";
 
-const FieldMap = ({route}) => {
+const FieldMap = ({ route }) => {
   const router = useRouter();
 
   const handleSubmit = () => {
@@ -14,7 +14,7 @@ const FieldMap = ({route}) => {
 
   return (
     <>
-      <TkRow className="mt-5">
+      <TkRow className="mt-5 justify-content-center">
         {/* <TkCol lg={4}>
           <TkSelect
             id="sourceName"
@@ -35,14 +35,18 @@ const FieldMap = ({route}) => {
           />
         </TkCol>
       </TkRow>
-      {/* <TkCol lg={4}> */}
-      <TkButton
-        className="btn btn-primary my-4"
-        type="submit"
-        onClick={handleSubmit}
-      >
-        Next
-      </TkButton>
+
+      <TkRow className="mt-3 justify-content-center">
+        <TkCol lg={1}>
+          <TkButton
+            className="btn btn-primary my-4"
+            type="submit"
+            onClick={handleSubmit}
+          >
+            Next
+          </TkButton>
+        </TkCol>
+      </TkRow>
     </>
   );
 };
