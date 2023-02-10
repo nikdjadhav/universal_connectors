@@ -14,7 +14,7 @@ const FeildMapping = () => {
       <div className="page-content">
         <BreadCrumb pageTitle="Field Mapping" />
 
-        <h5> Feild Mapping </h5>
+        <h5> Field Mapping </h5>
         <TkContainer>
           <FieldMap route="/fieldMapping/mapTable" />
         </TkContainer>
@@ -27,4 +27,5 @@ export default FeildMapping;
 
 FeildMapping.options = {
   layout: true,
+  auth: true,
 };

@@ -8,7 +8,7 @@ const mapTable = () => {
   return (
     <>
       <TkPageHead>
-        <title>{`Feild Mapping`}</title>
+        <title>{`Field Mapping`}</title>
       </TkPageHead>
 
       <div className="page-content">
@@ -17,7 +17,7 @@ const mapTable = () => {
         parentLink="/fieldMapping"
         pageTitle="Map content" />
 
-        <h5>Feild Mapping</h5>
+        <h5>Field Mapping</h5>
 
         <TkContainer>
           <MapTableComponent />
@@ -31,4 +31,5 @@ export default mapTable;
 
 mapTable.options = {
   layout: true,
+  auth: true,
 };

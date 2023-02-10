@@ -48,4 +48,5 @@ export default Integrations;
 
 Integrations.options = {
   layout: true,
+  auth: true,
 };

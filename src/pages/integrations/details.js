@@ -96,4 +96,5 @@ export default Details;
 
 Details.options = {
   layout: true,
+  auth: true,
 };

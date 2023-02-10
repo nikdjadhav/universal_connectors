@@ -68,8 +68,8 @@ const Dashboard = () => {
       },
     },
     {
-      Header: "Shedule",
-      accessor: "shedule",
+      Header: "Schedule",
+      accessor: "schedule",
       // Cell: () => {
       //   return <Dropdown data={booleanValues}/>
       // }
@@ -91,7 +91,7 @@ const Dashboard = () => {
       date: "04-May-2021 02:00 PM",
       modifiedDate: "16-Jan-2022 12:00 PM",
       action: "Action",
-      shedule: (
+      schedule: (
         <>
           <Link href="/schedule/event" className="">
             <span className="px-1">No</span>
