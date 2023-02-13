@@ -5,6 +5,7 @@ import BreadCrumb from "@/utils/BreadCrumb";
 import Topbar from "@/components/integrations/Topbar";
 
 const Integrations = () => {
+  // ***to open radio button modal
   const [modal, setModal] = useState(false);
 
   const toggleModal = useCallback(() => {

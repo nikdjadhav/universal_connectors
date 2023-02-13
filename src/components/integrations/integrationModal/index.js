@@ -10,11 +10,12 @@ import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
 import Integration from "./Integration";
 import NetsuiteComponent from "./NetsuiteComponent";
-import GoogleSheetComponent  from "./GoogleSheetComponent";
+import GoogleSheetComponent from "./GoogleSheetComponent";
 import Verified from "./Verified";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 
-const ModalButton = ({ children, modal, toggle }) => {
+const ModalButton = ({ children, modal, toggle, syncWay }) => {
+  console.log("3 model")
   // const tabs = [
   //   { id: 1, name: "Integration" },
   //   { id: 2, name: "Netsuite Configuration" },
@@ -43,7 +44,7 @@ const ModalButton = ({ children, modal, toggle }) => {
     }
   };
 
-  console.log(activeTab);
+  // console.log(activeTab);
 
   // const onClickHandeler = () => {
   //   for (let j = 0; j < tabs.length; j++) {
@@ -84,6 +85,7 @@ const ModalButton = ({ children, modal, toggle }) => {
         {children}
       </TkButton>
 
+      {/* *** forms modal *** */}
       <TkModal
         isOpen={modal}
         // toggle={toggle}
@@ -157,7 +159,7 @@ const ModalButton = ({ children, modal, toggle }) => {
           {/* <TkForm onSubmit={handleSubmit(onSubmit)}> */}
           <TabContent activeTab={activeTab}>
             <TabPane tabId={tabs.Integration}>
-              <Integration onClickHandeler={onClickHandeler} />
+              <Integration onClickHandeler={onClickHandeler} syncWay={syncWay} />
             </TabPane>
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>

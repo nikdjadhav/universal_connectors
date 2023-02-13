@@ -78,7 +78,7 @@ const MapTableComponent = () => {
             // showSelectedRowCount={true}
           />
           <div className="d-flex justify-content-center">
-            <TkButton className="btn btn-success" onClick={onClickSave}>Save</TkButton>
+            <TkButton className="btn btn-success" onClick={onClickSave}>Add</TkButton>
           </div>
         </TkCardBody>
       </TkCard>

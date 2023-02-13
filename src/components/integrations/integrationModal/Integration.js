@@ -4,12 +4,26 @@ import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { genderOptions, sourceName } from "@/utils/Constants";
 import { destinationName } from "@/utils/Constants";
 import Select from "react-select";
+import TkLabel from "@/globalComponents/TkLabel";
 
-const Integration = ({ onClickHandeler }) => {
+const Integration = ({ onClickHandeler, syncWay }) => {
+  const [firstLabel, setFirstTitle] = useState();
+  const [secondLabel, setSecondTitle] = useState();
+
+  useEffect(() => {
+    if(syncWay === "twoWaySync"){
+      setFirstTitle("System One");
+      setSecondTitle("System Two");
+    }else{
+      setFirstTitle("Source");
+      setSecondTitle("Destination");
+    }
+  });
+
   return (
     <>
       <TkRow className="justify-content-center">
@@ -29,10 +43,11 @@ const Integration = ({ onClickHandeler }) => {
                   </TkCol>
 
                   <TkCol lg={12}>
+                    <TkLabel id="sourceName">{firstLabel}</TkLabel>
                     <TkSelect
                       id="sourceName"
                       name="sourceName"
-                      labelName="Source Name"
+                      // labelName="Source Name"
                       options={sourceName}
                       defaultValue={sourceName[0]}
                       maxMenuHeight="130px"
@@ -40,8 +55,9 @@ const Integration = ({ onClickHandeler }) => {
                   </TkCol>
 
                   <TkCol lg={12}>
+                    <TkLabel id="destinationName">{secondLabel}</TkLabel>
                     <TkSelect
-                      labelName="Destination Name"
+                      // labelName="Destination Name"
                       id="destinationName"
                       name="destinationName"
                       options={destinationName}
