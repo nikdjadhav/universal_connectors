@@ -81,15 +81,18 @@ const Register = () => {
 
     user.mutate(newUser,{
       onSuccess: (data) => {
-        console.log('user created', data);
+        console.log('user creat ed', data);
         const user = {
           firstName: data[0].firstName,
           lastName: data[0].lastName,
           email: data[0].email,
           password: data[0].password,
+          verrified: data[0].verrified,
+          token: data[0].token,
         }
         console.log('user', user);
-        localStorage.setItem("loginCredentials", JSON.stringify(user));
+        // localStorage.setItem("loginCredentials", JSON.stringify(user));
+        sessionStorage.setItem("loginCredentials", JSON.stringify(user.token));
         router.push("/dashboard");
       },
       onError: (err) => {

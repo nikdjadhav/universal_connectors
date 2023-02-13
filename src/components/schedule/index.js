@@ -20,14 +20,14 @@ const EventSchedule = () => {
   const [yearlyEvent, setYearlyEvent] = useState(false);
 
   const toggleComponet = (value) => {
-    // console.log(value);
+    // console.log("yftdyd",value);
     setShowComponent(value);
     setRealtimeEvent(value === "realtimeEvent" ? true : false);
     setSingleEvent(value === "singleEvent" ? true : false);
-    setDailyEvent(value === "dailyEvent" ? true : false);
+    // setDailyEvent(value === "dailyEvent" ? true : false);
     setWeeklyEvent(value === "weeklyEvent" ? true : false);
-    setMonthlyEvent(value === "monthlyEvent" ? true : false);
-    setYearlyEvent(value === "yearlyEvent" ? true : false);
+    // setMonthlyEvent(value === "monthlyEvent" ? true : false);
+    // setYearlyEvent(value === "yearlyEvent" ? true : false);
   };
 
   return (
@@ -55,13 +55,14 @@ const EventSchedule = () => {
               name="event"
               label="Single Event"
               value="singleEvent"
+              checked={singleEvent}
               className="mb-3"
               onClick={() => toggleComponet("singleEvent")}
             >
               Single Event
             </TkRadioButton>
 
-            <TkRadioButton
+            {/* <TkRadioButton
               type="radio"
               name="event"
               label="Daily Event"
@@ -70,20 +71,21 @@ const EventSchedule = () => {
               onClick={() => toggleComponet("dailyEvent")}
             >
               Daily Event
-            </TkRadioButton>
+            </TkRadioButton> */}
 
             <TkRadioButton
               type="radio"
               name="event"
               label="Weekly Event"
               value="weeklyEvent"
+              checked={weeklyEvent}
               className="mb-3"
               onClick={() => toggleComponet("weeklyEvent")}
             >
               Weekly Event
             </TkRadioButton>
 
-            <TkRadioButton
+            {/* <TkRadioButton
               type="radio"
               name="event"
               label="Monthly Event"
@@ -92,9 +94,9 @@ const EventSchedule = () => {
               onClick={() => toggleComponet("monthlyEvent")}
             >
               Monthly Event
-            </TkRadioButton>
+            </TkRadioButton> */}
 
-            <TkRadioButton
+            {/* <TkRadioButton
               type="radio"
               name="event"
               label="Yearly Event"
@@ -103,16 +105,16 @@ const EventSchedule = () => {
               onClick={() => toggleComponet("yearlyEvent")}
             >
               Yearly Event
-            </TkRadioButton>
+            </TkRadioButton> */}
           </TkCol>
 
           {/* *** Event form *** */}
           <TkCol lg={9}>
             {showComponent === "realtimeEvent" ? (
               // <div>Realtime Event</div>
-              <RealtimeEvent />
+              <RealtimeEvent toggleComponet={toggleComponet}/>
             ) : showComponent === "singleEvent" ? (
-              <SingleEvent heading="Single Event" />
+              <SingleEvent toggleComponet={toggleComponet}/>
             ) : showComponent === "dailyEvent" ? (
               <DailyEvent />
             ) : showComponent === "weeklyEvent" ? (
@@ -141,13 +143,21 @@ const EventSchedule = () => {
             )} */}
 
             {/* *** common save button for all events *** */}
-            <div className="d-flex justify-content-center my-4">
+            {/* <div className="d-flex justify-content-center my-4">
               <TkButton type="submit" className="btn-success">
                 Save
               </TkButton>
-            </div>
+            </div> */}
           </TkCol>
         </TkRow>
+
+        {/* <TkRow className="justify-content-center">
+          <TkCol lg={1} sm={1} className="">
+            <TkButton type="submit" className="btn-success">
+              Save
+            </TkButton>
+          </TkCol>
+        </TkRow> */}
       </TkContainer>
     </>
   );

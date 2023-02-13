@@ -1,28 +1,88 @@
 import TkButton from "@/globalComponents/TkButton";
 import TkCheckBox from "@/globalComponents/TkCheckBox";
-import TkInput from "@/globalComponents/TkInput";
+import TkDate from "@/globalComponents/TkDate";
+import TkForm from "@/globalComponents/TkForm";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import React from "react";
-import InputBox from "../InputBox";
-import SingleEvent from "./SingleEvent";
+import TkSelect from "@/globalComponents/TkSelect";
+import { days, timeOptions } from "@/utils/Constants";
+import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import FormErrorText from "@/globalComponents/ErrorText";
+
+const schema = Yup.object({
+  startDate: Yup.date(). 
+  required("Start date is required"),
+
+  startTime: Yup.object(). 
+  required("Start time is required"),
+
+  days: Yup.object(). 
+  required("Day is required"),
+}).required();
 
 const WeeklyEvent = () => {
+  
+  const {
+    control,
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isDirty },
+  } = useForm({
+    resolver: yupResolver(schema)
+  });
+
+  useEffect(() => {
+    if (!isDirty){
+      setValue("startDate", new Date)
+    }
+    }, [isDirty])
+  
+  const [checkboxValue, setCheckboxValue] = useState(true);
+  const [disableEndDate, setDisableEndDate] = useState(true);
+
+
+  const handleOnChange = (e) => {
+    console.log(e.target);
+    if (e.target.checked) {
+      setCheckboxValue(true);
+      setDisableEndDate(true);
+      setValue("endDate", null);
+    } else {
+      setCheckboxValue(false);
+      setDisableEndDate(false);
+    }
+  };
+
+  const onSubmit = (data) => {
+    console.log("data", data);
+    if(checkboxValue === true){
+      data.endDate=null;
+    }
+    // e.preventDefault();
+    // console.log("Weekly Event", e.target.value);
+  };
+
   return (
     <>
       <h4 className="text-center mb-4 fw-bold">Weekly Event</h4>
 
-      <TkRow>
-        <TkCol lg={5} sm={5}>
-          <InputBox
+      <TkForm className="mb-4" onSubmit={handleSubmit(onSubmit)}>
+        <TkRow>
+          <TkCol lg={5} sm={5} className="mb-2 fw-bold">
+            Repeat Every 1 Week
+            {/* <InputBox
             className="mb-2"
             firstLabel="Repeat Every"
             secondLabel="Week(s)"
-          />
-        </TkCol>
-      </TkRow>
+          /> */}
+          </TkCol>
+        </TkRow>
 
-      <TkRow>
+        {/* <TkRow>
         <TkCol lg={4} className="my-1">
           <TkCheckBox
             className="form-check-input"
@@ -98,9 +158,123 @@ const WeeklyEvent = () => {
             Saturday
           </TkLabel>
         </TkCol>
-      </TkRow>
+      </TkRow> */}
+        <TkRow>
+          <TkCol lg={4} sm={4}>
+            <Controller
+              name="startDate"
+              control={control}
+              render={({ field }) => (
+                <TkDate
+                  {...field}
+                  labelName="Start Date"
+                  id="startDate"
+                  // name="startDate"
+                  placeholder="Start Date"
+                  className="mb-3"
+                  requiredStarOnLabel={true}
+                  options={{
+                    altInput: true,
+                    altFormat: "d M, Y",
+                    dateFormat: "d M, Y",
+                  }}
+                />
+              )}
+            />
+            {errors.startDate?.message ? (
+              <FormErrorText>{errors.startDate?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
 
-      <SingleEvent />
+          <TkCol lg={4} sm={4}>
+            <Controller
+              name="startTime"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Start Time"
+                  id="startTime"
+                  className="mb-3"
+                  requiredStarOnLabel={true}
+                  options={timeOptions}
+                  maxMenuHeight="130px"
+                />
+              )}
+            />
+            {errors.startTime?.message ? (
+              <FormErrorText>{errors.startTime?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
+
+          <TkCol lg={4} sm={4}>
+            <Controller
+              name="days"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Days"
+                  id="days"
+                  className="mb-3"
+                  options={days}
+                  maxMenuHeight="130px"
+                  requiredStarOnLabel={true}
+                />
+              )}
+            />
+            {errors.days?.message ? (
+              <FormErrorText>{errors.days?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
+        </TkRow>
+
+        <TkRow>
+          <TkCol lg={12} sm={12}>
+            <Controller
+              name="endDate"
+              control={control}
+              render={({ field }) => (
+                <TkDate
+                  {...field}
+                  labelName="End By"
+                  id="endDate"
+                  placeholder="End Date"
+                  className="mb-3"
+                  disabled={disableEndDate}
+                  // options={{
+                  //   altInput: true,
+                  //   altFormat: "d M, Y",
+                  //   dateFormat: "d M, Y",
+                  // }}
+                />
+              )}
+            />
+
+            <TkCheckBox
+              {...register("noEndDate")}
+              className="form-check-input mb-3"
+              type="checkbox"
+              id="noEndDate"
+              defaultChecked={checkboxValue}
+              onChange={handleOnChange}
+            />
+            <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
+              No End Date
+            </TkLabel>
+          </TkCol>
+        </TkRow>
+
+        <TkRow className="justify-content-center">
+          <TkCol lg={1} sm={1} className="">
+            <TkButton type="submit" className="btn-success">
+              Save
+            </TkButton>
+          </TkCol>
+        </TkRow>
+      </TkForm>
+
+      {/* <SingleEvent /> */}
 
       {/* <div className="d-flex justify-content-center my-4">
         <TkButton type="submit" className="btn-success">

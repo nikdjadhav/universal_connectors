@@ -10,7 +10,13 @@ const checkURl = (str) => {
   return str && str.length > 0 && str.startsWith("/");
 };
 
-const BreadCrumb = ({ parentTitle, pageTitle, parentLink, buttonText, onButtonClick }) => {
+const BreadCrumb = ({
+  parentTitle,
+  pageTitle,
+  parentLink,
+  buttonText,
+  onButtonClick,
+}) => {
   return (
     <>
       <TkRow>
@@ -24,8 +30,8 @@ const BreadCrumb = ({ parentTitle, pageTitle, parentLink, buttonText, onButtonCl
                   <li className="breadcrumb-item">
                     <Link href={parentLink}>
                       {/* <a> */}
-                        {parentTitle}
-                        {/* </a> */}
+                      {parentTitle}
+                      {/* </a> */}
                     </Link>
                   </li>
                 )}
@@ -34,7 +40,11 @@ const BreadCrumb = ({ parentTitle, pageTitle, parentLink, buttonText, onButtonCl
             </div>
             {buttonText ? (
               <div>
-                <TkButton color="primary" className="btn add-btn me-1" onClick={onButtonClick}>
+                <TkButton
+                  color="primary"
+                  className="btn add-btn me-1"
+                  onClick={onButtonClick}
+                >
                   <i className="ri-add-line align-bottom me-1"></i>
                   {buttonText}
                 </TkButton>

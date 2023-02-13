@@ -93,6 +93,7 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+    
 }
 
 a {
@@ -105,3 +106,5 @@ a {
     color-scheme: dark;
   }
 }
+
+:root{--bs-breadcrumb-divider: '|' !important}

@@ -20,7 +20,7 @@ const TkDate = forwardRef(function Date(
         name={name}
         id={id}
         placeholder={placeholder}
-        ref={ref || innerRef} // kept innerRef for backward compatibility
+        // ref={ref || innerRef} // kept innerRef for backward compatibility
         // we are not defining value ,onchange ,onopen or other functons as passing undef to them id raising the error , unlike other react components
         // value={value} // value is required
         // onChange={onChange} // onChange is required

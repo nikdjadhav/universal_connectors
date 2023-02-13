@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 // *** to create a new user in the database ***
 const createUser = async (req, res) => {
   // console.log('requestd body',req.body);
+
   try {
     const user = await prisma.users.create({
       data: {
@@ -16,19 +17,56 @@ const createUser = async (req, res) => {
         password: req.body.password,
       },
     });
-    response({
-      res,
-      success: true,
-      status: 200,
-      data: [user],
-      message: "User created successfully",
-    });
+
+    if (user) {
+      const token = jwt.sign(
+        { email: req.body.email, password: req.body.password },
+        process.env.ACCESS_TOKEN_SECRET
+      );
+      response({
+        res,
+        success: true,
+        status: 200,
+        data: [
+          {
+            success: true,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            verrified: true,
+            token: token,
+          },
+        ],
+        message: "User created successfully",
+        token: token,
+      });
+    } else {
+      response({
+        res,
+        success: false,
+        status: 400,
+        data: [
+          {
+            success: false,
+            verrified: false,
+            token: null,
+          },
+        ],
+        message: "User not created",
+      });
+    }
   } catch (error) {
     response({
       res,
       success: false,
       status: 400,
-      data: [],
+      data: [
+        {
+          success: false,
+          verrified: false,
+          token: null,
+        },
+      ],
       message: "User not created",
     });
   }
@@ -81,28 +119,36 @@ const userLogin = async (req, res) => {
       res,
       success: true,
       status: 200,
-      data: [{
-        success: true,
-        firstName: logedinUser.firstName,
-        lastName: logedinUser.lastName,
-        email: logedinUser.email,
-        verrified: true,
-        token: token,
-      }],
+      data: [
+        {
+          success: true,
+          firstName: logedinUser.firstName,
+          lastName: logedinUser.lastName,
+          email: logedinUser.email,
+          verrified: true,
+          token: token,
+        },
+      ],
       message: "User logged in successfully",
-    })
+    });
   } else {
     response({
       res,
       success: false,
       status: 400,
-      data: [],
+      data: [
+        {
+          success: false,
+          verrified: false,
+          token: null,
+        },
+      ],
       message: "User not found",
     });
   }
-}
+};
 
-// *** 
+// ***
 // const userLogin = async (req, res) => {
 //   const user = await prisma.users.findUnique({
 //     where: {
