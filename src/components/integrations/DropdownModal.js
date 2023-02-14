@@ -9,37 +9,70 @@ import TkSelect from "@/globalComponents/TkSelect";
 import { destinationName, sourceName } from "@/utils/Constants";
 import React, { useCallback, useEffect, useState } from "react";
 import ModalButton from "./integrationModal";
+import * as Yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import TkForm from "@/globalComponents/TkForm";
+import FormErrorText from "@/globalComponents/ErrorText";
+
+const schema = Yup.object({
+  source: Yup.object().nullable().required("Field is required"),
+  destination: Yup.object().nullable().required("Field is required"),
+}).required();
 
 const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
-  console.log('syncWay in next',syncWay);
+  const {
+    control,
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isDurty },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  console.log("syncWay in next", syncWay);
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
+  const [data, setData] = useState();
 
   useEffect(() => {
-    if(syncWay === "oneWaySync"){
+    if (syncWay === "oneWaySync") {
       setFirstTitle("Source");
       setSecondTitle("Destination");
-    }else{
+    } else {
       setFirstTitle("System One");
       setSecondTitle("System Two");
     }
-  })
+  });
   // ***to open form modal
-  const [integrationModal, settntegrationModal] = useState(false);
+  const [integrationModal, setIntegrationModal] = useState(false);
   const integrationToggle = useCallback(() => {
     if (integrationModal) {
-      settntegrationModal(false);
+      setIntegrationModal(false);
 
       // *** close last modal(dropdown modal)
       dropdownToggleModal();
     } else {
-      settntegrationModal(true);
+      setIntegrationModal(true);
     }
   }, [integrationModal]);
 
+  const onSubmit = (values) => {
+    console.log("data", values);
+    // console.log('data',values.source.label, values.destination.label);
+    integrationToggle();
+    setData(values);
+  };
+  // console.log('setData',data);
+
   return (
     <>
-      <TkButton type="submit" className={"btn-success"} onClick={dropdownToggleModal}>
+      <TkButton
+        type="submit"
+        className={"btn-success"}
+        onClick={dropdownToggleModal}
+      >
         {children}
       </TkButton>
 
@@ -59,42 +92,75 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
         </TkModalHeader>
 
         <TkModalBody className="modal-body">
-          <TkRow>
-            <TkCol lg={6} className="my-3">
-            <TkLabel id="source">{firstLabel}</TkLabel>
-              <TkSelect
-                id="source"
-                name="source"
-                // labelName="Source"
-                options={sourceName}
-                maxMenuHeight="130px"
-              />
-            </TkCol>
+          <TkForm onSubmit={handleSubmit(onSubmit)}>
+            <TkRow>
+              <TkCol lg={6} className="my-3">
+                <Controller
+                  name="source"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <TkLabel id="source" requiredStarOnLabel={true}>
+                        {firstLabel}
+                      </TkLabel>
+                      <TkSelect
+                        {...field}
+                        id="source"
+                        // labelName="Source"
+                        options={sourceName}
+                        maxMenuHeight="130px"
+                      />
+                    </>
+                  )}
+                />
+                {errors.source?.message ? (
+                  <FormErrorText>{errors.source?.message}</FormErrorText>
+                ) : null}
+              </TkCol>
 
-            <TkCol lg={6} className="my-3">
-            <TkLabel id="destination">{secondLabel}</TkLabel>
-              <TkSelect
-                id="destination"
-                name="destination"
-                // labelName="Destination"
-                options={destinationName}
-                maxMenuHeight="130px"
-              />
-            </TkCol>
+              <TkCol lg={6} className="my-3">
+                <Controller
+                  name="destination"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <TkLabel id="destination" requiredStarOnLabel={true}>
+                        {secondLabel}
+                      </TkLabel>
+                      <TkSelect
+                        {...field}
+                        id="destination"
+                        // labelName="Destination"
+                        options={destinationName}
+                        maxMenuHeight="130px"
+                      />
+                    </>
+                  )}
+                />
+                {errors.destination?.message ? (
+                  <FormErrorText>{errors.destination?.message}</FormErrorText>
+                ) : null}
+              </TkCol>
 
-            <TkCol lg={12} className="my-4 d-flex justify-content-center">
-              <ModalButton
-                modal={integrationModal}
-                setModal={settntegrationModal}
-                toggle={integrationToggle}
-                syncWay={syncWay}
-              >
-                Submit
-              </ModalButton>
-            </TkCol>
-          </TkRow>
+              <TkCol lg={12} className="my-4 d-flex justify-content-center">
+                {/* <ModalButton
+                  modal={ integrationModal}
+                  toggle={ integrationToggle}
+                  syncWay={syncWay}
+                > */}
+                <TkButton className="btn-success" type="submit">Submit</TkButton>
+                {/* </ModalButton> */}
+              </TkCol>
+            </TkRow>
+          </TkForm>
         </TkModalBody>
       </TkModal>
+      <ModalButton
+        modal={integrationModal}
+        toggle={integrationToggle}
+        syncWay={syncWay}
+        configData={data}
+      />
     </>
   );
 };

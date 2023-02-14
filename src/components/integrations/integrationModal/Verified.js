@@ -10,7 +10,7 @@ const Verified = ({ onClickHandeler }) => {
         <TkCol lg={12}>
           <TkButton
             type="button"
-            className="btn btn-primary float-end"
+            className="btn-success float-end"
             onClick={onClickHandeler}
           >
             Finish

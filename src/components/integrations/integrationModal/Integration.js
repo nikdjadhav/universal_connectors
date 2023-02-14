@@ -9,20 +9,53 @@ import { genderOptions, sourceName } from "@/utils/Constants";
 import { destinationName } from "@/utils/Constants";
 import Select from "react-select";
 import TkLabel from "@/globalComponents/TkLabel";
+import * as Yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import FormErrorText from "@/globalComponents/ErrorText";
 
-const Integration = ({ onClickHandeler, syncWay }) => {
+const schema = Yup.object({
+  integrationName: Yup.string().required("Integration name is required."),
+
+  // sourceName: Yup.object().required("Field is required."),
+
+  // destinationName: Yup.object().required("Field is required."),
+}).required();
+
+const Integration = ({ onClickHandeler, syncWay, configData }) => {
+  const {
+    control,
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isDirty },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  // console.log('integration',configData.source.label,configData.destination.label);
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
 
   useEffect(() => {
-    if(syncWay === "twoWaySync"){
+    if (syncWay === "twoWaySync") {
       setFirstTitle("System One");
       setSecondTitle("System Two");
-    }else{
+    } else {
       setFirstTitle("Source");
       setSecondTitle("Destination");
     }
+
+    if (configData) {
+      setValue("sourceName",{label: configData.source.label});
+      setValue("destinationName", {label: configData.destination.label});
+    }
   });
+
+  const onSubmit = (data) => {
+    console.log("integration nav submitted data", data);
+    onClickHandeler();
+  };
 
   return (
     <>
@@ -30,38 +63,60 @@ const Integration = ({ onClickHandeler, syncWay }) => {
         <TkCol>
           <TkCard>
             <TkCardBody>
-              <TkForm>
-                {/* onSubmit={handleSubmit(onSubmit)} */}
+              <TkForm onSubmit={handleSubmit(onSubmit)}>
                 <TkRow className="g-3">
                   <TkCol lg={12}>
                     <TkInput
+                      {...register("integrationName")}
                       id="integrationName"
                       type="text"
                       labelName="Integration Name"
                       placeholder="Enter integration name"
+                      requiredStarOnLabel={true}
                     />
+                    {errors.integrationName?.message ? (
+                      <FormErrorText>
+                        {errors.integrationName?.message}
+                      </FormErrorText>
+                    ) : null}
                   </TkCol>
 
                   <TkCol lg={12}>
-                    <TkLabel id="sourceName">{firstLabel}</TkLabel>
-                    <TkSelect
-                      id="sourceName"
+                    <Controller
                       name="sourceName"
-                      // labelName="Source Name"
-                      options={sourceName}
-                      defaultValue={sourceName[0]}
-                      maxMenuHeight="130px"
+                      control={control}
+                      render={({ field }) => (
+                        <>
+                          <TkLabel id="sourceName">{firstLabel}</TkLabel>
+                          <TkSelect
+                            {...field}
+                            id="sourceName"
+                            // labelName="Source Name"
+                            options={sourceName}
+                            defaultValue={sourceName[0]}
+                            maxMenuHeight="130px"
+                          />
+                        </>
+                      )}
                     />
                   </TkCol>
 
                   <TkCol lg={12}>
-                    <TkLabel id="destinationName">{secondLabel}</TkLabel>
-                    <TkSelect
-                      // labelName="Destination Name"
-                      id="destinationName"
+                    <Controller
                       name="destinationName"
-                      options={destinationName}
-                      maxMenuHeight="130px"
+                      control={control}
+                      render={({ field }) => (
+                        <>
+                          <TkLabel id="destinationName">{secondLabel}</TkLabel>
+                          <TkSelect
+                            {...field}
+                            // labelName="Destination Name"
+                            id="destinationName"
+                            options={destinationName}
+                            maxMenuHeight="130px"
+                          />
+                        </>
+                      )}
                     />
                   </TkCol>
 
@@ -73,9 +128,9 @@ const Integration = ({ onClickHandeler, syncWay }) => {
 
                   <TkCol lg={12}>
                     <TkButton
-                      type="button"
-                      className="btn btn-primary float-end"
-                      onClick={onClickHandeler}
+                      type="submit"
+                      className="btn-success float-end"
+                      // onClick={onClickHandeler}
                     >
                       Next Step
                     </TkButton>

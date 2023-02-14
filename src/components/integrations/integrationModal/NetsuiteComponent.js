@@ -51,7 +51,7 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
           </TkRadioButton>
         </TkCol>
 
-        {showComponent === "one" ? <NewConnection /> : <ExistConnection />}
+        {showComponent === "one" ? <NewConnection onClickHandeler={onClickHandeler} /> : <ExistConnection onClickHandeler={onClickHandeler} />}
 
         {/* <TkCol lg={12}>
           <TkButton type="submit" className="btn btn-success">
@@ -59,15 +59,15 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
           </TkButton>
         </TkCol> */}
 
-        <TkCol lg={12}>
+        {/* <TkCol lg={12}>
           <TkButton
             type="button"
-            className="btn btn-primary float-end"
+            className="btn-success float-end"
             onClick={onClickHandeler}
           >
             Next Step
-          </TkButton>
-        </TkCol>
+          </TkButton> */}
+        {/* </TkCol> */}
       </TkRow>
     </>
   );

@@ -1,7 +1,7 @@
 import TkButton from "@/globalComponents/TkButton";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkDate from "@/globalComponents/TkDate";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TkModal, {
   TkModalBody,
   TkModalHeader,
@@ -14,14 +14,18 @@ import GoogleSheetComponent from "./GoogleSheetComponent";
 import Verified from "./Verified";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 
-const ModalButton = ({ children, modal, toggle, syncWay }) => {
-  console.log("3 model")
-  // const tabs = [
-  //   { id: 1, name: "Integration" },
-  //   { id: 2, name: "Netsuite Configuration" },
-  //   { id: 3, name: "Google Sheet Configuration" },
-  //   { id: 4, name: "Verified" },
-  // ];
+const ModalButton = ({ modal, toggle, syncWay, configData }) => {
+  // console.log("3 model", configData)
+
+  const [NSCTitle, setNSCTitle] = useState("Netsuite");
+  const [GSCTitle, setGSCTitle] = useState("Google Sheet");
+
+  useEffect(() => {
+    if(configData){
+      setNSCTitle(configData.source.label);
+      setGSCTitle(configData.destination.label);
+    }
+  })
 
   const tabs = {
     Integration: 1,
@@ -30,39 +34,13 @@ const ModalButton = ({ children, modal, toggle, syncWay }) => {
     Verified: 4,
   };
 
-  // const [activeTab, setActiveTab] = useState(tabs.personalInfo);
-  // const toggleTab = (tab) => {
-  //   if (activeTab !== tab) {
-  //     setActiveTab(tab);
-  //   }
-  // };
-  const [btnText, setBtnText] = useState("Next Step");
+
   const [activeTab, setActiveTab] = useState(tabs.Integration);
   const toggleTab = (tab) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
     }
   };
-
-  // console.log(activeTab);
-
-  // const onClickHandeler = () => {
-  //   for (let j = 0; j < tabs.length; j++) {
-  //     if (activeTab === tabs[j].name) {
-  //       if (j < tabs.length - 1) {
-  //         setActiveTab(tabs[j + 1].name);
-
-  //         if (j === tabs.length - 2) {
-  //           setBtnText("Finish");
-  //           // toggle();
-  //         }
-  //         // } else {
-  //         //   // setActiveTab(tabs[0].name);
-  //         // }
-  //       }
-  //     }
-  //   }
-  // };
 
   const onClickHandeler = () => {
     if (activeTab === tabs.Integration) {
@@ -81,9 +59,9 @@ const ModalButton = ({ children, modal, toggle, syncWay }) => {
 
   return (
     <>
-      <TkButton className={"btn-success"} onClick={toggle}>
+      {/* <TkButton className={"btn-success"} onClick={toggle}>
         {children}
-      </TkButton>
+      </TkButton> */}
 
       {/* *** forms modal *** */}
       <TkModal
@@ -123,7 +101,7 @@ const ModalButton = ({ children, modal, toggle, syncWay }) => {
                   toggleTab(tabs.NetsuiteConfiguration);
                 }}
               >
-                Netsuite Configuration
+                {NSCTitle} Configuration
               </NavLink>
             </NavItem>
 
@@ -137,7 +115,7 @@ const ModalButton = ({ children, modal, toggle, syncWay }) => {
                   toggleTab(tabs.GoogleSheetConfiguration);
                 }}
               >
-                Google Sheet Configuration
+                {GSCTitle} Configuration
               </NavLink>
             </NavItem>
 
@@ -159,7 +137,7 @@ const ModalButton = ({ children, modal, toggle, syncWay }) => {
           {/* <TkForm onSubmit={handleSubmit(onSubmit)}> */}
           <TabContent activeTab={activeTab}>
             <TabPane tabId={tabs.Integration}>
-              <Integration onClickHandeler={onClickHandeler} syncWay={syncWay} />
+              <Integration onClickHandeler={onClickHandeler} syncWay={syncWay} configData={configData} />
             </TabPane>
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>
@@ -174,13 +152,6 @@ const ModalButton = ({ children, modal, toggle, syncWay }) => {
               <Verified onClickHandeler={onClickHandeler} />
             </TabPane>
           </TabContent>
-          {/* <TkButton
-            type="button"
-            className="btn btn-primary float-end"
-            onClick={onClickHandeler}
-          >
-            {btnText}
-          </TkButton> */}
         </TkModalBody>
       </TkModal>
     </>

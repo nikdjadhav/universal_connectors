@@ -6,6 +6,7 @@ import TkContainer from "@/globalComponents/TkContainer";
 import BreadCrumb from "@/utils/BreadCrumb";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import Image from "next/image";
+import TkButton from "@/globalComponents/TkButton";
 // import TkButton from "@/globalComponents/TkButton";
 // import { useRouter } from "next/router";
 
@@ -19,6 +20,10 @@ const Details = () => {
       setModal(true);
     }
   }, [modal]);
+
+  const onSubmit = () => {
+    toggle();
+  };
 
   // const router = useRouter();
 
@@ -65,18 +70,21 @@ const Details = () => {
                     NetSuite™ records right into Google Sheets™ and vice versa
                     in real-time.
                   </p>
-                  <ModalButton
+                  <TkButton className="btn-success" onClick={onSubmit}>
+                    Procced
+                  </TkButton>
+                  {/* <ModalButton
                     modal={modal}
                     setModal={setModal}
                     toggle={toggle}
                   >
-                    Procced
-                  </ModalButton>
+                  </ModalButton> */}
                 </TkCol>
               </TkRow>
             </TkCardBody>
           </TkCard>
         </TkContainer>
+        <ModalButton modal={modal} setModal={setModal} toggle={toggle} />
 
         {/* <TkButton
           className="btn-success"
