@@ -3,8 +3,14 @@ import TkContainer from "@/components/TkContainer";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import BreadCrumb from "@/utils/BreadCrumb";
 import React from "react";
+import FieldMapping from '@/components/mapField';
+import { useRouter } from "next/router";
 
 const Schedule = () => {
+  const router = useRouter();
+  const addSchedule = () => {
+    router.push("/schedule/field")
+  }
   return (
     <>
       <TkPageHead>
@@ -12,10 +18,15 @@ const Schedule = () => {
       </TkPageHead>
 
       <div className="page-content">
-        <BreadCrumb pageTitle="Schedule" />
+        <BreadCrumb 
+        pageTitle="Schedule"
+        buttonText={"Add Schedule"}
+        onButtonClick={addSchedule}
+         />
 
         <TkContainer>
-          <FieldMap route="/schedule/event" />
+        <FieldMapping />
+          {/* <FieldMap route="/schedule/event" /> */}
         </TkContainer>
       </div>
     </>

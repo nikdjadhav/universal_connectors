@@ -195,16 +195,16 @@ const editValue = [
 
 const netsuiteValues = [
   {
-    value: "internalId",
-    label: "Internal Id",
+    value: "a",
+    label: "a",
   },
   {
-    value: "name",
-    label: "Name",
+    value: "b",
+    label: "b",
   },
   {
-    value: "email",
-    label: "Email",
+    value: "c",
+    label: "c",
   },
 ];
 

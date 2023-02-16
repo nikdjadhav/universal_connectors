@@ -14,7 +14,7 @@ const schema = Yup.object({
   startDate: Yup.date().required("Start date is required"),
 }).required();
 
-const RealtimeEvent = ({toggleComponet}) => {
+const RealtimeEvent = ({ toggleComponet }) => {
   const {
     control,
     register,
@@ -25,9 +25,6 @@ const RealtimeEvent = ({toggleComponet}) => {
     resolver: yupResolver(schema),
   });
 
-  useEffect ( () => {
-    setValue("startDate", new Date());
-  },[]);
   // const cDate = date.split(" ");
   // const dateArray = [cDate[1], cDate[2], cDate[3]];
   // console.log("formatted date", dateArray);
@@ -35,25 +32,45 @@ const RealtimeEvent = ({toggleComponet}) => {
   // const [currentDate, setCurrentDate] = useState();
 
   const [checkboxValue, setCheckboxValue] = useState(true);
-  const [disableEndDate, setDisableEndDate] = useState(true);
+  // const [disableEndDate, setDisableEndDate] = useState(true);
+  console.log("checkboxValue", checkboxValue);
+  useEffect(() => {
+    setValue("startDate", new Date());
+  }, []);
 
-  const handleOnChange = (e) => {
-    if (e.target.checked) {
-      setCheckboxValue(true);
-      setDisableEndDate(true);
-      setValue("endDate", null);
-    } else {
+  const handleOnChange = (dates) => {
+    console.log("value", dates);
+    if (dates) {
       setCheckboxValue(false);
-      setDisableEndDate(false);
+      // console.log('data');
+    } else {
+      setCheckboxValue(true);
+      // console.log('null');
     }
+    // ***
+    // if (e.target.checked) {
+    //   setCheckboxValue(true);
+    //   setDisableEndDate(true);
+    //   setValue("endDate", null);
+    // } else {
+    //   setCheckboxValue(false);
+    //   setDisableEndDate(false);
+    // }
   };
 
   const onSubmit = (data) => {
     console.log(data);
-    if (checkboxValue === true) {
-      data.endDate = null;
+    if (data.endDate) {
+      // console.log('end date');
+      data.noEndDate = false;
+    } else {
+      // console.log('no end date');
+      data.noEndDate = true;
     }
     toggleComponet("singleEvent");
+    // if (checkboxValue === true) {
+    //   data.endDate = null;
+    // }
   };
 
   return (
@@ -75,6 +92,7 @@ const RealtimeEvent = ({toggleComponet}) => {
                   className="mb-3"
                   requiredStarOnLabel={true}
                   options={{
+                    // minDate: "today",
                     altInput: true,
                     altFormat: "d M, Y",
                     dateFormat: "d M, Y",
@@ -100,13 +118,17 @@ const RealtimeEvent = ({toggleComponet}) => {
                   labelName="End Date"
                   id="endDate"
                   placeholder="End Date"
-                  disabled={disableEndDate}
+                  // disabled={disableEndDate}
                   className="mb-3"
-                  // options={{
-                  //   altInput: true,
-                  //   altFormat: "d M, Y",
-                  //   dateFormat: "d M, Y",
-                  // }}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                    field.onChange(e);
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "d M, Y",
+                    dateFormat: "d M, Y",
+                  }}
                 />
               )}
             />
@@ -116,8 +138,9 @@ const RealtimeEvent = ({toggleComponet}) => {
               className="form-check-input mb-3"
               type="checkbox"
               id="noEndDate"
-              defaultChecked={checkboxValue}
-              onChange={handleOnChange}
+              checked={checkboxValue}
+              disabled={true}
+              // onChange={handleOnChange}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
               No End Date

@@ -26,34 +26,40 @@ const SingleEvent = ({toggleComponet}) => {
   });
 
   const [endDateCheckbox, setEndDateCheckbox] = useState(true);
-  const [disableEndDate, setDisableEndDate] = useState(true);
+  // const [disableEndDate, setDisableEndDate] = useState(true);
   const [repeatEveryDay, setRepeatEveryDay] = useState(true);
 
   useEffect(() => {
     setValue("startDate", new Date)
   },[])
 
-  const handleOnChange = (e) => {
-    if (e.target.checked) {
-      setEndDateCheckbox(true);
-      setDisableEndDate(true);
-      setValue("endDate", null);
-    } else {
+  const handleOnChange = (dates) => {
+    console.log("value", dates);
+    if (dates) {
       setEndDateCheckbox(false);
-      setDisableEndDate(false);
+      // console.log('data');
+    } else {
+      setEndDateCheckbox(true);
+      // console.log('null');
     }
+    // if (e.target.checked) {
+    //   setEndDateCheckbox(true);
+    //   setDisableEndDate(true);
+    //   setValue("endDate", null);
+    // } else {
+    //   setEndDateCheckbox(false);
+    //   setDisableEndDate(false);
+    // }
   };
-
-  // const repeatValue = (e) => {
-  //   log
-  // }
-
-  
 
   const onSubmit = (data) => {
     console.log("data", data);
-    if(endDateCheckbox === true){
-      data.endDate=null;
+    if(data.endDate){
+      // console.log('end date');
+      data.noEndDate = false;
+    }else{
+      // console.log('no end date');
+      data.noEndDate = true;
     }
     toggleComponet("weeklyEvent")
   };
@@ -146,23 +152,25 @@ const SingleEvent = ({toggleComponet}) => {
                   id="endDate"
                   placeholder="End Date"
                   className="mb-3"
-                  disabled={disableEndDate}
-                  // options={{
-                  //   altInput: true,
-                  //   altFormat: "d M, Y",
-                  //   dateFormat: "d M, Y",
-                  // }}
+                  // disabled={disableEndDate}
+                  onChange={(e)=>{handleOnChange(e); field.onChange(e)}}
+                  options={{
+                    altInput: true,
+                    altFormat: "d M, Y",
+                    dateFormat: "d M, Y",
+                  }}
                 />
               )}
             />
 
             <TkCheckBox
-            {...register("noEndDate ")}
+            {...register("noEndDate")}
               className="form-check-input"
               type="checkbox"
               id="noEndDate"
-              defaultChecked={endDateCheckbox}
-              onChange={handleOnChange}
+              checked={endDateCheckbox}
+              disabled={true}
+              // onChange={handleOnChange}
             />
             <TkLabel className="form-check-label mx-2" id="noEndDate">
               No End Date

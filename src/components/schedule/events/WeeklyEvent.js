@@ -42,28 +42,29 @@ const WeeklyEvent = () => {
     }, [isDirty])
   
   const [checkboxValue, setCheckboxValue] = useState(true);
-  const [disableEndDate, setDisableEndDate] = useState(true);
+  // const [disableEndDate, setDisableEndDate] = useState(true);
 
 
-  const handleOnChange = (e) => {
-    console.log(e.target);
-    if (e.target.checked) {
-      setCheckboxValue(true);
-      setDisableEndDate(true);
-      setValue("endDate", null);
-    } else {
+  const handleOnChange = (dates) => {
+    console.log("value", dates);
+    if (dates) {
       setCheckboxValue(false);
-      setDisableEndDate(false);
+      // console.log('data');
+    } else {
+      setCheckboxValue(true);
+      // console.log('null');
     }
   };
 
   const onSubmit = (data) => {
-    console.log("data", data);
-    if(checkboxValue === true){
-      data.endDate=null;
+    console.log(data);
+    if (data.endDate) {
+      // console.log('end date');
+      data.noEndDate = false;
+    } else {
+      // console.log('no end date');
+      data.noEndDate = true;
     }
-    // e.preventDefault();
-    // console.log("Weekly Event", e.target.value);
   };
 
   return (
@@ -241,12 +242,16 @@ const WeeklyEvent = () => {
                   id="endDate"
                   placeholder="End Date"
                   className="mb-3"
-                  disabled={disableEndDate}
-                  // options={{
-                  //   altInput: true,
-                  //   altFormat: "d M, Y",
-                  //   dateFormat: "d M, Y",
-                  // }}
+                  // disabled={disableEndDate}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                    field.onChange(e);
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "d M, Y",
+                    dateFormat: "d M, Y",
+                  }}
                 />
               )}
             />
@@ -256,8 +261,9 @@ const WeeklyEvent = () => {
               className="form-check-input mb-3"
               type="checkbox"
               id="noEndDate"
-              defaultChecked={checkboxValue}
-              onChange={handleOnChange}
+              checked={checkboxValue}
+              disabled={true}
+              // onChange={handleOnChange}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
               No End Date

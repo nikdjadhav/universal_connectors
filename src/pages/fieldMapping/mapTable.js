@@ -1,6 +1,8 @@
 import MapTableComponent from "@/components/mapField/MapTableComponent";
 import TkContainer from "@/components/TkContainer";
+import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
+import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import BreadCrumb from "@/utils/BreadCrumb";
 import React from "react";
 
@@ -17,11 +19,20 @@ const mapTable = () => {
         parentLink="/fieldMapping"
         pageTitle="Map content" />
 
-        <h5>Field Mapping</h5>
+        {/* <TkRow className="justify-content-cente">
+          <TkCol lg={5}>
+          <h5>Field Mapping</h5>
+          </TkCol>
+          <TkCol lg={1} className="offset-6">
+            <TkButton className="btn-primary">
+              Add
+            </TkButton>
+          </TkCol>
+        </TkRow> */}
 
-        <TkContainer>
+        {/* <TkContainer> */}
           <MapTableComponent />
-        </TkContainer>
+        {/* </TkContainer> */}
       </div>
     </>
   );

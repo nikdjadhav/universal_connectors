@@ -5,7 +5,19 @@ import { Label } from "reactstrap";
 import { forwardRef } from "react";
 
 const TkDate = forwardRef(function Date(
-  { name, id, labelName, labelClassName, requiredStarOnLabel, placeholder, innerRef, className, children, ...other },
+  {
+    name,
+    id,
+    onChange,
+    labelName,
+    labelClassName,
+    requiredStarOnLabel,
+    placeholder,
+    innerRef,
+    className,
+    children,
+    ...other
+  },
   ref
 ) {
   return (
@@ -23,8 +35,16 @@ const TkDate = forwardRef(function Date(
         // ref={ref || innerRef} // kept innerRef for backward compatibility
         // we are not defining value ,onchange ,onopen or other functons as passing undef to them id raising the error , unlike other react components
         // value={value} // value is required
-        // onChange={onChange} // onChange is required
-        className={classNames(className, "form-control", "tk-date-select-field")}
+        onChange={(dates) => {
+          onChange(
+            dates.length === 1 ? dates[0] : dates.length === 0 ? null : dates
+          );
+        }} // onChange is required
+        className={classNames(
+          className,
+          "form-control",
+          "tk-date-select-field"
+        )}
         {...other}
       />
     </>
@@ -37,7 +57,11 @@ TkDate.propTypes = {
   // onChange: PropTypes.func.isRequired,
   // value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
   placeholder: PropTypes.string,
-  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.string]),
+  innerRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+    PropTypes.string,
+  ]),
   name: PropTypes.string,
   id: PropTypes.string,
 };
