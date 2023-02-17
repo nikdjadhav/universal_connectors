@@ -47,8 +47,8 @@ const Dashboard = () => {
       accessor: "destinationName",
     },
     {
-      Header: "Date",
-      accessor: "date",
+      Header: "Creation Date",
+      accessor: "creationDate",
     },
     {
       Header: "Modified Date",
@@ -88,8 +88,8 @@ const Dashboard = () => {
       integrationName: "NSGS",
       sourceName: "NetSuite",
       destinationName: "Google Sheets",
-      date: "04-May-2021 02:00 PM",
-      modifiedDate: "16-Jan-2022 12:00 PM",
+      creationDate: "04 May-2021 02:00 PM",
+      modifiedDate: "16 Jan-2022 12:00 PM",
       action: "Action",
       schedule: (
         <>
@@ -166,3 +166,5 @@ Dashboard.options = {
   layout: true,
   auth: true,
 };
+
+

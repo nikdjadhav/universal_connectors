@@ -9,8 +9,8 @@ const FieldMappingTable = () => {
       accessor: "integrationName",
     },
     {
-      Header: "Created Date",
-      accessor: "createdDate",
+      Header: "Creation Date",
+      accessor: "creationDate",
     },
     {
       Header: "Modified Date",
@@ -41,8 +41,8 @@ const FieldMappingTable = () => {
 
   const data = [
     {
-      integrationName: "First",
-      createdDate: "16 Feb, 2022",
+      integrationName: "NSGS",
+      creationDate: "16 Feb, 2022",
       modifiedDate: "13 Feb, 2023",
       systemOne: "NetSuite",
       systemTwo: "Google Sheet",

@@ -17,9 +17,10 @@ import TkForm from "@/globalComponents/TkForm";
 import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { nanoid } from "nanoid";
 
 const schema = Yup.object({}).required();
-
+// const randomId = nanoid();
 const MapTableComponent = () => {
   const {
     register,
@@ -30,30 +31,27 @@ const MapTableComponent = () => {
     resolver: yupResolver(schema),
   });
 
-  const [disabled, setDisabled] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-  // console.log('selectedRow',selectedRow)
-  const router = useRouter();
-  // const onClickSave = () => {
-  //   router.push("/dashboard");
-  // };
+  // const [selectedRow, setSelectedRow] = useState(null);
 
   const tableHead = [
     {
       Header: "Google Sheets",
       accessor: "googleSheets",
       Cell: (props) => {
-        // console.log("props.value", props.row.id);
+        console.log("props.value ==>",props.row.original.id);
         // const id = props.row.original.id;
+        // const randomId = nanoid();
         return (
           <TkInput
+            // {...register(props.row.original.id)}
+            // id={props.row.original.id}
             {...register(props.value)}
             id={props.value}
             className="pe-5"
-            // disabled={props.row.id == selectedRow ? false : true}
+            type="text"
+            // disabled={Number(props.row.id) === selectedRow ? false : true}
             defaultValue={props.value}
             // onChange={(e) => handleChange(e, props.row.id)}
-            // style={props.value === "Name" ? {disabled : true} : {disabled : false}}
           />
         );
       },
@@ -70,7 +68,7 @@ const MapTableComponent = () => {
             render={({ field }) => (
               // <Dropdown {...field} id="netsuiteValues" data={netsuiteValues} />
               <TkSelect
-              {...field}
+                {...field}
                 id={props.row.id}
                 options={netsuiteValues}
                 maxMenuHeight="80px"
@@ -95,7 +93,6 @@ const MapTableComponent = () => {
               className="ri-edit-2-fill mx-2"
               onClick={() => onClickEdit(prop.row.original)}
             ></i>
-            {/* <i className="ri-eye-fill"></i> */}
           </>
         );
       },
@@ -113,41 +110,43 @@ const MapTableComponent = () => {
       id: 1,
       googleSheets: "Internal ID",
       netSuite: "",
-      action: ""
+      action: "",
       // netSuiteFieldDefaultValue: "",
     },
     {
       id: 2,
       googleSheets: "Name",
       netSuite: "",
-      action: ""
+      action: "",
       // netSuiteFieldDefaultValue: "",
     },
     {
       id: 3,
       googleSheets: "Email",
       netSuite: "",
-      action: ""
+      action: "",
       // netSuiteFieldDefaultValue: "",
     },
   ];
 
-  // *** to add new row add set data ***
+  // *** to add new row add set data
   const [row, setRow] = useState(data);
   const addField = () => {
+    const id = Math.random();
     setRow((prevRows) => [
       ...prevRows,
       {
+        id: id,
         googleSheets: " ",
         netSuite: "",
-        action: ""
+        action: "",
       },
     ]);
   };
 
-  // *** Input field data ***
+  // *** Input field data
   const handleChange = (event, id) => {
-    console.log(event.target.value, "===", id);
+    // console.log(event.target.value, "===", id);
     const addedData = row.map((col) => {
       if (col.id === id) {
         col.googleSheets = event.target.value;
@@ -158,40 +157,21 @@ const MapTableComponent = () => {
 
   // *** To delete row
   const onClickDelete = (value) => {
-    console.log("deleted value", value);
+    // console.log("deleted value", value);
     const data = row.filter((col) => col !== value);
-    // console.log(data);
     setRow(data);
   };
 
+  // *** To edit row
   const onClickEdit = (rows) => {
-    console.log("rows", rows);
-    setSelectedRow(rows.id - 1);
-    // row.map((col) => {
-    //   if (col === value) {
-    //     console.log(col);
-    //     // setDisabled(false);
-    //     // setSelectedRow(value.id)
-    //   }
-    // });
-    // setSelectedRow((prevValue) => {
-    //   // const value = {...prevValue}
-    //   console.log({...prevValue, id: rows.id})
-    //   return {...prevValue, id: rows.id}
-    //   // rows.forEach((row) => {
-    //     // if (!value[id]){
-    //     //   value[id] = ""
-    //     // }
-    //   // })
-    //   // return value;
-    // })
+    // console.log("rows", rows.id);
+    // setSelectedRow(rows.id - 1);
   };
 
   // *** to save data
   const onClickSave = (data) => {
-    // e.preventDefault();
+    // setSelectedRow(null);
     console.log("save data", data);
-    setDisabled(true);
   };
 
   return (
