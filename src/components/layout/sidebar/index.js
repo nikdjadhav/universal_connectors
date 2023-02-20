@@ -15,7 +15,6 @@ import { AuthContext } from "../../../utils/Contexts";
 
 const Sidebar = () => {
   const sessionData = useContext(AuthContext);
-
   useEffect(() => {
     var verticalOverlay = document.getElementsByClassName("vertical-overlay");
     if (verticalOverlay) {
@@ -96,7 +95,8 @@ const Sidebar = () => {
             <Container fluid>
               <div id="two-column-menu"></div>
               <ul className="navbar-nav" id="navbar-nav">
-                <VerticalLayout user={sessionData.user} />
+                {/* <VerticalLayout user={sessionData} /> */}
+                <VerticalLayout />
               </ul>
             </Container>
           </SimpleBar>

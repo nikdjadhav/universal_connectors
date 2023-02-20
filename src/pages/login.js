@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Link from "next/link";
 import { getSession, signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,8 @@ import TkForm from "@/globalComponents/TkForm";
 // import "react-toastify/dist/ReactToastify.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
+import { AuthContext } from "@/utils/Contexts";
+import useGlobalStore from "@/utils/globalStore";
 // "use client";
 
 const schema = Yup.object({
@@ -187,6 +189,27 @@ const Login = () => {
   // if (status === "authenticated") {
   //   router.push("/dashboard");
   // }
+
+  // ***
+//   // const sessionData = useContext(AuthContext);
+//   const [isUserAuthenticated, sessionData] = useGlobalStore((state) => [
+//     state.isUserAuthenticated,
+//     state.userSessionData,
+//   ]);
+  
+// console.log('sessionData',sessionData)
+// console.log('isUserAuthenticated',isUserAuthenticated)
+
+//   useEffect(() => {
+//     if(sessionData !== null){
+//       router.push("/dashboard");
+//       // console.log("sessionData==>",sessionData)
+//     }else{
+//       router.push("/login");
+//       // console.log("sessionData==>",sessionData)
+//     }
+//   },[])
+// 
 
   return (
     <>

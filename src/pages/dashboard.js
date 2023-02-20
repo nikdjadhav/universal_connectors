@@ -24,14 +24,14 @@ import Link from "next/link";
 const Dashboard = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    // const loggedInUser = localStorage.getItem("loginCredentials");
-    const loggedInUser = sessionStorage.getItem("loginCredentials");
-    console.log("loggedIn User login Credentials", loggedInUser);
-    if (loggedInUser === null) {
-      router.push("/login");
-    }
-  }, []);
+  // useEffect(() => {
+  //   // const loggedInUser = localStorage.getItem("loginCredentials");
+  //   const loggedInUser = sessionStorage.getItem("loginCredentials");
+  //   console.log("loggedIn User login Credentials", loggedInUser);
+  //   if (loggedInUser === null) {
+  //     router.push("/login");
+  //   }
+  // }, []);
 
   const columns = [
     {
@@ -103,7 +103,7 @@ const Dashboard = () => {
         <>
           <Link href="/fieldMapping/mapTable" className="">
             <span className="px-2">Yes</span>
-            <i class="ri-edit-2-fill px-2"></i>
+            <i className="ri-edit-2-fill px-2"></i>
           </Link>
         </>
       ),

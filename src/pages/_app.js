@@ -1,11 +1,11 @@
-import { useEffect, createContext } from "react";
+import { useEffect, createContext, useState } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import "@/styles/globals.css";
 import "@/styles/globals-copy.css";
 import "@/styles/scss/themes.scss";
 import "@/styles/custom.scss";
 import { Slide, ToastContainer } from "react-toastify";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -74,10 +74,56 @@ export default function MyApp({ Component, pageProps }) {
 }
 
 function AuthenticateUser({ children }) {
-  return children;
+  const [setUserAuthenticated, setUserSessionData] = useGlobalStore((state) => [
+    state.setUserAuthenticated,
+    state.setUserSessionData,
+  ]);
+  const router = useRouter();
+  const [data, setData] = useState(children);
+
+  useEffect(() => {
+    // if (typeof window === "undefined") return null;
+
+    const loggedInUser = sessionStorage.getItem("loginCredentials");
+    console.log("loggedInUser", loggedInUser);
+    if (loggedInUser === null) {
+      router.push("/login");
+      setData(null);
+    } else {
+      setUserAuthenticated(true);
+      setUserSessionData(loggedInUser);
+    }
+    // setData(children)
+    // return <AuthContext.Provider>{children}</AuthContext.Provider>;
+  }, [router, setUserAuthenticated, setUserSessionData]);
+
+  return data;
 }
 
 function Auth({ children }) {
+  const [isUserAuthenticated, sessionData] = useGlobalStore((state) => [
+    state.isUserAuthenticated,
+    state.userSessionData,
+  ]);
+  const router = useRouter();
+
+  console.log("sessionData", sessionData);
+  console.log("isUserAuthenticated", isUserAuthenticated);
+
+  if (isUserAuthenticated) {
+    console.log("authenticated");
+    // if(router.asPath.includes("/login")){
+    //   router.push("/dashboard");
+    //   console.log('incorrect');
+    //   return <div>Loading...</div>;
+    // }
+    return (
+        <AuthContext.Provider value={sessionData}>
+          {children}
+        </AuthContext.Provider>
+    );
+  }
+  console.log("authentication failed");
   return <AuthenticateUser>{children}</AuthenticateUser>;
 }
 
