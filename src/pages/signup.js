@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { useForm } from "react-hook-form";
@@ -53,6 +53,15 @@ const schema = Yup.object({
 
 const Register = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("loginCredentials");
+    console.log("token",token);
+
+    if(token){
+      router.push("/dashboard");
+    }
+  }, [router]);
   
   // const googleSignupHandler = async () => {
   //   await signIn("google", { callbackUrl: "/start" }); // it redirects use to dashboard after signIn

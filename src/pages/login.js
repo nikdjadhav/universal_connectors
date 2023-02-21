@@ -46,6 +46,29 @@ const schema = Yup.object({
 }).required();
 
 const Login = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("loginCredentials");
+    console.log("token",token);
+
+    if(token){
+      router.push("/dashboard");
+    }
+  }, [router]);
+
+  // // if()
+
+  // const [isUserAuthenticated, sessionData] = useGlobalStore((state) => [
+  //   state.isUserAuthenticated,
+  //   state.userSessionData,
+  // ]);
+
+  // if(sessionData){
+  //   console.log("authenticated.....");
+  // }else{
+  //   console.log("not-authenticated....");
+  // }
   
   // *** get data from backend ***
   const queryClient = useQueryClient();
@@ -58,7 +81,6 @@ const Login = () => {
 
 
 
-  const router = useRouter();
   const {
     register,
     handleSubmit,
