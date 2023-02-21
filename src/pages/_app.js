@@ -7,7 +7,11 @@ import "@/styles/custom.scss";
 import { Slide, ToastContainer } from "react-toastify";
 import { Router, useRouter } from "next/router";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useMutation,
+} from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,6 +25,8 @@ import Layout from "@/components/layout";
 import { AuthContext } from "@/utils/Contexts";
 import TkNetworkStatus from "@/globalComponents/TkNetworkStatus";
 import useGlobalStore from "@/utils/globalStore";
+import Login from "./login";
+import tkFetch from "@/utils/fetch";
 
 export default function MyApp({ Component, pageProps }) {
   console.log("App rerendered");
@@ -43,32 +49,85 @@ export default function MyApp({ Component, pageProps }) {
     changeHTMLAttribute("data-sidebar-image", "none");
   }, []);
 
+  const router = useRouter();
+  const [verified, setVerified] = useState(null);
+  // const verifyToken = useMutation({
+  //   mutationFn: tkFetch.post("http://localhost:4000/v1/verifyToken"),
+  // });
+
+  useEffect(() => {
+    if (
+      !window.location.pathname.includes("login") ||
+      !window.location.pathname.includes("signup") ||
+      !window.location.pathname.includes("forgot-password")
+    ) {
+      const token = sessionStorage.getItem("loginCredentials");
+      console.log("token===>", token);
+      if (token) {
+        const userToken = {
+          token: token,
+        };
+        async function tokenVerifiedApi() {
+          const response = await fetch("http://localhost:4000/v1/verifyToken", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userToken),
+          }).then(async (response) => {
+             const userToken = await response.json();
+             console.log("====",userToken);
+             if(!userToken.data[0]?.verified){
+                sessionStorage.clear();
+                router.push("/login");
+             }
+          });
+        }
+
+        tokenVerifiedApi();
+      }
+    }
+  }, [router]);
+
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        autoClose={10000}
-        closeButton={true}
-        hideProgressBar={true}
-        newestOnTop={true}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss={true}
-        draggable={true}
-        pauseOnHover={true}
-        theme="light"
-        transition={Slide}
-      />
-      {/* <TkNetworkStatus /> */}
-      <QueryClientProvider client={queryClient}>
-        {/* <SessionProvider session={pageProps.session}> */}
+      {/* {verified === null ? (
+        //*** display loader
+        <QueryClientProvider client={queryClient}>
         <AuthWrap wrap={Component?.options?.auth}>
           <LayoutWrap wrap={Component?.options?.layout}>
             <Component {...pageProps} />
           </LayoutWrap>
         </AuthWrap>
-        {/* </SessionProvider> */}
-      </QueryClientProvider>
+        </QueryClientProvider>
+      ) : ( */}
+      <>
+        <ToastContainer
+          position="top-center"
+          autoClose={10000}
+          closeButton={true}
+          hideProgressBar={true}
+          newestOnTop={true}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss={true}
+          draggable={true}
+          pauseOnHover={true}
+          theme="light"
+          transition={Slide}
+        />
+        {/* <TkNetworkStatus /> */}
+        <QueryClientProvider client={queryClient}>
+          {/* <SessionProvider session={pageProps.session}> */}
+          <AuthWrap wrap={Component?.options?.auth}>
+            <LayoutWrap wrap={Component?.options?.layout}>
+              <Component {...pageProps} />
+            </LayoutWrap>
+          </AuthWrap>
+          {/* </SessionProvider> */}
+        </QueryClientProvider>
+      </>
+      {/* )} */}
     </>
   );
 }
@@ -112,15 +171,16 @@ function Auth({ children }) {
 
   if (isUserAuthenticated) {
     console.log("authenticated");
+
     // if(router.asPath.includes("/login")){
     //   router.push("/dashboard");
     //   console.log('incorrect');
     //   return <div>Loading...</div>;
     // }
     return (
-        <AuthContext.Provider value={sessionData}>
-          {children}
-        </AuthContext.Provider>
+      <AuthContext.Provider value={sessionData}>
+        {children}
+      </AuthContext.Provider>
     );
   }
   console.log("authentication failed");

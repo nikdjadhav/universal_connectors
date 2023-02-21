@@ -49,6 +49,7 @@ app.use("/v1", v1Router);
 // *** routes ***
 v1Router.post("/", userController.createUser);
 v1Router.post("/login", userController.userLogin);
+v1Router.post("/verifyToken", userController.verifyToken);
 
 // app.get("/v1/login", (req, res) => {
 //   const { authenticated } = req.session;

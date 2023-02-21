@@ -178,24 +178,63 @@ const userLogin = async (req, res) => {
 //   }
 // };
 
+const verifyToken = async (req, res) => {
+  const values = req.body;
+  console.log("values", values);
+  try {
+    const decoded = jwt.verify(values.token, process.env.ACCESS_TOKEN_SECRET);
+    console.log("token", decoded);
+
+    const logedinUser = await prisma.users.findUnique({
+      where: {
+        loginUser: {
+          email: decoded.email,
+          password: decoded.password,
+        },
+      },
+    });
+
+    if (logedinUser) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [{
+          verified: true
+        }],
+        message: "User logged in successfully",
+      });
+      console.log("logedinUser", logedinUser);
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        data: [{
+          verified: false
+        }],
+        message: "User not found",
+      });
+      console.log("**error");
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      data: [{
+        verified: false
+      }],
+      message: "error",
+      verified: false,
+    });
+    console.log("**errors");
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
   userLogin,
+  verifyToken,
 };
-
-// const createUser = async function main({ req, res }) {
-//     const users = await prisma.users.findMany();
-//     console.log(users);
-//     // send response to the client
-//     // Response.json(users);
-//     res.json(users);
-//     // response({
-//     //     res,
-//     //     success: true,
-//     //     status: 200,
-//     //     message: 'Users fetched successfully',
-//     //     data: users
-
-//     // })
-// }

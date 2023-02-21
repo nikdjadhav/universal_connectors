@@ -81,6 +81,18 @@ const Dashboard = () => {
       //   return <Dropdown data={booleanValues}/>
       // }
     },
+    {
+      Header: "Status",
+      accessor: "status"
+    },
+    {
+      Header: "Logs",
+      accessor: "logs"
+    },
+    {
+      Header: "Error",
+      accessor: "error"
+    }
   ];
 
   const data = [
@@ -107,6 +119,9 @@ const Dashboard = () => {
           </Link>
         </>
       ),
+      status: "Completed",
+      logs: "no error message",
+      error: 0
     },
   ];
 

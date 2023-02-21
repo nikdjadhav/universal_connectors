@@ -14,8 +14,16 @@ import TkContainer from "@/globalComponents/TkContainer";
 import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import FormErrorText from "@/globalComponents/ErrorText";
-import { MaxEmailLength, MaxPasswordLength, MinEmailLength, MinPasswordLength } from "@/utils/Constants";
-import { TkToastError, TkToastSuccess } from "@/globalComponents/TkToastContainer";
+import {
+  MaxEmailLength,
+  MaxPasswordLength,
+  MinEmailLength,
+  MinPasswordLength,
+} from "@/utils/Constants";
+import {
+  TkToastError,
+  TkToastSuccess,
+} from "@/globalComponents/TkToastContainer";
 import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
 import TkForm from "@/globalComponents/TkForm";
 // import { ToastContainer, toast, Slide } from "react-toastify";
@@ -34,8 +42,14 @@ const schema = Yup.object({
     .required("Email is required"),
 
   password: Yup.string()
-    .min(MinPasswordLength, `Password should contain at least ${MinPasswordLength} character`)
-    .max(MaxPasswordLength, `Password cannot contain more than ${MaxPasswordLength} character`)
+    .min(
+      MinPasswordLength,
+      `Password should contain at least ${MinPasswordLength} character`
+    )
+    .max(
+      MaxPasswordLength,
+      `Password cannot contain more than ${MaxPasswordLength} character`
+    )
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#^()+!%*?&])[A-Za-z\d@$#^()+!%*?&]{8,32}$/,
       "Password must have One Uppercase, One Lowercase, One Number and one Special Character. \n Special Characters can be on of @ $ # ^ ( ) + ! % * ? &"
@@ -50,9 +64,9 @@ const Login = () => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("loginCredentials");
-    console.log("token",token);
+    console.log("token", token);
 
-    if(token){
+    if (token) {
       router.push("/dashboard");
     }
   }, [router]);
@@ -69,17 +83,15 @@ const Login = () => {
   // }else{
   //   console.log("not-authenticated....");
   // }
-  
+
   // *** get data from backend ***
   const queryClient = useQueryClient();
   // const { data, isLoading, isError, error } = useQuery({
   //   queryKey: ["u"],
-  //   queryFn: tkFetch.get("http://localhost:4000/v1/users"), 
+  //   queryFn: tkFetch.get("http://localhost:4000/v1/users"),
   //   // fetch("http://localhost:4000/v1/users")
   // });
   // console.log("Registered users", data);
-
-
 
   const {
     register,
@@ -111,10 +123,10 @@ const Login = () => {
           email: data[0].email,
           password: data[0].password,
           token: data[0].token,
-        }
+        };
         console.log("user", user);
         // localStorage.setItem("loginCredentials", JSON.stringify(user.token));
-        sessionStorage.setItem("loginCredentials", JSON.stringify(user.token));
+        sessionStorage.setItem("loginCredentials", user.token);
         router.push("/dashboard");
       },
       onError: (error) => {
@@ -123,7 +135,6 @@ const Login = () => {
         //TODO: report error to error reporting service
       },
     });
-
 
     // console.log("Registered users", data);
     // if (data.success) {
@@ -139,7 +150,6 @@ const Login = () => {
     // }else{
     //   TkToastError("Invalid Credentials");
     // }
-
 
     // const loggedInUser = await fetch("http://localhost:4000/login", {
     //   method: "POST",
@@ -213,25 +223,25 @@ const Login = () => {
   // }
 
   // ***
-//   // const sessionData = useContext(AuthContext);
-//   const [isUserAuthenticated, sessionData] = useGlobalStore((state) => [
-//     state.isUserAuthenticated,
-//     state.userSessionData,
-//   ]);
-  
-// console.log('sessionData',sessionData)
-// console.log('isUserAuthenticated',isUserAuthenticated)
+  //   // const sessionData = useContext(AuthContext);
+  //   const [isUserAuthenticated, sessionData] = useGlobalStore((state) => [
+  //     state.isUserAuthenticated,
+  //     state.userSessionData,
+  //   ]);
 
-//   useEffect(() => {
-//     if(sessionData !== null){
-//       router.push("/dashboard");
-//       // console.log("sessionData==>",sessionData)
-//     }else{
-//       router.push("/login");
-//       // console.log("sessionData==>",sessionData)
-//     }
-//   },[])
-// 
+  // console.log('sessionData',sessionData)
+  // console.log('isUserAuthenticated',isUserAuthenticated)
+
+  //   useEffect(() => {
+  //     if(sessionData !== null){
+  //       router.push("/dashboard");
+  //       // console.log("sessionData==>",sessionData)
+  //     }else{
+  //       router.push("/login");
+  //       // console.log("sessionData==>",sessionData)
+  //     }
+  //   },[])
+  //
 
   return (
     <>
@@ -246,7 +256,9 @@ const Login = () => {
                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                   <div>
                     <Link href="/" className="d-inline-block auth-logo">
-                      <h2 className="logo-text text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h2>
+                      <h2 className="logo-text text-light">
+                        {process.env.NEXT_PUBLIC_APP_NAME}
+                      </h2>
                     </Link>
                   </div>
                 </div>
@@ -274,12 +286,19 @@ const Login = () => {
                             requiredStarOnLabel={true}
                             placeholder="Enter Email"
                           />
-                          {errors.email?.message ? <FormErrorText>{errors.email?.message}</FormErrorText> : null}
+                          {errors.email?.message ? (
+                            <FormErrorText>
+                              {errors.email?.message}
+                            </FormErrorText>
+                          ) : null}
                         </div>
 
                         <div className="mb-3">
                           <div className="float-end">
-                            <Link href="/forgot-password" className="text-muted">
+                            <Link
+                              href="/forgot-password"
+                              className="text-muted"
+                            >
                               Forgot password?
                             </Link>
                           </div>
@@ -292,7 +311,11 @@ const Login = () => {
                             requiredStarOnLabel={true}
                             placeholder="Enter Password"
                           />
-                          {errors.password?.message ? <FormErrorText>{errors.password?.message}</FormErrorText> : null}
+                          {errors.password?.message ? (
+                            <FormErrorText>
+                              {errors.password?.message}
+                            </FormErrorText>
+                          ) : null}
                         </div>
 
                         {/* <div className="form-check">
@@ -309,7 +332,11 @@ const Login = () => {
                         </div> */}
 
                         <div className="mt-4">
-                          <TkButton color="success" className="btn btn-success w-100" type="submit">
+                          <TkButton
+                            color="success"
+                            className="btn btn-success w-100"
+                            type="submit"
+                          >
                             Login
                           </TkButton>
                         </div>
@@ -320,7 +347,10 @@ const Login = () => {
                           <h5 className="fs-13 mb-4 title">OR</h5>
                         </div>
                         <div>
-                          <GoogleLoginBtn onClick={googleLoginHabdler} btnText={"Login with Google"} />
+                          <GoogleLoginBtn
+                            onClick={googleLoginHabdler}
+                            btnText={"Login with Google"}
+                          />
                         </div>
                       </div>
                     </div>
@@ -330,7 +360,10 @@ const Login = () => {
                 <div className="mt-4 text-center">
                   <p className="mb-0">
                     Don&apos;t have an account ?
-                    <Link href="/signup" className="fw-semibold text-primary text-decoration-underline">
+                    <Link
+                      href="/signup"
+                      className="fw-semibold text-primary text-decoration-underline"
+                    >
                       Signup
                     </Link>
                   </p>
@@ -340,6 +373,16 @@ const Login = () => {
           </TkContainer>
         </div>
       </ParticlesAuth>
+      {/* <div
+        style={{
+          "position": "absolute",
+          "bottom": "0",
+          "background-color": "black",
+          "width": "100px",
+          "height": "100px",
+          "border-top-right-radius": "80px 80px",
+        }}
+      /> */}
     </>
   );
 };
