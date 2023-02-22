@@ -373,16 +373,6 @@ const Login = () => {
           </TkContainer>
         </div>
       </ParticlesAuth>
-      {/* <div
-        style={{
-          "position": "absolute",
-          "bottom": "0",
-          "background-color": "black",
-          "width": "100px",
-          "height": "100px",
-          "border-top-right-radius": "80px 80px",
-        }}
-      /> */}
     </>
   );
 };
@@ -390,3 +380,5 @@ const Login = () => {
 export default Login;
 
 // Login.noLayout = true;
+
+

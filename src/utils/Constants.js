@@ -148,7 +148,7 @@ const expenseStatusOptions = [
 const sourceName = [
   {
     value: "netSuite",
-    label: "NetSuite",
+    label: "NetSuite™",
   },
   {
     value: "quickBooks",
@@ -163,7 +163,7 @@ const sourceName = [
 const destinationName = [
   {
     value: "googleSheets",
-    label: "Google Sheets",
+    label: "Google Sheets™",
   },
   {
     value: "microsoftExcel",
@@ -195,16 +195,16 @@ const editValue = [
 
 const netsuiteValues = [
   {
-    value: "a",
-    label: "a",
+    value: "internalId",
+    label: "Internal Id",
   },
   {
-    value: "b",
-    label: "b",
+    value: "name",
+    label: "Name",
   },
   {
-    value: "c",
-    label: "c",
+    value: "email",
+    label: "Email",
   },
 ];
 

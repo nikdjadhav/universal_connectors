@@ -34,7 +34,7 @@ const GoogleSheetComponent = ({ onClickHandeler }) => {
 
   return (
     <>
-      <h5 className="text-center">Google Sheet Configuration</h5>
+      {/* <h5 className="text-center">Google Sheet Configuration</h5> */}
       <TkCard>
         <TkCardBody>
           <TkForm onSubmit={handleSubmit(onSubmit)}>
@@ -71,7 +71,7 @@ const GoogleSheetComponent = ({ onClickHandeler }) => {
                   {...register("googleSheetUrl")}
                   id="googleSheetUrl"
                   type="text"
-                  labelName="Google Sheet Url"
+                  labelName="Google Sheets™ Url"
                   placeholder="Enter google sheet url"
                   requiredStarOnLabel={true}
                 />

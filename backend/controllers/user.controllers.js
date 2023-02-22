@@ -26,7 +26,7 @@ const createUser = async (req, res) => {
       response({
         res,
         success: true,
-        status: 200,
+        status_code: 200,
         data: [
           {
             success: true,
@@ -44,7 +44,7 @@ const createUser = async (req, res) => {
       response({
         res,
         success: false,
-        status: 400,
+        status_code: 400,
         data: [
           {
             success: false,
@@ -59,7 +59,7 @@ const createUser = async (req, res) => {
     response({
       res,
       success: false,
-      status: 400,
+      status_code: 400,
       data: [
         {
           success: false,
@@ -79,7 +79,7 @@ const getUsers = async (req, res) => {
     response({
       res,
       success: true,
-      status: 200,
+      status_code: 200,
       data: users,
       message: "Users fetched successfully",
     });
@@ -88,7 +88,7 @@ const getUsers = async (req, res) => {
     response({
       res,
       success: false,
-      status: 400,
+      status_code: 400,
       data: [],
       message: "user not fetched",
     });
@@ -118,7 +118,7 @@ const userLogin = async (req, res) => {
     response({
       res,
       success: true,
-      status: 200,
+      status_code: 200,
       data: [
         {
           success: true,
@@ -135,7 +135,7 @@ const userLogin = async (req, res) => {
     response({
       res,
       success: false,
-      status: 400,
+      status_code: 400,
       data: [
         {
           success: false,
@@ -163,7 +163,7 @@ const userLogin = async (req, res) => {
 //     response({
 //       res,
 //       success: true,
-//       status: 200,
+//       status_code: 200,
 //       data: [user],
 //       message: "User logged in successfully",
 //     });
@@ -171,7 +171,7 @@ const userLogin = async (req, res) => {
 //     response({
 //       res,
 //       success: false,
-//       status: 400,
+//       status_code: 400,
 //       data: [],
 //       message: "User not found",
 //     });
@@ -180,10 +180,10 @@ const userLogin = async (req, res) => {
 
 const verifyToken = async (req, res) => {
   const values = req.body;
-  console.log("values", values);
+  // console.log("values", values);
   try {
     const decoded = jwt.verify(values.token, process.env.ACCESS_TOKEN_SECRET);
-    console.log("token", decoded);
+    // console.log("token", decoded);
 
     const logedinUser = await prisma.users.findUnique({
       where: {
@@ -204,7 +204,7 @@ const verifyToken = async (req, res) => {
         }],
         message: "User logged in successfully",
       });
-      console.log("logedinUser", logedinUser);
+      // console.log("logedinUser", logedinUser);
     } else {
       response({
         res,
@@ -215,7 +215,7 @@ const verifyToken = async (req, res) => {
         }],
         message: "User not found",
       });
-      console.log("**error");
+      // console.log("**error");
     }
   } catch (error) {
     response({
@@ -228,7 +228,7 @@ const verifyToken = async (req, res) => {
       message: "error",
       verified: false,
     });
-    console.log("**errors");
+    // console.log("**errors");
   }
 };
 

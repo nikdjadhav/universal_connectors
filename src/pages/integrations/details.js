@@ -50,7 +50,7 @@ const Details = () => {
                 <TkCol lg={6} sm={6}>
                   <Image
                     src={"/images/nsgs.png"}
-                    alt="Netsuite-img"
+                    alt="NetSuite-img"
                     width={200}
                     height={150}
                     className="w-auto"

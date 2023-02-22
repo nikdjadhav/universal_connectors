@@ -62,7 +62,7 @@ export default function MyApp({ Component, pageProps }) {
       !window.location.pathname.includes("forgot-password")
     ) {
       const token = sessionStorage.getItem("loginCredentials");
-      console.log("token===>", token);
+      // console.log("token===>", token);
       if (token) {
         const userToken = {
           token: token,
@@ -76,7 +76,7 @@ export default function MyApp({ Component, pageProps }) {
             body: JSON.stringify(userToken),
           }).then(async (response) => {
              const userToken = await response.json();
-             console.log("====",userToken);
+             console.log("token verified API response",userToken);
              if(!userToken.data[0]?.verified){
                 sessionStorage.clear();
                 router.push("/login");

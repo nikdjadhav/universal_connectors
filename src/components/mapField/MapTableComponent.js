@@ -35,7 +35,7 @@ const MapTableComponent = () => {
 
   const tableHead = [
     {
-      Header: "Google Sheets",
+      Header: "Google Sheets™",
       accessor: "googleSheets",
       Cell: (props) => {
         console.log("props.value ==>",props.row.original.id);
@@ -57,7 +57,7 @@ const MapTableComponent = () => {
       },
     },
     {
-      Header: "NetSuite",
+      Header: "NetSuite™",
       accessor: "netSuite",
       Cell: (props) => {
         // console.log("props props", props.row.original.id);

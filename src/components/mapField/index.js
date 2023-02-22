@@ -44,8 +44,8 @@ const FieldMappingTable = () => {
       integrationName: "NSGS",
       creationDate: "16 Feb, 2022",
       modifiedDate: "13 Feb, 2023",
-      systemOne: "NetSuite",
-      systemTwo: "Google Sheet",
+      systemOne: "NetSuite™",
+      systemTwo: "Google Sheets™",
       action: ""
     }
   ]

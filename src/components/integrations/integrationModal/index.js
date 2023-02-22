@@ -17,8 +17,8 @@ import TkRow, { TkCol } from "@/globalComponents/TkRow";
 const ModalButton = ({ modal, toggle, syncWay, configData }) => {
   // console.log("3 model", configData)
 
-  const [NSCTitle, setNSCTitle] = useState("Netsuite");
-  const [GSCTitle, setGSCTitle] = useState("Google Sheet");
+  const [NSCTitle, setNSCTitle] = useState("NetSuite™");
+  const [GSCTitle, setGSCTitle] = useState("Google Sheets™");
 
   useEffect(() => {
     if(configData){

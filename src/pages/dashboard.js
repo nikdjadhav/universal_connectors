@@ -55,19 +55,6 @@ const Dashboard = () => {
       accessor: "modifiedDate",
     },
     {
-      Header: "Action",
-      accessor: "action",
-      Cell: () => {
-        return (
-          <>
-            <i className="ri-delete-bin-5-line "></i>
-            <i className="ri-edit-2-fill mx-2"></i>
-            <i className="ri-eye-fill"></i>
-          </>
-        );
-      },
-    },
-    {
       Header: "Schedule",
       accessor: "schedule",
       // Cell: () => {
@@ -92,17 +79,29 @@ const Dashboard = () => {
     {
       Header: "Error",
       accessor: "error"
-    }
+    },
+    {
+      Header: "Action",
+      accessor: "action",
+      Cell: () => {
+        return (
+          <>
+            <i className="ri-delete-bin-5-line "></i>
+            <i className="ri-edit-2-fill mx-2"></i>
+            <i className="ri-eye-fill"></i>
+          </>
+        );
+      },
+    },
   ];
 
   const data = [
     {
       integrationName: "NSGS",
-      sourceName: "NetSuite",
-      destinationName: "Google Sheets",
+      sourceName: "NetSuite™",
+      destinationName: "Google Sheets™",
       creationDate: "04 May-2021 02:00 PM",
       modifiedDate: "16 Jan-2022 12:00 PM",
-      action: "Action",
       schedule: (
         <>
           <Link href="/schedule/event" className="">
@@ -121,18 +120,19 @@ const Dashboard = () => {
       ),
       status: "Completed",
       logs: "no error message",
-      error: 0
+      error: 0,
+      action: "Action",
     },
   ];
 
   return (
     <>
       <TkPageHead>
-        <title>{"DashBoard"}</title>
+        <title>{"Dashboard"}</title>
       </TkPageHead>
 
       <div className="page-content">
-        <BreadCrumb pageTitle="dashboard" />
+        <BreadCrumb pageTitle="Dashboard" />
 
         {/* <TkContainer>
           <p>Dashboard</p>

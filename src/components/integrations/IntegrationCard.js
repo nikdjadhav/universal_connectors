@@ -86,12 +86,12 @@ const IntegrationCard = ({ modal, toggleModal }) => {
           <div className="text-center">
             <Image
               src={"/images/logo-sm.png"}
-              alt="Netsuite-img"
+              alt="NetSuite-img"
               width={30}
               height={30}
               className="w-auto"
             />
-            <h5 className="mt-3">Netsuite Google Sheet</h5>
+            <h5 className="mt-3">NetSuite™ Google Sheets™</h5>
             {/* <img src="/images/img/line-graph.jpg" style={{ width: "250px" }} /> */}
             <Image
               src={"/images/img/line-graph.jpg"}

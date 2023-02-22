@@ -28,7 +28,7 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
 
   return (
     <>
-      <h5 className="text-center">Netsuite Configuration</h5>
+      {/* <h5 className="text-center">NetSuite™ Configuration</h5> */}
 
       <TkRow>
         <TkCol lg={6}>
