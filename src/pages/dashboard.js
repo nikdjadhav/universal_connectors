@@ -18,11 +18,24 @@ import UpgradeAccountNotice from "@/components/dashboard/UpgradeAccountNotice";
 import { useRouter } from "next/router";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import Dropdown from "@/globalComponents/Dropdown";
-import { booleanValues } from "@/utils/Constants";
+import { booleanValues, data } from "@/utils/Constants";
 import Link from "next/link";
+import TkInput from "@/globalComponents/TkInput";
+import { Tooltip } from "@nextui-org/react";
 
 const Dashboard = () => {
   const router = useRouter();
+
+  const dates = [
+    {
+      h: "04 Jan-2021 10:34AM",
+      t: "10:34AM",
+    },
+    {
+      h: "12 Feb-2023 11:00PM",
+      t: "11:00PM",
+    },
+  ];
 
   // useEffect(() => {
   //   // const loggedInUser = localStorage.getItem("loginCredentials");
@@ -34,10 +47,10 @@ const Dashboard = () => {
   // }, []);
 
   const columns = [
-    {
-      Header: "Integration Name",
-      accessor: "integrationName",
-    },
+    // {
+    //   Header: "Integration Name",
+    //   accessor: "integrationName",
+    // },
     {
       Header: "Source Name",
       accessor: "sourceName",
@@ -49,10 +62,29 @@ const Dashboard = () => {
     {
       Header: "Creation Date",
       accessor: "creationDate",
+      Cell: (props) => {
+        // console.log("props==>",props.row.original?.creationTime);
+        return (
+          <>
+            {/* {dates.map((d) => { */}
+              <Tooltip color="invert" content={`${props.value} ${props.row.original?.creationTime}`} placement="bottom">
+                <div>{props.value}</div>
+              </Tooltip>
+            {/* })} */}
+          </>
+        );
+      },
     },
     {
       Header: "Modified Date",
       accessor: "modifiedDate",
+      Cell: (props) => {
+        return (
+          <Tooltip color="invert" content={`${props.value} ${props.row.original?.modificationTime}`} placement="bottom">
+            <div>{props.value}</div>
+          </Tooltip>
+        );
+      },
     },
     {
       Header: "Schedule",
@@ -70,15 +102,15 @@ const Dashboard = () => {
     },
     {
       Header: "Status",
-      accessor: "status"
+      accessor: "status",
     },
     {
       Header: "Logs",
-      accessor: "logs"
+      accessor: "logs",
     },
     {
       Header: "Error",
-      accessor: "error"
+      accessor: "error",
     },
     {
       Header: "Action",
@@ -95,35 +127,35 @@ const Dashboard = () => {
     },
   ];
 
-  const data = [
-    {
-      integrationName: "NSGS",
-      sourceName: "NetSuite™",
-      destinationName: "Google Sheets™",
-      creationDate: "04 May-2021 02:00 PM",
-      modifiedDate: "16 Jan-2022 12:00 PM",
-      schedule: (
-        <>
-          <Link href="/schedule/event" className="">
-            <span className="px-1">No</span>
-            <i className="ri-add-fill px-2"></i>
-          </Link>
-        </>
-      ),
-      fieldMapping: (
-        <>
-          <Link href="/fieldMapping/mapTable" className="">
-            <span className="px-2">Yes</span>
-            <i className="ri-edit-2-fill px-2"></i>
-          </Link>
-        </>
-      ),
-      status: "Completed",
-      logs: "no error message",
-      error: 0,
-      action: "Action",
-    },
-  ];
+  // const data = [
+  //   {
+  //     integrationName: "NSGS",
+  //     sourceName: "NetSuite™",
+  //     destinationName: "Google Sheets™",
+  //     creationDate: "04 May-2021 02:00 PM",
+  //     modifiedDate: "16 Jan-2022 12:00 PM",
+  //     schedule: (
+  //       <>
+  //         <Link href="/schedule/event" className="">
+  //           <span className="px-1">No</span>
+  //           <i className="ri-add-fill px-2"></i>
+  //         </Link>
+  //       </>
+  //     ),
+  //     fieldMapping: (
+  //       <>
+  //         <Link href="/fieldMapping/mapTable" className="">
+  //           <span className="px-2">Yes</span>
+  //           <i className="ri-edit-2-fill px-2"></i>
+  //         </Link>
+  //       </>
+  //     ),
+  //     status: "Completed",
+  //     logs: "no error message",
+  //     error: 0,
+  //     action: "Action",
+  //   },
+  // ];
 
   return (
     <>
@@ -132,13 +164,21 @@ const Dashboard = () => {
       </TkPageHead>
 
       <div className="page-content">
-        <BreadCrumb pageTitle="Dashboard" />
-
+        <BreadCrumb pageTitle="Dashboard" searchbar="searchbar" data={data} />
+        {/* <TkInput 
+        type="search"
+        placeholder="Search here"
+        /> */}
         {/* <TkContainer>
           <p>Dashboard</p>
         </TkContainer>   */}
 
-        <TkTableContainer columns={columns} data={data} />
+        {/* <Tooltip
+        color="invert"
+        content={data[0].creationDate}
+        placement="bottom"
+      /> */}
+        <TkTableContainer columns={columns} data={data} tooltip="tooltip" />
       </div>
 
       {/* ***** */}
@@ -181,5 +221,3 @@ Dashboard.options = {
   layout: true,
   auth: true,
 };
-
-

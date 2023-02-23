@@ -15,7 +15,7 @@ const schema = Yup.object({
 
   url: Yup.string().required("URL is required."),
 
-  accountID: Yup.number().required("Account ID is required."),
+  accountID: Yup.string().required("Account ID is required."),
 
   consumerKey: Yup.string().required("Consumer Key is required."),
 
@@ -57,6 +57,7 @@ const NewConnection = ({ onClickHandeler }) => {
                       labelName="Integration Name"
                       placeholder="Enter integration name"
                       requiredStarOnLabel={true}
+                      invalid={errors.integrationName?.message ? true : false}
                       // disabled={viewMode}
                     />
                     {errors.integrationName?.message ? (
@@ -74,6 +75,7 @@ const NewConnection = ({ onClickHandeler }) => {
                       labelName="URL"
                       placeholder="Enter URL"
                       requiredStarOnLabel={true}
+                      invalid={errors.url?.message ? true : false}
                       // disabled={viewMode}
                     />
                     {errors.url?.message ? (
@@ -89,6 +91,7 @@ const NewConnection = ({ onClickHandeler }) => {
                       labelName="Account ID"
                       placeholder="Enter account id"
                       requiredStarOnLabel={true}
+                      invalid={errors.accountID?.message ? true : false}
                       // disabled={viewMode}
                     />
                     {errors.accountID?.message ? (
@@ -104,6 +107,7 @@ const NewConnection = ({ onClickHandeler }) => {
                       labelName="Consumer Key"
                       placeholder="Enter consumer key"
                       requiredStarOnLabel={true}
+                      invalid={errors.consumerKey?.message ? true : false}
                       // disabled={viewMode}
                     />
                     {errors.consumerKey?.message ? (
@@ -121,6 +125,7 @@ const NewConnection = ({ onClickHandeler }) => {
                       labelName="Consumer Secret Key"
                       placeholder="Enter consumer secret key"
                       requiredStarOnLabel={true}
+                      invalid={errors.consumerSecretKey?.message ? true : false}
                       // disabled={viewMode}
                     />
                     {errors.consumerSecretKey?.message ? (
@@ -138,6 +143,7 @@ const NewConnection = ({ onClickHandeler }) => {
                       labelName="Access Token"
                       placeholder="Enter access token"
                       requiredStarOnLabel={true}
+                      invalid={errors.accessToken?.message ? true : false}
                       // disabled={viewMode}
                     />
                     {errors.accessToken?.message ? (
@@ -155,6 +161,7 @@ const NewConnection = ({ onClickHandeler }) => {
                       labelName="Access Secret Token"
                       placeholder="Enter access secret token"
                       requiredStarOnLabel={true}
+                      invalid={errors.accessSecretToken?.message ? true : false}
                       // disabled={viewMode}
                     />
                     {errors.accessSecretToken?.message ? (

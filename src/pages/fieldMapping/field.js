@@ -1,34 +1,34 @@
-import FieldMap from '@/components/mapField/FieldMap'
-import TkContainer from '@/components/TkContainer'
-import TkPageHead from '@/globalComponents/TkPageHead'
-import BreadCrumb from '@/utils/BreadCrumb'
-import React from 'react'
+import FieldMap from "@/components/mapField/FieldMap";
+import TkContainer from "@/components/TkContainer";
+import TkPageHead from "@/globalComponents/TkPageHead";
+import BreadCrumb from "@/utils/BreadCrumb";
+import React from "react";
 
 const Field = () => {
   return (
     <>
-    <TkPageHead>
-      <title>{`Feild Mapping`}</title>
-    </TkPageHead>
+      <TkPageHead>
+        <title>{`Feild Mapping`}</title>
+      </TkPageHead>
 
-    <div className="page-content">
-      <BreadCrumb 
-      parentTitle="Field Mapping"
-      parentLink="/fieldMapping"
-      pageTitle="Field"
-      />
+      <div className="page-content">
+        <BreadCrumb
+          parentTitle="Field Mapping"
+          parentLink="/fieldMapping"
+          pageTitle="Field"
+        />
 
-      <TkContainer>
-        <FieldMap route="/fieldMapping/mapTable" />
-      </TkContainer>
-    </div>
-  </>
-  )
-}
+        <TkContainer>
+          <FieldMap route="/fieldMapping/mapTable" />
+        </TkContainer>
+      </div>
+    </>
+  );
+};
 
-export default Field
+export default Field;
 
 Field.options = {
-    layout: true,
-    auth: true,
-  };
+  layout: true,
+  auth: true,
+};

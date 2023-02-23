@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const MinEmailLength = 6;
 const MaxEmailLength = 100;
 
@@ -181,6 +183,25 @@ const integrations = [
     label: "NSGS",
   },
 ];
+
+const recordType = [
+  {
+    value: "customer",
+    label: "Customer"
+  },
+  {
+    value: "employee",
+    label: "Employee"
+  },
+  {
+    value: "contact",
+    label: "Contact"
+  },
+  {
+    value: "vender",
+    label: "Vender"
+  }
+]
 
 const editValue = [
   {
@@ -569,6 +590,92 @@ const months = [
   },
 ];
 
+const data = [
+  {
+    // integrationName: "NSGS",
+    sourceName: "NetSuite™",
+    destinationName: "Google Sheets™",
+    creationDate: "04 May, 2021",
+    creationTime: "12:00 AM",
+    modifiedDate: "16 Jan, 2022",
+    modificationTime: "1:24 PM",
+    schedule: (
+      <>
+        <Link href="/schedule/event" className="">
+          <span className="px-1">No</span>
+          <i className="ri-add-fill px-2"></i>
+        </Link>
+      </>
+    ),
+    fieldMapping: (
+      <>
+        <Link href="/fieldMapping/mapTable" className="">
+          <span className="px-2">Yes</span>
+          <i className="ri-edit-2-fill px-2"></i>
+        </Link>
+      </>
+    ),
+    status: "Completed",
+    logs: "no error message",
+    error: 0,
+    action: "Action",
+  },
+  // {
+  //   integrationName: "GS",
+  //   sourceName: "NetSuite™",
+  //   destinationName: "Google Sheets™",
+  //   creationDate: "04 May-2021 02:00 PM",
+  //   modifiedDate: "16 Jan-2022 12:00 PM",
+  //   schedule: (
+  //     <>
+  //       <Link href="/schedule/event" className="">
+  //         <span className="px-1">No</span>
+  //         <i className="ri-add-fill px-2"></i>
+  //       </Link>
+  //     </>
+  //   ),
+  //   fieldMapping: (
+  //     <>
+  //       <Link href="/fieldMapping/mapTable" className="">
+  //         <span className="px-2">Yes</span>
+  //         <i className="ri-edit-2-fill px-2"></i>
+  //       </Link>
+  //     </>
+  //   ),
+  //   status: "Completed",
+  //   logs: "no error message",
+  //   error: 0,
+  //   action: "Action",
+  // },
+  // {
+  //   integrationName: "NS",
+  //   sourceName: "NetSuite™",
+  //   destinationName: "Google Sheets™",
+  //   creationDate: "04 May-2021 02:00 PM",
+  //   modifiedDate: "16 Jan-2022 12:00 PM",
+  //   schedule: (
+  //     <>
+  //       <Link href="/schedule/event" className="">
+  //         <span className="px-1">No</span>
+  //         <i className="ri-add-fill px-2"></i>
+  //       </Link>
+  //     </>
+  //   ),
+  //   fieldMapping: (
+  //     <>
+  //       <Link href="/fieldMapping/mapTable" className="">
+  //         <span className="px-2">Yes</span>
+  //         <i className="ri-edit-2-fill px-2"></i>
+  //       </Link>
+  //     </>
+  //   ),
+  //   status: "Completed",
+  //   logs: "no error message",
+  //   error: 0,
+  //   action: "Action",
+  // },
+];
+
 // we take maxTake as 100 from database for all queries, but here I have set it to 99 to be safe from any future changes
 const maxDataLengthForUISearch = 99;
 
@@ -618,6 +725,7 @@ export {
   sourceName,
   destinationName,
   integrations,
+  recordType,
   editValue,
   netsuiteValues,
   booleanValues,
@@ -627,4 +735,5 @@ export {
   options,
   days,
   months,
+  data
 };

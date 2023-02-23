@@ -44,7 +44,7 @@ const Details = () => {
 
         <h4 className="mb-5">Integration Details</h4>
         <TkContainer>
-          <TkCard className={"p-3"}>
+          <TkCard className="p-3">
             <TkCardBody>
               <TkRow>
                 <TkCol lg={6} sm={6}>

@@ -67,6 +67,7 @@ export default function MyApp({ Component, pageProps }) {
         const userToken = {
           token: token,
         };
+        // console.log("userToken===>", userToken);
         async function tokenVerifiedApi() {
           const response = await fetch("http://localhost:4000/v1/verifyToken", {
             method: "POST",
@@ -83,7 +84,6 @@ export default function MyApp({ Component, pageProps }) {
              }
           });
         }
-
         tokenVerifiedApi();
       }
     }
@@ -166,7 +166,7 @@ function Auth({ children }) {
   ]);
   const router = useRouter();
 
-  console.log("sessionData", sessionData);
+  // console.log("sessionData", sessionData);
   console.log("isUserAuthenticated", isUserAuthenticated);
 
   if (isUserAuthenticated) {

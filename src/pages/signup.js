@@ -101,7 +101,7 @@ const Register = () => {
         }
         console.log('user', user);
         // localStorage.setItem("loginCredentials", JSON.stringify(user));
-        sessionStorage.setItem("loginCredentials", JSON.stringify(user.token));
+        sessionStorage.setItem("loginCredentials", user.token);
         router.push("/dashboard");
       },
       onError: (err) => {

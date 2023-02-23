@@ -73,6 +73,8 @@ const Integration = ({ onClickHandeler, syncWay, configData }) => {
                       labelName="Integration Name"
                       placeholder="Enter integration name"
                       requiredStarOnLabel={true}
+                      invalid={errors.integrationName?.message ? true : false}
+                      // className={errors.integrationName?.message && "form-control is-invalid"}
                     />
                     {errors.integrationName?.message ? (
                       <FormErrorText>

@@ -271,10 +271,21 @@ const WeeklyEvent = () => {
           </TkCol>
         </TkRow>
 
-        <TkRow className="justify-content-center">
-          <TkCol lg={1} sm={1} className="">
+        <TkRow className="justify-content-center mt-2">
+          <TkCol lg={1} sm={2} className="">
             <TkButton type="submit" className="btn-success">
               Save
+            </TkButton>
+          </TkCol>
+          {/* <TkCol lg={2} sm={4} className="">
+            <TkButton type="button" className="btn-success">
+              Sync now
+            </TkButton>
+          </TkCol> */}
+
+          <TkCol lg={2} sm={4} className="">
+            <TkButton type="reset" className="btn-success">
+              Cancel
             </TkButton>
           </TkCol>
         </TkRow>

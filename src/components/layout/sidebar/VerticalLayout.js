@@ -207,7 +207,8 @@ const VerticalLayout = () => {
                 })}
               >
                 <TkIcon className={item.icon}></TkIcon>{" "}
-                <span>{item.label}</span>
+                {/* style={{"font-family": "'Lato', sans-serif"}} */}
+                <span style={{"fontFamily": "'Lato', sans-serif"}}>{item.label}</span>
                 {item.badgeName ? (
                   <span
                     className={"badge badge-pill bg-" + item.badgeColor}

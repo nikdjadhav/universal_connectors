@@ -25,11 +25,11 @@ const FeildMapping = () => {
         onButtonClick={addFieldMapping}
         />
 
-        <h5> Field Mapping </h5>
-        <TkContainer>
+        {/* <h5> Field Mapping </h5> */}
+        {/* <TkContainer> */}
           {/* <FieldMap route="/fieldMapping/mapTable" /> */}
           <FieldMapping />
-        </TkContainer>
+        {/* </TkContainer> */}
       </div>
     </>
   );

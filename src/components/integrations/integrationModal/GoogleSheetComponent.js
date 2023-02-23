@@ -47,6 +47,7 @@ const GoogleSheetComponent = ({ onClickHandeler }) => {
                   labelName="Integration Name"
                   placeholder="Enter integration name"
                   requiredStarOnLabel={true}
+                  invalid={errors.integrationName?.message ? true : false}
                 />
                 {errors.integrationName?.message ? (
                   <FormErrorText>
@@ -74,6 +75,7 @@ const GoogleSheetComponent = ({ onClickHandeler }) => {
                   labelName="Google Sheets™ Url"
                   placeholder="Enter google sheet url"
                   requiredStarOnLabel={true}
+                  invalid={errors.googleSheetUrl?.message ? true : false}
                 />
                 {errors.googleSheetUrl?.message ? (
                   <FormErrorText>

@@ -24,10 +24,10 @@ const Schedule = () => {
         onButtonClick={addSchedule}
          />
 
-        <TkContainer>
+        {/* <TkContainer> */}
         <FieldMapping />
           {/* <FieldMap route="/schedule/event" /> */}
-        </TkContainer>
+        {/* </TkContainer> */}
       </div>
     </>
   );

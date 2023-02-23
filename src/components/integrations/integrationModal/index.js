@@ -25,7 +25,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData }) => {
       setNSCTitle(configData.source.label);
       setGSCTitle(configData.destination.label);
     }
-  })
+  },[configData])
 
   const tabs = {
     Integration: 1,

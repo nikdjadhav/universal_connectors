@@ -32,12 +32,21 @@ const EventSchedule = () => {
 
   return (
     <>
-      <h5>Events</h5>
+      <TkRow className="align-items-end">
+        <TkCol lg={1}>
+          <h5>Events</h5>
+        </TkCol>
+        <TkCol lg={2} className="ps-0">
+          <TkButton type="button" className="btn-success">
+            Sync now
+          </TkButton>
+        </TkCol>
+      </TkRow>
 
       {/* *** Radio buttons for selecting event type *** */}
       <TkContainer className="my-5">
         <TkRow>
-          <TkCol lg={3}>
+          <TkCol lg={3} sm={3}>
             <TkRadioButton
               type="radio"
               name="event"
@@ -109,12 +118,12 @@ const EventSchedule = () => {
           </TkCol>
 
           {/* *** Event form *** */}
-          <TkCol lg={9}>
+          <TkCol lg={9} sm={9}>
             {showComponent === "realtimeEvent" ? (
               // <div>Realtime Event</div>
-              <RealtimeEvent toggleComponet={toggleComponet}/>
+              <RealtimeEvent toggleComponet={toggleComponet} />
             ) : showComponent === "singleEvent" ? (
-              <SingleEvent toggleComponet={toggleComponet}/>
+              <SingleEvent toggleComponet={toggleComponet} />
             ) : showComponent === "dailyEvent" ? (
               <DailyEvent />
             ) : showComponent === "weeklyEvent" ? (
