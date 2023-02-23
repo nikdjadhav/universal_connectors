@@ -11,7 +11,7 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
   const [existTab, setExistTab] = useState(false);
 
   const toggleComponet = (value) => {
-    console.log(value);
+    // console.log(value);
     setShowComponent(value);
     setNewTab(value === "one" ? true : false);
     setExistTab(value === "two" ? true : false);
@@ -37,7 +37,7 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
             name="connection"
             // checked="true"
             checked={newTab}
-            onClick={() => toggleComponet("one")}
+            onChange={() => toggleComponet("one")}
           >
             Set up new connection
           </TkRadioButton>
@@ -45,7 +45,7 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
             type="radio"
             name="connection"
             checked={existTab}
-            onClick={() => toggleComponet("two")}
+            onChange={() => toggleComponet("two")}
           >
             Use existing connection
           </TkRadioButton>

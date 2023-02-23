@@ -55,8 +55,8 @@ const ExistConnection = ({ onClickHandeler }) => {
             {/* </TkCard> */}
           </TkCol>
 
-          <TkCol lg={12} className="my-2 d-flex justify-content-center">
-            <TkButton type="submit" className="btn-success">
+          <TkCol lg={12} className="my-2">
+            <TkButton type="submit" className="btn-success float-end">
               Next Step
             </TkButton>
           </TkCol>

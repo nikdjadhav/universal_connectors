@@ -68,16 +68,16 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   // }, [integrationModal]);
 
   const onClickCard = () => {
-    console.log("Clicked");
+    // console.log("Clicked");
     router.push("/integrations/details");
   };
 
   const onSubmit = (data) => {
-    console.log("radio button value", data);
+    // console.log("radio button value", data);
     // console.log("radio button value", data.radio);
     setSyncWay(data.radio);
   };
-  console.log('setSyncWay onSubmit', syncWay);
+  // console.log('setSyncWay onSubmit', syncWay);
 
   return (
     <>

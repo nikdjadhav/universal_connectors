@@ -50,7 +50,7 @@ const Integration = ({ onClickHandeler, syncWay, configData }) => {
       setValue("sourceName",{label: configData.source.label});
       setValue("destinationName", {label: configData.destination.label});
     }
-  });
+  },[configData, setValue, syncWay]);
 
   const onSubmit = (data) => {
     console.log("integration nav submitted data", data);
@@ -61,8 +61,8 @@ const Integration = ({ onClickHandeler, syncWay, configData }) => {
     <>
       <TkRow className="justify-content-center">
         <TkCol>
-          <TkCard>
-            <TkCardBody>
+          {/* <TkCard>
+            <TkCardBody> */}
               <TkForm onSubmit={handleSubmit(onSubmit)}>
                 <TkRow className="g-3">
                   <TkCol lg={12}>
@@ -139,8 +139,8 @@ const Integration = ({ onClickHandeler, syncWay, configData }) => {
                   </TkCol>
                 </TkRow>
               </TkForm>
-            </TkCardBody>
-          </TkCard>
+            {/* </TkCardBody>
+          </TkCard> */}
         </TkCol>
       </TkRow>
     </>

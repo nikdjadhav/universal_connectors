@@ -144,7 +144,7 @@ function AuthenticateUser({ children }) {
     // if (typeof window === "undefined") return null;
 
     const loggedInUser = sessionStorage.getItem("loginCredentials");
-    console.log("loggedInUser", loggedInUser);
+    // console.log("loggedInUser", loggedInUser);
     if (loggedInUser === null) {
       router.push("/login");
       setData(null);

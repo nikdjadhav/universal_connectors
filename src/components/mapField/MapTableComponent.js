@@ -38,7 +38,7 @@ const MapTableComponent = () => {
       Header: "Google Sheets",
       accessor: "googleSheets",
       Cell: (props) => {
-        console.log("props.value ==>", props.row.original.id);
+        // console.log("props.value ==>", props.row.original.id);
         // const id = props.row.original.id;
         // const randomId = nanoid();
         return (

@@ -45,9 +45,9 @@ const NewConnection = ({ onClickHandeler }) => {
     <>
       <TkRow className="justify-content-center">
         <TkCol>
-          <TkCard>
-            <TkCardBody>
-              <TkForm onSubmit={handleSubmit(onSubmit)}>
+          {/* <TkCard>
+            <TkCardBody> */}
+              <TkForm onSubmit={handleSubmit(onSubmit)} className="my-3">
                 <TkRow className="g-3">
                   <TkCol lg={12}>
                     <TkInput
@@ -171,16 +171,16 @@ const NewConnection = ({ onClickHandeler }) => {
                     ) : null}
                   </TkCol>
 
-                  <TkCol lg={12} className="d-flex justify-content-center">
-                    <TkButton type="submit" className="btn-success">
+                  <TkCol lg={12}>
+                    <TkButton type="submit" className="btn-success float-end">
                       Next Step
                     </TkButton>
                   </TkCol>
                 </TkRow>
                 {/* <div className="d-flex mt-4 space-childern"></div> */}
               </TkForm>
-            </TkCardBody>
-          </TkCard>
+            {/* </TkCardBody>
+          </TkCard> */}
         </TkCol>
       </TkRow>
     </>

@@ -31,7 +31,7 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
     resolver: yupResolver(schema),
   });
 
-  console.log("syncWay in next", syncWay);
+  // console.log("syncWay in next", syncWay);
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
   const [data, setData] = useState();
@@ -44,7 +44,7 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
       setFirstTitle("System One");
       setSecondTitle("System Two");
     }
-  });
+  },[syncWay]);
   // ***to open form modal
   const [integrationModal, setIntegrationModal] = useState(false);
   const integrationToggle = useCallback(() => {

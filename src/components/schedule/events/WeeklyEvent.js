@@ -13,18 +13,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorText from "@/globalComponents/ErrorText";
 
 const schema = Yup.object({
-  startDate: Yup.date(). 
-  required("Start date is required"),
+  startDate: Yup.date().required("Start date is required"),
 
-  startTime: Yup.object(). 
-  required("Start time is required"),
+  startTime: Yup.object().required("Start time is required"),
 
-  days: Yup.object(). 
-  required("Day is required"),
+  days: Yup.object().required("Day is required"),
 }).required();
 
-const WeeklyEvent = () => {
-  
+const WeeklyEvent = ({ toggleComponet }) => {
   const {
     control,
     register,
@@ -32,18 +28,17 @@ const WeeklyEvent = () => {
     setValue,
     formState: { errors, isDirty },
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
 
   useEffect(() => {
-    if (!isDirty){
-      setValue("startDate", new Date)
+    if (!isDirty) {
+      setValue("startDate", new Date());
     }
-    }, [isDirty])
-  
+  }, [isDirty, setValue]);
+
   const [checkboxValue, setCheckboxValue] = useState(true);
   // const [disableEndDate, setDisableEndDate] = useState(true);
-
 
   const handleOnChange = (dates) => {
     console.log("value", dates);
@@ -65,6 +60,10 @@ const WeeklyEvent = () => {
       // console.log('no end date');
       data.noEndDate = true;
     }
+  };
+
+  const onCancel = () => {
+    toggleComponet("singleEvent");
   };
 
   return (
@@ -284,7 +283,7 @@ const WeeklyEvent = () => {
           </TkCol> */}
 
           <TkCol lg={2} sm={4} className="">
-            <TkButton type="reset" className="btn-success">
+            <TkButton type="button" onClick={onCancel} className="btn-success">
               Cancel
             </TkButton>
           </TkCol>

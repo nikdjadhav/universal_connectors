@@ -31,7 +31,11 @@ const SingleEvent = ({toggleComponet}) => {
 
   useEffect(() => {
     setValue("startDate", new Date)
-  },[])
+  },[setValue])
+
+  const repeatValue = (e) => {
+    console.log('value', e.target.value);
+  }
 
   const handleOnChange = (dates) => {
     console.log("value", dates);
@@ -62,6 +66,10 @@ const SingleEvent = ({toggleComponet}) => {
       data.noEndDate = true;
     }
     toggleComponet("weeklyEvent")
+  };
+
+  const onCancel = () => {
+    toggleComponet("realtimeEvent");
   };
 
   return (
@@ -197,7 +205,7 @@ const SingleEvent = ({toggleComponet}) => {
           </TkCol> */}
 
           <TkCol lg={2} sm={4} className="">
-            <TkButton type="reset" className="btn-success">
+          <TkButton type="button" onClick={onCancel} className="btn-success">
               Cancel
             </TkButton>
           </TkCol>

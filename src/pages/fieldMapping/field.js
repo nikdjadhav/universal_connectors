@@ -19,7 +19,7 @@ const Field = () => {
         />
 
         <TkContainer>
-          <FieldMap route="/fieldMapping/mapTable" />
+          <FieldMap />
         </TkContainer>
       </div>
     </>

@@ -35,8 +35,8 @@ const GoogleSheetComponent = ({ onClickHandeler }) => {
   return (
     <>
       {/* <h5 className="text-center">Google Sheet Configuration</h5> */}
-      <TkCard>
-        <TkCardBody>
+      {/* <TkCard>
+        <TkCardBody> */}
           <TkForm onSubmit={handleSubmit(onSubmit)}>
             <TkRow className="g-3">
               <TkCol lg={12}>
@@ -102,8 +102,8 @@ const GoogleSheetComponent = ({ onClickHandeler }) => {
               </TkCol>
             </TkRow>
           </TkForm>
-        </TkCardBody>
-      </TkCard>
+        {/* </TkCardBody>
+      </TkCard> */}
     </>
   );
 };

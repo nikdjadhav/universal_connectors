@@ -6,15 +6,17 @@ import TkForm from "@/globalComponents/TkForm";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller, set } from "react-hook-form";
 import * as Yup from "yup";
 
 const schema = Yup.object({
-  startDate: Yup.date().required("Start date is required"),
+  startDate: Yup.date().nullable().required("Start date is required"),
 }).required();
 
 const RealtimeEvent = ({ toggleComponet }) => {
+  const router = useRouter();
   const {
     control,
     register,
@@ -33,10 +35,10 @@ const RealtimeEvent = ({ toggleComponet }) => {
 
   const [checkboxValue, setCheckboxValue] = useState(true);
   // const [disableEndDate, setDisableEndDate] = useState(true);
-  console.log("checkboxValue", checkboxValue);
+  // console.log("checkboxValue", checkboxValue);
   useEffect(() => {
     setValue("startDate", new Date());
-  }, []);
+  }, [setValue]);
 
   const handleOnChange = (dates) => {
     console.log("value", dates);
@@ -58,6 +60,11 @@ const RealtimeEvent = ({ toggleComponet }) => {
     // }
   };
 
+  const onChangeEvent = (e) => {
+    console.log('original', e.target.value);
+
+  }
+
   const onSubmit = (data) => {
     console.log(data);
     if (data.endDate) {
@@ -71,6 +78,12 @@ const RealtimeEvent = ({ toggleComponet }) => {
     // if (checkboxValue === true) {
     //   data.endDate = null;
     // }
+  };
+  const onCancel = () => {
+    router.push("/schedule/field");
+    // setValue("startDate", null);
+    // setValue("endDate", null);
+    // setCheckboxValue(true);
   };
 
   return (
@@ -140,6 +153,7 @@ const RealtimeEvent = ({ toggleComponet }) => {
               id="noEndDate"
               checked={checkboxValue}
               disabled={true}
+              // onChange={(e) => onChangeEvent(e)}
               // onChange={handleOnChange}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
@@ -161,7 +175,7 @@ const RealtimeEvent = ({ toggleComponet }) => {
           </TkCol> */}
 
           <TkCol lg={2} sm={4} className="">
-            <TkButton type="reset" className="btn-success">
+            <TkButton type="button" onClick={onCancel} className="btn-success">
               Cancel
             </TkButton>
           </TkCol>

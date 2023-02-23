@@ -1,4 +1,5 @@
 import FieldMap from "@/components/mapField/FieldMap";
+import Field from "@/components/schedule/Field";
 import TkContainer from "@/components/TkContainer";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import BreadCrumb from "@/utils/BreadCrumb";
@@ -19,7 +20,7 @@ const field = () => {
         />
 
         <TkContainer>
-          <FieldMap route="/schedule/event" />
+          <Field />
         </TkContainer>
       </div>
     </>

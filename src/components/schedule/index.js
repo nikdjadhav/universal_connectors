@@ -33,13 +33,8 @@ const EventSchedule = () => {
   return (
     <>
       <TkRow className="align-items-end">
-        <TkCol lg={1}>
+        <TkCol lg={2}>
           <h5>Events</h5>
-        </TkCol>
-        <TkCol lg={2} className="ps-0">
-          <TkButton type="button" className="btn-success">
-            Sync now
-          </TkButton>
         </TkCol>
       </TkRow>
 
@@ -47,6 +42,10 @@ const EventSchedule = () => {
       <TkContainer className="my-5">
         <TkRow>
           <TkCol lg={3} sm={3}>
+            <TkButton type="button" className="btn-success btn-sm ms-4 mb-3">
+              Sync now
+            </TkButton>
+
             <TkRadioButton
               type="radio"
               name="event"
@@ -54,7 +53,7 @@ const EventSchedule = () => {
               value="realtimeEvent"
               className="mb-3"
               checked={realtimeEvent}
-              onClick={() => toggleComponet("realtimeEvent")}
+              onChange={() => toggleComponet("realtimeEvent")}
             >
               Realtime Event
             </TkRadioButton>
@@ -66,7 +65,7 @@ const EventSchedule = () => {
               value="singleEvent"
               checked={singleEvent}
               className="mb-3"
-              onClick={() => toggleComponet("singleEvent")}
+              onChange={() => toggleComponet("singleEvent")}
             >
               Single Event
             </TkRadioButton>
@@ -89,7 +88,7 @@ const EventSchedule = () => {
               value="weeklyEvent"
               checked={weeklyEvent}
               className="mb-3"
-              onClick={() => toggleComponet("weeklyEvent")}
+              onChange={() => toggleComponet("weeklyEvent")}
             >
               Weekly Event
             </TkRadioButton>
@@ -127,7 +126,7 @@ const EventSchedule = () => {
             ) : showComponent === "dailyEvent" ? (
               <DailyEvent />
             ) : showComponent === "weeklyEvent" ? (
-              <WeeklyEvent />
+              <WeeklyEvent toggleComponet={toggleComponet} />
             ) : showComponent === "monthlyEvent" ? (
               <MonthlyEvent />
             ) : showComponent === "yearlyEvent" ? (

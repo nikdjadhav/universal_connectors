@@ -67,7 +67,7 @@ const BreadCrumb = ({
                 </TkButton>
               </div>
             ) : null} */}
-            <div class="row justify-content-between">
+            <div className="row justify-content-between">
               {/* {searchbar ? (
                 <div className="col">
                   <TkInput
