@@ -53,7 +53,7 @@ const IntegrationCard = ({ modal, toggleModal }) => {
     } else {
       setDModal(true);
     }
-  }, [dModal]);
+  }, [dModal, toggleModal]);
 
   //
   const router = useRouter();

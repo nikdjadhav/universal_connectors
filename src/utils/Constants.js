@@ -187,21 +187,21 @@ const integrations = [
 const recordType = [
   {
     value: "customer",
-    label: "Customer"
+    label: "Customer",
   },
   {
     value: "employee",
-    label: "Employee"
+    label: "Employee",
   },
   {
     value: "contact",
-    label: "Contact"
+    label: "Contact",
   },
   {
     value: "vender",
-    label: "Vender"
-  }
-]
+    label: "Vender",
+  },
+];
 
 const editValue = [
   {
@@ -592,6 +592,7 @@ const months = [
 
 const data = [
   {
+    id: 1,
     // integrationName: "NSGS",
     sourceName: "NetSuite™",
     destinationName: "Google Sheets™",
@@ -602,22 +603,51 @@ const data = [
     schedule: (
       <>
         <Link href="/schedule/event" className="">
-          <span className="px-1">No</span>
-          <i className="ri-add-fill px-2"></i>
+          <span className="">No</span>
+          <i className="ri-add-fill ps-2"></i>
         </Link>
       </>
     ),
     fieldMapping: (
       <>
         <Link href="/fieldMapping/mapTable" className="">
-          <span className="px-2">Yes</span>
-          <i className="ri-edit-2-fill px-2"></i>
+          <span className="">Yes</span>
+          <i className="ri-edit-2-fill ps-2"></i>
         </Link>
       </>
     ),
     status: "Completed",
-    logs: "no error message",
-    error: 0,
+    logs: "Logs",
+    // error: 0,
+    action: "Action",
+  },
+  {
+    id: 9402,
+    sourceName: "NetSuite™",
+    destinationName: "QuickBooks",
+    creationDate: "12 Jan, 2022",
+    creationTime: "3:30 AM",
+    modifiedDate: "23 Feb, 2022",
+    modificationTime: "7:00 PM",
+    schedule: (
+      <>
+        <Link href="/schedule/event" className="">
+          <span className="">No</span>
+          <i className="ri-add-fill ps-2"></i>
+        </Link>
+      </>
+    ),
+    fieldMapping: (
+      <>
+        <Link href="/fieldMapping/mapTable" className="">
+          <span className="">Yes</span>
+          <i className="ri-edit-2-fill ps-2"></i>
+        </Link>
+      </>
+    ),
+    status: "Completed",
+    logs: "Logs",
+    // error: 0,
     action: "Action",
   },
   // {
@@ -674,6 +704,105 @@ const data = [
   //   error: 0,
   //   action: "Action",
   // },
+];
+
+const columnHead = [
+  {
+    Header: "Integration Name",
+    accessor: "integrationName",
+  },
+  {
+    Header: "Creation Date",
+    accessor: "creationDate",
+  },
+  {
+    Header: "Modified Date",
+    accessor: "modifiedDate",
+  },
+  {
+    Header: "System One",
+    accessor: "systemOne",
+  },
+  {
+    Header: "System Two",
+    accessor: "systemTwo",
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: () => {
+      return (
+        <>
+          <i className="ri-delete-bin-5-line "></i>
+          <Link href="/fieldMapping/mapTable">
+            <i className="ri-edit-2-fill mx-2"></i>
+          </Link>
+          <i className="ri-eye-fill"></i>
+        </>
+      );
+    },
+  },
+];
+
+const scheduleHead = [
+  {
+    Header: "Integration Name",
+    accessor: "integrationName",
+  },
+  {
+    Header: "Creation Date",
+    accessor: "creationDate",
+  },
+  {
+    Header: "Modified Date",
+    accessor: "modifiedDate",
+  },
+  {
+    Header: "System One",
+    accessor: "systemOne",
+  },
+  {
+    Header: "System Two",
+    accessor: "systemTwo",
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: () => {
+      return (
+        <>
+          <i className="ri-delete-bin-5-line "></i>
+          <Link href="/schedule/event">
+            <i className="ri-edit-2-fill mx-2"></i>
+          </Link>
+          <i className="ri-eye-fill"></i>
+        </>
+      );
+    },
+  },
+];
+
+const logsHead = [
+  {
+    Header: "Integration Name",
+    accessor: "integrationName",
+  },
+  {
+    Header: "Creation Date",
+    accessor: "creationDate",
+  },
+  {
+    Header: "Modified Date",
+    accessor: "modifiedDate",
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+  },
+  {
+    Header: "Message",
+    accessor: "message",
+  },
 ];
 
 // we take maxTake as 100 from database for all queries, but here I have set it to 99 to be safe from any future changes
@@ -735,5 +864,8 @@ export {
   options,
   days,
   months,
-  data
+  data,
+  columnHead,
+  scheduleHead,
+  logsHead,
 };

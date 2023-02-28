@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // import { Col, Container, Row } from "reactstrap";
 // import Head from "next/head";
 //import Components
@@ -22,9 +22,22 @@ import { booleanValues, data } from "@/utils/Constants";
 import Link from "next/link";
 import TkInput from "@/globalComponents/TkInput";
 import { Tooltip } from "@nextui-org/react";
+import ModalButton from "@/components/integrations/integrationModal";
 
 const Dashboard = () => {
   const router = useRouter();
+
+  const [modal, setModal] = useState(false);
+  const [recordId, setRecordId] = useState(null);
+  const [configData, setConfigData] = useState(null);
+
+  const toggle = useCallback(() => {
+    if (modal) {
+      setModal(false);
+    } else {
+      setModal(true);
+    }
+  }, [modal]);
 
   const dates = [
     {
@@ -36,6 +49,21 @@ const Dashboard = () => {
       t: "11:00PM",
     },
   ];
+
+  const onClickOpenModal = (row) => {
+    console.log("onClickOpenModal", row);
+    toggle();
+    setRecordId(row?.id);
+    setConfigData({
+      destination: { label: row?.destinationName },
+      source: { label: row?.sourceName },
+    });
+
+    // setConfigData([{
+    //   "source": row.sourceName,
+    //   "destination": row.destinationName,
+    // }])
+  };
 
   // useEffect(() => {
   //   // const loggedInUser = localStorage.getItem("loginCredentials");
@@ -67,9 +95,13 @@ const Dashboard = () => {
         return (
           <>
             {/* {dates.map((d) => { */}
-              <Tooltip color="invert" content={`${props.value} ${props.row.original?.creationTime}`} placement="bottom">
-                <div>{props.value}</div>
-              </Tooltip>
+            <Tooltip
+              color="invert"
+              content={`${props.value} ${props.row.original?.creationTime}`}
+              placement="bottom"
+            >
+              <div>{props.value}</div>
+            </Tooltip>
             {/* })} */}
           </>
         );
@@ -80,7 +112,11 @@ const Dashboard = () => {
       accessor: "modifiedDate",
       Cell: (props) => {
         return (
-          <Tooltip color="invert" content={`${props.value} ${props.row.original?.modificationTime}`} placement="bottom">
+          <Tooltip
+            color="invert"
+            content={`${props.value} ${props.row.original?.modificationTime}`}
+            placement="bottom"
+          >
             <div>{props.value}</div>
           </Tooltip>
         );
@@ -107,19 +143,33 @@ const Dashboard = () => {
     {
       Header: "Logs",
       accessor: "logs",
+      Cell: () => {
+        return (
+          <Link href="/logs" className="text-primary">
+            View Logs
+          </Link>
+        );
+      },
     },
-    {
-      Header: "Error",
-      accessor: "error",
-    },
+    // {
+    //   Header: "Error",
+    //   accessor: "error",
+    // },
     {
       Header: "Action",
       accessor: "action",
-      Cell: () => {
+      Cell: (props) => {
         return (
           <>
             <i className="ri-delete-bin-5-line "></i>
-            <i className="ri-edit-2-fill mx-2"></i>
+            {/* <Link onClick={onClickOpenModal}> */}
+            {/* <i className="ri-edit-2-fill mx-2" onClick={() => onClickOpenModal(props.row.original?.id)} /> */}
+            <i
+              className="ri-edit-2-fill mx-2"
+              onClick={() => onClickOpenModal(props.row.original)}
+            />
+
+            {/* </Link> */}
             <i className="ri-eye-fill"></i>
           </>
         );
@@ -211,6 +261,14 @@ const Dashboard = () => {
           </TkRow>
         </TkContainer>
       </div> */}
+
+      <ModalButton
+        modal={modal}
+        setModal={setModal}
+        toggle={toggle}
+        recordId={recordId}
+        configData={configData}
+      />
     </>
   );
 };

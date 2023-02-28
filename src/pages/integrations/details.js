@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import ModalButton from "@/components/integrations/integrationModal";
@@ -11,6 +11,10 @@ import TkButton from "@/globalComponents/TkButton";
 // import { useRouter } from "next/router";
 
 const Details = () => {
+  // useEffect(() => {
+  //   const { data } = getQueryParams(window.location.search);
+  // }, []);
+
   const [modal, setModal] = useState(false);
 
   const toggle = useCallback(() => {

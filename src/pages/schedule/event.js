@@ -1,4 +1,4 @@
-import EventSchedule from '@/components/schedule';
+import EventSchedule from '@/components/schedule/events';
 import TkContainer from '@/components/TkContainer';
 import TkPageHead from '@/globalComponents/TkPageHead';
 import BreadCrumb from '@/utils/BreadCrumb';

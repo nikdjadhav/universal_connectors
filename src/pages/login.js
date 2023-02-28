@@ -34,6 +34,13 @@ import { AuthContext } from "@/utils/Contexts";
 import useGlobalStore from "@/utils/globalStore";
 // "use client";
 
+// *** using firebase ***
+import { app } from "../firebase";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+const auth =  getAuth(app);
+const googleProvider = new  GoogleAuthProvider();
+
+
 const schema = Yup.object({
   email: Yup.string()
     .email("Email must be valid.")
@@ -124,7 +131,7 @@ const Login = () => {
           password: data[0].password,
           token: data[0].token,
         };
-        console.log("user", user);
+        console.log("user==>", user);
         // localStorage.setItem("loginCredentials", JSON.stringify(user.token));
         sessionStorage.setItem("loginCredentials", user.token);
         router.push("/dashboard");
@@ -210,6 +217,16 @@ const Login = () => {
   const googleLoginHabdler = async () => {
     await signIn("google", { callbackUrl: "/dashboard" }); // it redirects use to dashboard after signIn
   };
+
+  // *** using firebase ***
+  const googleLogin = () => {
+    console.log('google login'); 
+    signInWithPopup(auth, googleProvider);
+    const user = app.auth;
+    if(user){
+      console.log("d", user);
+    }
+  }
 
   // const { status } = useSession({
   //   required: true,
@@ -348,7 +365,8 @@ const Login = () => {
                         </div>
                         <div>
                           <GoogleLoginBtn
-                            onClick={googleLoginHabdler}
+                          onClick={googleLogin}
+                            // onClick={googleLoginHabdler}
                             btnText={"Login with Google"}
                           />
                         </div>

@@ -4,9 +4,22 @@ import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import BreadCrumb from "@/utils/BreadCrumb";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
-const mapTable = () => {
+const MapTable = () => {
+  const [recordType, setRecorsType] = useState();
+  // get data from router
+  const router = useRouter();
+  useEffect(() => {
+    // console.log("route==>", router.query);
+    if (router.query.recordType){
+      const parseData = JSON.parse(router.query.recordType)
+      console.log("parse==>",parseData);
+      // console.log('recordType==>', parseData.recordType.label);
+      setRecorsType(parseData.recordType.label)
+    }
+  }, [router.query]);
   return (
     <>
       <TkPageHead>
@@ -15,9 +28,10 @@ const mapTable = () => {
 
       <div className="page-content">
         <BreadCrumb
-        parentTitle="Field Mapping"
-        parentLink="/fieldMapping"
-        pageTitle="Map content" />
+          parentTitle="Field Mapping"
+          parentLink="/fieldMapping"
+          pageTitle="Map content"
+        />
 
         {/* <TkRow className="justify-content-cente">
           <TkCol lg={5}>
@@ -30,17 +44,17 @@ const mapTable = () => {
           </TkCol>
         </TkRow> */}
 
-        {/* <TkContainer> */}
-          <MapTableComponent />
-        {/* </TkContainer> */}
+        <TkContainer>
+          <MapTableComponent recordType={recordType} />
+        </TkContainer>
       </div>
     </>
   );
 };
 
-export default mapTable;
+export default MapTable;
 
-mapTable.options = {
+MapTable.options = {
   layout: true,
   auth: true,
 };

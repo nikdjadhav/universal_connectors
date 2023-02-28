@@ -1,7 +1,7 @@
 import TkButton from "@/globalComponents/TkButton";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkDate from "@/globalComponents/TkDate";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TkModal, {
   TkModalBody,
   TkModalHeader,
@@ -13,19 +13,46 @@ import NetsuiteComponent from "./NetsuiteComponent";
 import GoogleSheetComponent from "./GoogleSheetComponent";
 import Verified from "./Verified";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
+import { data, destinationName, sourceName } from "@/utils/Constants";
 
-const ModalButton = ({ modal, toggle, syncWay, configData }) => {
-  // console.log("3 model", configData)
-
+const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
+  console.log("3 model", configData)
+  // console.log('in modal==>', other);
+  
   const [NSCTitle, setNSCTitle] = useState("NetSuite™");
   const [GSCTitle, setGSCTitle] = useState("Google Sheets™");
+  useEffect(() => {
+    if (other) {
+      console.log("in modal==>", other);
+      data.map((item) => {
+        if (item.id === other.recordId) {
+          setNSCTitle(item.sourceName);
+          setGSCTitle(item.destinationName);
+          console.log("in modal==>", item.sourceName);
+        }
+      });
+    }
+
+  }, [other]);
+
+    // sourceName.map((item) => {
+    //   destinationName.map((item2) => {})
+    //   if(item.source.label === NSCTitle){
+    //     configData = {
+    //       source: item.source.label,
+    //       destination: item.destination.label,
+    //     }
+    //   }
+    // })
+    // console.log("configData", configData)
+
 
   useEffect(() => {
-    if(configData){
+    if (configData) {
       setNSCTitle(configData.source.label);
       setGSCTitle(configData.destination.label);
     }
-  },[configData])
+  }, [configData]);
 
   const tabs = {
     Integration: 1,
@@ -33,7 +60,6 @@ const ModalButton = ({ modal, toggle, syncWay, configData }) => {
     GoogleSheetConfiguration: 3,
     Verified: 4,
   };
-
 
   const [activeTab, setActiveTab] = useState(tabs.Integration);
   const toggleTab = (tab) => {
@@ -137,7 +163,11 @@ const ModalButton = ({ modal, toggle, syncWay, configData }) => {
           {/* <TkForm onSubmit={handleSubmit(onSubmit)}> */}
           <TabContent activeTab={activeTab}>
             <TabPane tabId={tabs.Integration}>
-              <Integration onClickHandeler={onClickHandeler} syncWay={syncWay} configData={configData} />
+              <Integration
+                onClickHandeler={onClickHandeler}
+                syncWay={syncWay}
+                configData={configData}
+              />
             </TabPane>
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>

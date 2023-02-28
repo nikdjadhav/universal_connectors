@@ -24,6 +24,12 @@ function sidebarOptions() {
       icon: "",
       link: "/schedule",
     },
+    {
+      id: "logs",
+      label: "Logs",
+      icon: "",
+      link: "/logs",
+    },
   ];
   return menuItemsForAll;
 }
