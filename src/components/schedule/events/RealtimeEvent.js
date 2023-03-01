@@ -80,7 +80,8 @@ const RealtimeEvent = ({ toggleComponet }) => {
     // }
   };
   const onCancel = () => {
-    router.push("/schedule/field");
+    // router.push("/schedule/field");
+    history.back();
     // setValue("startDate", null);
     // setValue("endDate", null);
     // setCheckboxValue(true);

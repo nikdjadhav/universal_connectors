@@ -70,6 +70,7 @@ const SingleEvent = ({toggleComponet}) => {
 
   const onCancel = () => {
     toggleComponet("realtimeEvent");
+    // history.back();
   };
 
   return (

@@ -7,7 +7,9 @@ const ScheduleTable = () => {
         {
           integrationName: "NSGS",
           creationDate: "16 Feb, 2022",
+          creationTime: "10:34 AM",
           modifiedDate: "13 Feb, 2023",
+          modificationTime: "11:00 PM",
           systemOne: "NetSuite™",
           systemTwo: "Google Sheets™",
           action: "",

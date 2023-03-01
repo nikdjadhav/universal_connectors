@@ -48,6 +48,7 @@ const onClickDelete = useCallback(rowValue => {
 console.log('rows', rows);
 
   const { register, handleSubmit, control } = useForm();
+  // const mapTableColumns = ["Google Sheets", "NetSuite", "Action"];
 
   const columns = useMemo(
     () => [
@@ -102,13 +103,13 @@ console.log('rows', rows);
           return (
             <>
               <i
-                className="ri-delete-bin-5-line pe-auto"
+                className="ri-delete-bin-5-line pe-auto px-3"
                 onClick={() => onClickDelete(prop.row.original)}
               ></i>
-              <i
+              {/* <i
                 className="ri-edit-2-fill mx-2"
                 onClick={() => onClickEdit(prop.row.original)}
-              ></i>
+              ></i> */}
             </>
           );
         },
@@ -141,29 +142,29 @@ console.log('rows', rows);
 
   return (
     <>
-      {recordType === "Customer" ? (
+      {/* {recordType === "Customer" ? (
         <TkButton className="btn-info">Sales</TkButton>
-      ) : null}
+      ) : null} */}
 
       <TkRow className="justify-content-cente">
         <form onSubmit={handleSubmit(onSubmit)}>
           <TkRow>
             <TkTableContainer columns={columns} data={rows} />
           </TkRow>
-          <TkRow>
-            <TkCol lg={4}>
-              <TkButton className="btn-success my-2" onClick={handleAddRow}>
+          {/* <TkRow>
+            <TkCol lg={2}> */}
+              <TkButton className="btn-success my-2 me-2" onClick={handleAddRow}>
                 Add Row
               </TkButton>
-            </TkCol>
-          </TkRow>
-          <TkRow>
-            <TkCol lg={4}>
-              <TkButton className="btn-success my-2" type="submit">
+            {/* </TkCol> */}
+          {/* </TkRow>
+          <TkRow> */}
+            {/* <TkCol lg={2}> */}
+              <TkButton className="btn-success m-2" type="submit">
                 Submit
               </TkButton>
-            </TkCol>
-          </TkRow>
+            {/* </TkCol>
+          </TkRow> */}
         </form>
       </TkRow>
     </>

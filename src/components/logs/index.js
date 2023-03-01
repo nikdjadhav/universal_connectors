@@ -7,8 +7,10 @@ const LogTable = () => {
     {
       id: 1,
       integrationName: "Google",
-      creationDate: "2021-08-10",
-      modifiedDate: "2021-10-12",
+      syncDate: "10 Aug, 2021",
+      syncTime: "10:34 AM",
+      lastSyncDate: "12 Oct, 2021",
+      lastSyncTime: "11:00 PM",
       status: "Error",
       message: "Error for updating the records",
       // message: (
@@ -18,13 +20,15 @@ const LogTable = () => {
     {
       id: 2,
       integrationName: "Netsuite",
-      creationDate: "2022-11-09",
-      modifiedDate: "2023-08-12",
+      syncDate: "09 Nov, 2022",
+      syncTime: "12:47 AM",
+      lastSyncDate: "12 Aug, 2023",
+      lastSyncTime: "11:39 PM",
       status: "Success",
-      message: "30 records updated successfully out of 50",
+      message: "50 records updated successfully out of 50",
       // message: (
       //   <span className="text-success">
-      //     30 records updated successfully out of 50
+      //     50 records updated successfully out of 50
       //   </span>
       // ),
     },

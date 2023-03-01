@@ -64,6 +64,7 @@ const WeeklyEvent = ({ toggleComponet }) => {
 
   const onCancel = () => {
     toggleComponet("singleEvent");
+    // history.back();
   };
 
   return (

@@ -1,3 +1,4 @@
+import { Tooltip } from "@nextui-org/react";
 import Link from "next/link";
 
 const MinEmailLength = 6;
@@ -714,10 +715,36 @@ const columnHead = [
   {
     Header: "Creation Date",
     accessor: "creationDate",
+    Cell: (props) => {
+      return (
+        <>
+          <Tooltip
+            color="invert"
+            content={`${props.value} ${props.row.original?.creationTime}`}
+            placement="bottom"
+          >
+            <span>{props.value}</span>
+          </Tooltip>
+        </>
+      );
+    },
   },
   {
     Header: "Modified Date",
     accessor: "modifiedDate",
+    Cell: (props) => {
+      return (
+        <>
+          <Tooltip
+            color="invert"
+            content={`${props.value} ${props.row.original?.modificationTime}`}
+            placement="bottom"
+          >
+            <span>{props.value}</span>
+          </Tooltip>
+        </>
+      );
+    },
   },
   {
     Header: "System One",
@@ -733,11 +760,13 @@ const columnHead = [
     Cell: () => {
       return (
         <>
-          <i className="ri-delete-bin-5-line "></i>
+          <i className="ri-delete-bin-5-line" />
           <Link href="/fieldMapping/mapTable">
-            <i className="ri-edit-2-fill mx-2"></i>
+            <i className="ri-edit-2-fill mx-2" />
           </Link>
-          <i className="ri-eye-fill"></i>
+          <Link href="/fieldMapping/mapTable">
+            <i className="ri-eye-fill" />
+          </Link>
         </>
       );
     },
@@ -752,10 +781,36 @@ const scheduleHead = [
   {
     Header: "Creation Date",
     accessor: "creationDate",
+    Cell: (props) => {
+      return (
+        <>
+          <Tooltip
+            color="invert"
+            content={`${props.value} ${props.row.original?.creationTime}`}
+            placement="bottom"
+          >
+            <span>{props.value}</span>
+          </Tooltip>
+        </>
+      );
+    },
   },
   {
     Header: "Modified Date",
     accessor: "modifiedDate",
+    Cell: (props) => {
+      return (
+        <>
+          <Tooltip
+            color="invert"
+            content={`${props.value} ${props.row.original?.modificationTime}`}
+            placement="bottom"
+          >
+            <span>{props.value}</span>
+          </Tooltip>
+        </>
+      );
+    },
   },
   {
     Header: "System One",
@@ -788,12 +843,38 @@ const logsHead = [
     accessor: "integrationName",
   },
   {
-    Header: "Creation Date",
-    accessor: "creationDate",
+    Header: "Sync Date",
+    accessor: "syncDate",
+    Cell: (props) => {
+      return (
+        <>
+          <Tooltip
+            color="invert"
+            content={`${props.value} ${props.row.original?.syncTime}`}
+            placement="bottom"
+          >
+            <span>{props.value}</span>
+          </Tooltip>
+        </>
+      );
+    },
   },
   {
-    Header: "Modified Date",
-    accessor: "modifiedDate",
+    Header: "Last Sync Date",
+    accessor: "lastSyncDate",
+    Cell: (props) => {
+      return (
+        <>
+          <Tooltip
+            color="invert"
+            content={`${props.value} ${props.row.original?.lastSyncTime}`}
+            placement="bottom"
+          >
+            <span>{props.value}</span>
+          </Tooltip>
+        </>
+      );
+    },
   },
   {
     Header: "Status",

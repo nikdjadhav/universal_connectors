@@ -115,6 +115,7 @@ const Integration = ({ onClickHandeler, syncWay, configData }) => {
                             // labelName="Destination Name"
                             id="destinationName"
                             options={destinationName}
+                            defaultValue={destinationName[0]}
                             maxMenuHeight="130px"
                           />
                         </>
