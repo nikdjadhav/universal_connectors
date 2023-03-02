@@ -826,11 +826,13 @@ const scheduleHead = [
     Cell: () => {
       return (
         <>
-          <i className="ri-delete-bin-5-line "></i>
+          <i className="ri-delete-bin-5-line" />
           <Link href="/schedule/event">
-            <i className="ri-edit-2-fill mx-2"></i>
+            <i className="ri-edit-2-fill mx-2" />
           </Link>
-          <i className="ri-eye-fill"></i>
+          <Link href="/schedule/event">
+            <i className="ri-eye-fill" />
+          </Link>
         </>
       );
     },

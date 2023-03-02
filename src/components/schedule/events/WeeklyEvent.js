@@ -175,6 +175,7 @@ const WeeklyEvent = ({ toggleComponet }) => {
                   className="mb-3"
                   requiredStarOnLabel={true}
                   options={{
+                    minDate: "today",
                     altInput: true,
                     altFormat: "d M, Y",
                     dateFormat: "d M, Y",
@@ -248,6 +249,7 @@ const WeeklyEvent = ({ toggleComponet }) => {
                     field.onChange(e);
                   }}
                   options={{
+                    minDate: "today",
                     altInput: true,
                     altFormat: "d M, Y",
                     dateFormat: "d M, Y",

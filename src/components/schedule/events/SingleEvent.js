@@ -13,16 +13,20 @@ import * as Yup from "yup";
 import FormErrorText from "@/globalComponents/ErrorText";
 
 const schema = Yup.object({
-  startDate: Yup.date().
-  required("Start date is required"),
+  startDate: Yup.date().required("Start date is required"),
 
-  startTime: Yup.object().
-  required("Start time is required"),
+  startTime: Yup.object().required("Start time is required"),
 }).required();
 
-const SingleEvent = ({toggleComponet}) => {
-  const { control, register, handleSubmit, formState: { errors }, setValue } = useForm({
-    resolver: yupResolver(schema)
+const SingleEvent = ({ toggleComponet }) => {
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
   });
 
   const [endDateCheckbox, setEndDateCheckbox] = useState(true);
@@ -30,12 +34,12 @@ const SingleEvent = ({toggleComponet}) => {
   const [repeatEveryDay, setRepeatEveryDay] = useState(true);
 
   useEffect(() => {
-    setValue("startDate", new Date)
-  },[setValue])
+    setValue("startDate", new Date());
+  }, [setValue]);
 
   const repeatValue = (e) => {
-    console.log('value', e.target.value);
-  }
+    console.log("value", e.target.value);
+  };
 
   const handleOnChange = (dates) => {
     console.log("value", dates);
@@ -58,14 +62,14 @@ const SingleEvent = ({toggleComponet}) => {
 
   const onSubmit = (data) => {
     console.log("data", data);
-    if(data.endDate){
+    if (data.endDate) {
       // console.log('end date');
       data.noEndDate = false;
-    }else{
+    } else {
       // console.log('no end date');
       data.noEndDate = true;
     }
-    toggleComponet("weeklyEvent")
+    toggleComponet("weeklyEvent");
   };
 
   const onCancel = () => {
@@ -92,6 +96,7 @@ const SingleEvent = ({toggleComponet}) => {
                   className="mb-3"
                   requiredStarOnLabel={true}
                   options={{
+                    minDate: "today",
                     altInput: true,
                     altFormat: "d M, Y",
                     dateFormat: "d M, Y",
@@ -162,8 +167,12 @@ const SingleEvent = ({toggleComponet}) => {
                   placeholder="End Date"
                   className="mb-3"
                   // disabled={disableEndDate}
-                  onChange={(e)=>{handleOnChange(e); field.onChange(e)}}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                    field.onChange(e);
+                  }}
                   options={{
+                    minDate: "today",
                     altInput: true,
                     altFormat: "d M, Y",
                     dateFormat: "d M, Y",
@@ -173,7 +182,7 @@ const SingleEvent = ({toggleComponet}) => {
             />
 
             <TkCheckBox
-            {...register("noEndDate")}
+              {...register("noEndDate")}
               className="form-check-input"
               type="checkbox"
               id="noEndDate"
@@ -206,7 +215,7 @@ const SingleEvent = ({toggleComponet}) => {
           </TkCol> */}
 
           <TkCol lg={2} sm={4} className="">
-          <TkButton type="button" onClick={onCancel} className="btn-success">
+            <TkButton type="button" onClick={onCancel} className="btn-success">
               Cancel
             </TkButton>
           </TkCol>

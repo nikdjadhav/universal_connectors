@@ -1,4 +1,4 @@
-import MapTableComponent from "@/components/mapField/MapTableComponent";
+import MapTableComponent from "@/components/mapField/mapTableComponent";
 import TkContainer from "@/components/TkContainer";
 import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
@@ -13,11 +13,11 @@ const MapTable = () => {
   const router = useRouter();
   useEffect(() => {
     // console.log("route==>", router.query);
-    if (router.query.recordType){
-      const parseData = JSON.parse(router.query.recordType)
-      console.log("parse==>",parseData);
+    if (router.query.recordType) {
+      const parseData = JSON.parse(router.query.recordType);
+      console.log("parse==>", parseData);
       // console.log('recordType==>', parseData.recordType.label);
-      setRecorsType(parseData.recordType.label)
+      setRecorsType(parseData.recordType.label);
     }
   }, [router.query]);
   return (

@@ -61,9 +61,8 @@ const RealtimeEvent = ({ toggleComponet }) => {
   };
 
   const onChangeEvent = (e) => {
-    console.log('original', e.target.value);
-
-  }
+    console.log("original", e.target.value);
+  };
 
   const onSubmit = (data) => {
     console.log(data);
@@ -106,7 +105,7 @@ const RealtimeEvent = ({ toggleComponet }) => {
                   className="mb-3"
                   requiredStarOnLabel={true}
                   options={{
-                    // minDate: "today",
+                    minDate: "today",
                     altInput: true,
                     altFormat: "d M, Y",
                     dateFormat: "d M, Y",
@@ -139,6 +138,7 @@ const RealtimeEvent = ({ toggleComponet }) => {
                     field.onChange(e);
                   }}
                   options={{
+                    minDate: "today",
                     altInput: true,
                     altFormat: "d M, Y",
                     dateFormat: "d M, Y",
