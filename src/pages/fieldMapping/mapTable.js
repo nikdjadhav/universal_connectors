@@ -14,10 +14,11 @@ const MapTable = () => {
   useEffect(() => {
     // console.log("route==>", router.query);
     if (router.query.recordType) {
-      const parseData = JSON.parse(router.query.recordType);
-      console.log("parse==>", parseData);
+      console.log("route==>", router.query.recordType);
+      // const parseData = JSON.parse(router.query.recordType);
+      // console.log("parse==>", parseData);
       // console.log('recordType==>', parseData.recordType.label);
-      setRecorsType(parseData.recordType.label);
+      setRecorsType(router.query.recordType);
     }
   }, [router.query]);
   return (
@@ -30,7 +31,8 @@ const MapTable = () => {
         <BreadCrumb
           parentTitle="Field Mapping"
           parentLink="/fieldMapping"
-          pageTitle="Map content"
+          // pageTitle="Map content"
+          pageTitle={recordType}
         />
 
         {/* <TkRow className="justify-content-cente">

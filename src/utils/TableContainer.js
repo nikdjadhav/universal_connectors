@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   useTable,
   useGlobalFilter,
@@ -12,12 +12,12 @@ import {
 import { Table } from "reactstrap";
 import { DefaultColumnFilter } from "./Filter";
 import { TaskListGlobalFilter } from "./SearchFilters";
+import TkInput from "../components/forms/TkInput";
+import TkRow, { TkCol } from "../components/TkRow";
+import TkButton from "../components/TkButton";
+import TkIcon from "../components/TkIcon";
+import { TkCardBody } from "../components/TkCard";
 import { environment } from "./Constants";
-import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import TkInput from "@/globalComponents/TkInput";
-import TkIcon from "@/globalComponents/TkIcon";
-import { TkCardBody } from "@/globalComponents/TkCard";
-import TkButton from "@/globalComponents/TkButton";
 
 // Define a default UI for filtering
 function GlobalFilter({ isSearch, onSearchChange, isFilters }) {
@@ -47,7 +47,10 @@ function GlobalFilter({ isSearch, onSearchChange, isFilters }) {
   );
 }
 
-const IndeterminateCheckbox = React.forwardRef(function IndeterminateCheckbox({ indeterminate, ...rest }, ref) {
+const IndeterminateCheckbox = React.forwardRef(function IndeterminateCheckbox(
+  { indeterminate, disabled, ...rest },
+  ref
+) {
   const defaultRef = React.useRef();
   const resolvedRef = ref || defaultRef;
 
@@ -57,7 +60,7 @@ const IndeterminateCheckbox = React.forwardRef(function IndeterminateCheckbox({ 
 
   return (
     <>
-      <TkInput type="checkbox" ref={resolvedRef} {...rest} />
+      <TkInput type="checkbox" disabled={disabled} ref={resolvedRef} {...rest} />
     </>
   );
 });
@@ -65,9 +68,6 @@ const IndeterminateCheckbox = React.forwardRef(function IndeterminateCheckbox({ 
 const TableContainer = ({
   columns,
   data,
-  isSearch,
-  onSearchChange,
-  isFilters,
   defaultPageSize,
   tableClass,
   theadClass,
@@ -79,6 +79,11 @@ const TableContainer = ({
   onRowSelection,
   showSelectedRowCount,
   customPageSize,
+  Toolbar,
+  loading,
+  initialSelectedRows,
+  getRowId,
+  disableRowSelectChkBox,
 }) => {
   const {
     getTableProps,
@@ -101,10 +106,13 @@ const TableContainer = ({
       data,
       disableSortBy: true,
       defaultColumn: { Filter: DefaultColumnFilter },
+      getRowId: getRowId
+        ? getRowId
+        : (row, relativeIndex, parent) => (parent ? [parent.id, relativeIndex].join(".") : relativeIndex),
       initialState: {
         pageIndex: 0,
         pageSize: defaultPageSize || 1000_000, // just a large number to show all rows on one page, It's just a workaround, and works all the time as no one is going to have pag size of 100,000
-        selectedRowIds: 0,
+        selectedRowIds: initialSelectedRows ? initialSelectedRows : {},
         // sortBy: [
         //   {
         //     desc: true,
@@ -124,18 +132,20 @@ const TableContainer = ({
         // A column for selection
         {
           id: "selection",
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
+          // you can use the table's getToggleAllRowsSelectedProps method here, as it will select all the rows that table has
+          // currently we only select the rows of current page, wahtever the size of page is 10,20, etc.
+          //not selcting all as we dont have all rows data on UI sometimes,as backend pass only 100 rows at a time while writing this comment,
+          // so only selecting rows of current page, not all rows
           Header: ({ getToggleAllPageRowsSelectedProps }) => (
             <div>
-              <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
+              <IndeterminateCheckbox disabled={disableRowSelectChkBox} {...getToggleAllPageRowsSelectedProps()} />
             </div>
           ),
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
           Cell: ({ row }) => (
             <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              <IndeterminateCheckbox disabled={disableRowSelectChkBox} {...row.getToggleRowSelectedProps()} />
             </div>
           ),
         },
@@ -144,18 +154,18 @@ const TableContainer = ({
     }
   );
 
+  // kept this state for not calling onRowSelection on every render
+  // as when parent of this component was getting re-rendred the the below useEffect was getting called
+  // and again onRowSelection was getting called, so onRowSelection was getting called twice
+  const previousChkSelectedLength = useRef(0);
+
+  // if onRowSelection updates a state of parent component then it was causing infinite loop,
+  // as calling onRowSelection updates a state of parent causing re-render of parent component, that again calls a rerender to this child component,
+  // and as this child gets render it again calls onRowSelection, which again re-renders parent, and so on
   useEffect(() => {
-    //TODO:remove the below check in production
-    if (rowSelection) {
-      if (environment !== "production") {
-        if (onRowSelection) {
-          onRowSelection(selectedFlatRows);
-        } else {
-          console.error("onRowSelection prop is required when rowSelection is true");
-        }
-      } else {
-        onRowSelection(selectedFlatRows);
-      }
+    if (rowSelection && selectedFlatRows.length !== previousChkSelectedLength.current) {
+      onRowSelection(selectedFlatRows);
+      previousChkSelectedLength.current = selectedFlatRows.length;
     }
   }, [rowSelection, selectedFlatRows, onRowSelection]);
 
@@ -165,14 +175,14 @@ const TableContainer = ({
         "pagination is true but no defaultPageSize prop is provided, without defaultPageSize pagination will not work, and all data will we shown on single page"
       );
     }
-    if (isSearch && !onSearchChange) {
-      console.error("isSearch is true but onSearchChange prop is not provided in TableContainer");
+    if (rowSelection && !onRowSelection) {
+      console.error("onRowSelection prop is required when rowSelection is true, It shold be a UseCallback  Function");
     }
   }
 
-  const generateSortingIndicator = (column) => {
-    return column.isSorted ? (column.isSortedDesc ? " " : "") : "";
-  };
+  // const generateSortingIndicator = (column) => {
+  //   return column.isSorted ? (column.isSortedDesc ? "↓" : "↑") : "";
+  // };
 
   const onChangeInSelect = (event) => {
     setPageSize(Number(event.target.value));
@@ -185,30 +195,13 @@ const TableContainer = ({
 
   return (
     <>
+      <TkRow className="mb-2">{Toolbar ? Toolbar : null}</TkRow>
       <TkRow className="mb-3">
-        {isSearch || isFilters ? (
-          <GlobalFilter
-            isSearch={isSearch}
-            //TODO: remove this in production
-            onSearchChange={onSearchChange ? onSearchChange : () => {}}
-            isFilters={isFilters}
-          />
-        ) : null}
-
         <TkCol>
-          {showSelectedRowCount && <p> {selectedFlatRows?.length ? selectedFlatRows.length + " rows selected" : null} </p>}
+          {showSelectedRowCount && (
+            <p> {selectedFlatRows.length ? selectedFlatRows.length + " rows selected" : null} </p>
+          )}
         </TkCol>
-
-        {/* {isAddCustList && (
-          <Col sm="7">
-            <div className="text-sm-end">
-              <Button type="button" color="success" className="btn-rounded mb-2 me-2" onClick={handleCustomerClick}>
-                <i className="mdi mdi-plus me-1" />
-                New Customers
-              </Button>
-            </div>
-          </Col>
-        )} */}
       </TkRow>
 
       <div className={divClass}>
@@ -219,20 +212,32 @@ const TableContainer = ({
                 {headerGroup.headers.map((column) => (
                   <th key={column.id} className={thClass} {...column.getSortByToggleProps()}>
                     {column.render("Header")}
-                    {generateSortingIndicator(column)}
-                    {/* <Filter column={column} /> */}
+                    {/*  if required sorting rows then uncomment the below, and adjust the generateSortingIndicator function if required, because not tested */}
+                    {/* {generateSortingIndicator(column)} */}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
 
-          <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
-              prepareRow(row);
-              return (
-                <Fragment key={row.getRowProps().key}>
-                  <tr>
+          {loading ? (
+            <tbody>
+              <tr>
+                <td>
+                  <div className="w-100 h-100 mx-auto d-flex justify-content-center align-items-center">
+                    <div className="d-block spinner-border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody {...getTableBodyProps()}>
+              {page.map((row) => {
+                prepareRow(row);
+                return (
+                  <tr key={row.getRowProps().key}>
                     {row.cells.map((cell) => {
                       return (
                         <td key={cell.id} {...cell.getCellProps()}>
@@ -241,10 +246,10 @@ const TableContainer = ({
                       );
                     })}
                   </tr>
-                </Fragment>
-              );
-            })}
-          </tbody>
+                );
+              })}
+            </tbody>
+          )}
         </Table>
       </div>
 

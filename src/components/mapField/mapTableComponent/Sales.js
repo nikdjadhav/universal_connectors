@@ -148,7 +148,7 @@ const Sales = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TkTableContainer columns={columns} data={rows} />
+        <TkTableContainer columns={columns} data={rows} thClass="text-dark" />
 
         <TkButton className="btn-success my-2 me-2" onClick={handleAddRow}>
           Add Row

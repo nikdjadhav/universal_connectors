@@ -6,7 +6,8 @@ const LogTable = () => {
   const data = [
     {
       id: 1,
-      integrationName: "Google",
+      integrationName: "NSGS",
+      recordType: "Contact",
       syncDate: "10 Aug, 2021",
       syncTime: "10:34 AM",
       lastSyncDate: "12 Oct, 2021",
@@ -16,10 +17,13 @@ const LogTable = () => {
       // message: (
       //   <span className="text-danger">Error for updating the records</span>
       // ),
+      action: "",
+      details: "Contact records not updated successfully for NSGS",
     },
     {
       id: 2,
-      integrationName: "Netsuite",
+      integrationName: "NSGS",
+      recordType: "Vender",
       syncDate: "09 Nov, 2022",
       syncTime: "12:47 AM",
       lastSyncDate: "12 Aug, 2023",
@@ -31,6 +35,8 @@ const LogTable = () => {
       //     50 records updated successfully out of 50
       //   </span>
       // ),
+      action: "",
+      details: "All NSGS Vender records updated successfully",
     },
   ];
   return (

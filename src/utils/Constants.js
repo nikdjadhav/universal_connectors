@@ -707,72 +707,6 @@ const data = [
   // },
 ];
 
-const columnHead = [
-  {
-    Header: "Integration Name",
-    accessor: "integrationName",
-  },
-  {
-    Header: "Creation Date",
-    accessor: "creationDate",
-    Cell: (props) => {
-      return (
-        <>
-          <Tooltip
-            color="invert"
-            content={`${props.value} ${props.row.original?.creationTime}`}
-            placement="bottom"
-          >
-            <span>{props.value}</span>
-          </Tooltip>
-        </>
-      );
-    },
-  },
-  {
-    Header: "Modified Date",
-    accessor: "modifiedDate",
-    Cell: (props) => {
-      return (
-        <>
-          <Tooltip
-            color="invert"
-            content={`${props.value} ${props.row.original?.modificationTime}`}
-            placement="bottom"
-          >
-            <span>{props.value}</span>
-          </Tooltip>
-        </>
-      );
-    },
-  },
-  {
-    Header: "System One",
-    accessor: "systemOne",
-  },
-  {
-    Header: "System Two",
-    accessor: "systemTwo",
-  },
-  {
-    Header: "Action",
-    accessor: "action",
-    Cell: () => {
-      return (
-        <>
-          <i className="ri-delete-bin-5-line" />
-          <Link href="/fieldMapping/mapTable">
-            <i className="ri-edit-2-fill mx-2" />
-          </Link>
-          <Link href="/fieldMapping/mapTable">
-            <i className="ri-eye-fill" />
-          </Link>
-        </>
-      );
-    },
-  },
-];
-
 const scheduleHead = [
   {
     Header: "Integration Name",
@@ -845,6 +779,10 @@ const logsHead = [
     accessor: "integrationName",
   },
   {
+    Header: "Record Type",
+    accessor: "recordType",
+  },
+  {
     Header: "Sync Date",
     accessor: "syncDate",
     Cell: (props) => {
@@ -885,6 +823,30 @@ const logsHead = [
   {
     Header: "Message",
     accessor: "message",
+    Cell: (props) => {
+      return (
+        <Tooltip
+          color="invert"
+          content={`${props.value}: ${props.row.original?.details}`}
+          placement="bottom"
+        >
+          <span>{props.value}</span>
+        </Tooltip>
+      );
+    },
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: () => {
+      return (
+        <>
+          {/* <Link href=""> */}
+          <i className="ri-eye-fill" />
+          {/* </Link> */}
+        </>
+      );
+    },
   },
 ];
 
@@ -948,7 +910,6 @@ export {
   days,
   months,
   data,
-  columnHead,
   scheduleHead,
   logsHead,
 };

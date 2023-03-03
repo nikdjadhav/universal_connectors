@@ -30,6 +30,12 @@ function sidebarOptions() {
       icon: "",
       link: "/logs",
     },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: "",
+      link: "/settings",
+    },
   ];
   return menuItemsForAll;
 }

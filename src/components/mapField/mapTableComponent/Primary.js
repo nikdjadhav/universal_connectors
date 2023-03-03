@@ -1,5 +1,6 @@
 import TkButton from "@/globalComponents/TkButton";
 import TkInput from "@/globalComponents/TkInput";
+import { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import React, { useMemo, useState } from "react";
@@ -36,7 +37,8 @@ const Primary = () => {
         Header: "Google Sheets™",
         accessor: "googleSheets",
         Cell: ({ row }) => (
-          <TkInput
+          // <TkCol lg={3}>
+            <TkInput
             type="text"
             {...register(`googleSheets[${row.index}]`)}
             // value={row.original.googleSheets}
@@ -48,6 +50,7 @@ const Primary = () => {
             //   console.log("value", e.target.value);
             // }}
           />
+          // </TkCol>
         ),
       },
       {
@@ -145,10 +148,14 @@ const Primary = () => {
     history.back();
   };
 
+  const sd ={
+    width: "5%"
+  }
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TkTableContainer columns={columns} data={rows} />
+        <TkTableContainer columns={columns} data={rows} thClass="text-dark" />
 
         <TkButton className="btn-success my-2 me-2" onClick={handleAddRow}>
           Add Row

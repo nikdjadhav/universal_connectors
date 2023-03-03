@@ -9,12 +9,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTable } from "react-table";
 import { Nav, NavItem, NavLink, TabContent, Table, TabPane } from "reactstrap";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import Primary from "./Primary";
 import Sales from "./Sales";
 import Address from "./Address";
 import classnames from "classnames";
+// import { useLocation } from 'react-router-dom';
 
 // const schema = Yup.object({
 //   googleSheets: "",
@@ -23,6 +22,11 @@ import classnames from "classnames";
 
 const MapTableComponent = ({ recordType }) => {
   const [control, setControl] = useState(null);
+  // const [recordType, setRecordType] = useState(null);
+  // if(type){
+  //   setRecordType(type)
+  // }
+  // type ? setRecordType(type) : setRecordType(null);
   // const { register, handleSubmit, setValue, control } = useForm();
   // const [data, setData] = useState([{ googleSheets: "", netSuite: "" }]);
 
@@ -344,7 +348,7 @@ const MapTableComponent = ({ recordType }) => {
     <>
       {/* {recordType === "Contact" || "Customer" &&()} */}
       {/* {recordType === "Customer" && ( */}
-      <Nav className="nav-tabs dropdown-tabs nav-tabs-custom mb-3">
+      <Nav className="nav-tabs dropdown-tabs nav-tabs-custom mb-3 fs-5">
         {recordType === "Customer" ? (
           <>
             <NavItem>

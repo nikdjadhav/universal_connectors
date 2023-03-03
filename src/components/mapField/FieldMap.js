@@ -33,11 +33,11 @@ const FieldMap = () => {
   const router = useRouter();
 
   const onsubmit = (data) => {
-    console.log("data", data);
+    console.log("data", data.recordType.label);
     router.push({
       pathname: "/fieldMapping/mapTable",
-      // query: { recordType: "data" },
-      query: {recordType: JSON.stringify(data)},
+      query: { recordType: data.recordType.label },
+      // query: {recordType: JSON.stringify(data)},
     }, "/fieldMapping/mapTable");
   };
 
