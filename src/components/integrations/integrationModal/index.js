@@ -167,6 +167,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
                 onClickHandeler={onClickHandeler}
                 syncWay={syncWay}
                 configData={configData}
+                toggle={toggle}
               />
             </TabPane>
 

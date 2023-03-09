@@ -153,14 +153,14 @@ const sourceName = [
     value: "netSuite",
     label: "NetSuite™",
   },
-  {
-    value: "quickBooks",
-    label: "QuickBooks",
-  },
-  {
-    value: "xero",
-    label: "Xero",
-  },
+  // {
+  //   value: "quickBooks",
+  //   label: "QuickBooks",
+  // },
+  // {
+  //   value: "xero",
+  //   label: "Xero",
+  // },
 ];
 
 const destinationName = [
@@ -168,14 +168,14 @@ const destinationName = [
     value: "googleSheets",
     label: "Google Sheets™",
   },
-  {
-    value: "microsoftExcel",
-    label: "Microsoft Excel",
-  },
-  {
-    value: "microsoftOneDrive",
-    label: "Microsoft OneDrive",
-  },
+  // {
+  //   value: "microsoftExcel",
+  //   label: "Microsoft Excel",
+  // },
+  // {
+  //   value: "microsoftOneDrive",
+  //   label: "Microsoft OneDrive",
+  // },
 ];
 
 const integrations = [
@@ -199,8 +199,8 @@ const recordType = [
     label: "Contact",
   },
   {
-    value: "vender",
-    label: "Vender",
+    value: "vendor",
+    label: "Vendor",
   },
 ];
 
@@ -622,89 +622,35 @@ const data = [
     // error: 0,
     action: "Action",
   },
-  {
-    id: 9402,
-    sourceName: "NetSuite™",
-    destinationName: "QuickBooks",
-    creationDate: "12 Jan, 2022",
-    creationTime: "3:30 AM",
-    modifiedDate: "23 Feb, 2022",
-    modificationTime: "7:00 PM",
-    schedule: (
-      <>
-        <Link href="/schedule/event" className="">
-          <span className="">No</span>
-          <i className="ri-add-fill ps-2"></i>
-        </Link>
-      </>
-    ),
-    fieldMapping: (
-      <>
-        <Link href="/fieldMapping/mapTable" className="">
-          <span className="">Yes</span>
-          <i className="ri-edit-2-fill ps-2"></i>
-        </Link>
-      </>
-    ),
-    status: "Completed",
-    logs: "Logs",
-    // error: 0,
-    action: "Action",
-  },
   // {
-  //   integrationName: "GS",
+  //   id: 9402,
   //   sourceName: "NetSuite™",
-  //   destinationName: "Google Sheets™",
-  //   creationDate: "04 May-2021 02:00 PM",
-  //   modifiedDate: "16 Jan-2022 12:00 PM",
+  //   destinationName: "QuickBooks",
+  //   creationDate: "12 Jan, 2022",
+  //   creationTime: "3:30 AM",
+  //   modifiedDate: "23 Feb, 2022",
+  //   modificationTime: "7:00 PM",
   //   schedule: (
   //     <>
   //       <Link href="/schedule/event" className="">
-  //         <span className="px-1">No</span>
-  //         <i className="ri-add-fill px-2"></i>
+  //         <span className="">No</span>
+  //         <i className="ri-add-fill ps-2"></i>
   //       </Link>
   //     </>
   //   ),
   //   fieldMapping: (
   //     <>
   //       <Link href="/fieldMapping/mapTable" className="">
-  //         <span className="px-2">Yes</span>
-  //         <i className="ri-edit-2-fill px-2"></i>
+  //         <span className="">Yes</span>
+  //         <i className="ri-edit-2-fill ps-2"></i>
   //       </Link>
   //     </>
   //   ),
   //   status: "Completed",
-  //   logs: "no error message",
-  //   error: 0,
+  //   logs: "Logs",
+  //   // error: 0,
   //   action: "Action",
-  // },
-  // {
-  //   integrationName: "NS",
-  //   sourceName: "NetSuite™",
-  //   destinationName: "Google Sheets™",
-  //   creationDate: "04 May-2021 02:00 PM",
-  //   modifiedDate: "16 Jan-2022 12:00 PM",
-  //   schedule: (
-  //     <>
-  //       <Link href="/schedule/event" className="">
-  //         <span className="px-1">No</span>
-  //         <i className="ri-add-fill px-2"></i>
-  //       </Link>
-  //     </>
-  //   ),
-  //   fieldMapping: (
-  //     <>
-  //       <Link href="/fieldMapping/mapTable" className="">
-  //         <span className="px-2">Yes</span>
-  //         <i className="ri-edit-2-fill px-2"></i>
-  //       </Link>
-  //     </>
-  //   ),
-  //   status: "Completed",
-  //   logs: "no error message",
-  //   error: 0,
-  //   action: "Action",
-  // },
+  // }
 ];
 
 const scheduleHead = [
@@ -850,6 +796,19 @@ const logsHead = [
   },
 ];
 
+const serachFields =  {
+  dashboard: ["integrationName", "sourceName", "destinationName", "CreationDate"],
+}
+
+const filterFields = {
+  dashboard: {
+    startDate: "startDate",
+    endDate: "endDate",
+    sourceName: "sourceName",
+    destinationName: "destinationName"
+  }
+}
+
 // we take maxTake as 100 from database for all queries, but here I have set it to 99 to be safe from any future changes
 const maxDataLengthForUISearch = 99;
 
@@ -912,4 +871,6 @@ export {
   data,
   scheduleHead,
   logsHead,
+  serachFields,
+  filterFields
 };

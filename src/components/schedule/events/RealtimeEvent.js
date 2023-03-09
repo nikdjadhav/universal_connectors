@@ -128,7 +128,7 @@ const RealtimeEvent = ({ toggleComponet }) => {
               render={({ field }) => (
                 <TkDate
                   {...field}
-                  labelName="End Date"
+                  labelName="End By"
                   id="endDate"
                   placeholder="End Date"
                   // disabled={disableEndDate}

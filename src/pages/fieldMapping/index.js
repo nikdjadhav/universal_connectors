@@ -15,13 +15,13 @@ const FeildMapping = () => {
   return (
     <>
       <TkPageHead>
-        <title>{`Feild Mapping`}</title>
+        <title>{`Record/Field Mapping`}</title>
       </TkPageHead>
 
       <div className="page-content">
         <BreadCrumb 
-        pageTitle="Field Mapping"
-        buttonText={"Add Field Mapping"}
+        pageTitle="Record / Field Mapping"
+        buttonText={"Add Mapping"}
         onButtonClick={addFieldMapping}
         />
 
@@ -41,3 +41,5 @@ FeildMapping.options = {
   layout: true,
   auth: true,
 };
+
+

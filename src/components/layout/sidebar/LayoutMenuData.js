@@ -14,7 +14,7 @@ function sidebarOptions() {
     },
     {
       id: "fieldMapping",
-      label: "Field Mapping",
+      label: "Record / Field Mapping",
       icon: "",
       link: "/fieldMapping",
     },

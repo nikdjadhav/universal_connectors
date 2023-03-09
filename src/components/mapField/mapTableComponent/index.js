@@ -13,6 +13,8 @@ import Primary from "./Primary";
 import Sales from "./Sales";
 import Address from "./Address";
 import classnames from "classnames";
+import TkLabel from "@/globalComponents/TkLabel";
+import { useRouter } from "next/router";
 // import { useLocation } from 'react-router-dom';
 
 // const schema = Yup.object({
@@ -20,8 +22,10 @@ import classnames from "classnames";
 //   netSuite: "",
 // }).required();
 
-const MapTableComponent = ({ recordType }) => {
+const MapTableComponent = ({ data }) => {
   const [control, setControl] = useState(null);
+  const [recordType, setRecordType] = useState(null);
+  const router = useRouter();
   // const [recordType, setRecordType] = useState(null);
   // if(type){
   //   setRecordType(type)
@@ -342,7 +346,22 @@ const MapTableComponent = ({ recordType }) => {
     }
   };
 
-  console.log("recordType==>", recordType);
+  // console.log("recordType==>==>",data);
+  // console.log("recordType==>==>",data?.recordType);
+
+  // // console.log("recordType==>==>", data?.recordType.label);
+  useEffect(() => {
+    if (data?.recordType.label) {
+      setRecordType(data?.recordType.label);
+      console.log("first", data);
+    } else {
+      setRecordType(data?.recordType);
+      console.log("second", data);
+    }
+  }, [data]);
+
+  console.log("recordType==>==>", recordType);
+  // // setRecordType(data?.recordType.label);
 
   return (
     <>
@@ -393,7 +412,7 @@ const MapTableComponent = ({ recordType }) => {
               </NavLink>
             </NavItem>
           </>
-        ) : recordType === "Employee" || recordType === "Vender" ? (
+        ) : recordType === "Employee" || recordType === "Vendor" ? (
           <>
             <NavItem>
               <NavLink
@@ -455,9 +474,29 @@ const MapTableComponent = ({ recordType }) => {
         )}
       </Nav>
 
+      <TkRow>
+        <TkCol>
+          <TkLabel>
+            <span className="fw-bold">Integration Name: </span>&nbsp;&nbsp;
+            <span>{data?.integrationName.label || data?.integrationName}</span>
+          </TkLabel>
+        </TkCol>
+        <TkCol>
+          <TkLabel>
+            <span className="fw-bold">Google Sheets™ Url:</span>&nbsp;&nbsp;
+            <span> {data?.googleSheetUrl || ""}</span>
+          </TkLabel>
+        </TkCol>
+      </TkRow>
+
       <TabContent activeTab={activeTab}>
         <TabPane tabId={tabs.Primary}>
-          <Primary onClickHandeler={onClickHandeler} />
+          {recordType? (
+            <Primary
+              onClickHandeler={onClickHandeler}
+              recordType={recordType}
+            />
+          ) : null}
         </TabPane>
 
         <TabPane tabId={tabs.Sales}>

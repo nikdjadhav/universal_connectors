@@ -23,7 +23,7 @@ const LogTable = () => {
     {
       id: 2,
       integrationName: "NSGS",
-      recordType: "Vender",
+      recordType: "Vendor",
       syncDate: "09 Nov, 2022",
       syncTime: "12:47 AM",
       lastSyncDate: "12 Aug, 2023",
@@ -36,7 +36,7 @@ const LogTable = () => {
       //   </span>
       // ),
       action: "",
-      details: "All NSGS Vender records updated successfully",
+      details: "All NSGS Vendor records updated successfully",
     },
   ];
   return (

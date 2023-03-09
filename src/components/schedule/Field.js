@@ -6,7 +6,7 @@ import TkSelect from "@/globalComponents/TkSelect";
 import { integrations } from "@/utils/Constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -20,9 +20,14 @@ const Field = () => {
     control,
     formState: { errors, isDirty },
     handleSubmit,
+    setValue
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    setValue("integrationName", integrations[0])
+  })
 
   const router = useRouter();
 
@@ -46,6 +51,8 @@ const Field = () => {
                   labelName="Integration Name"
                   id="integrationName"
                   options={integrations}
+                  // defaultValue={integrations[0]}
+                  disabled={true}
                   maxMenuHeight="120px"
                   requiredStarOnLabel={true}
                 />

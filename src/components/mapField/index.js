@@ -62,19 +62,22 @@ const FieldMappingTable = () => {
       Cell: (props) => {
         return (
           <>
-            <i className="ri-delete-bin-5-line" />
-            <Link href="/fieldMapping/mapTable">
+            <i className="ri-delete-bin-5-line px-2" />
+            {/* <Link href="/fieldMapping/mapTable">
               <i className="ri-edit-2-fill mx-2" />
-            </Link>
+            </Link> */}
+            {/* hide props from link */}
             <Link
               href={{
                 pathname: "/fieldMapping/mapTable",
-                query: { recordType: props.row.original.recordType },
+                // query: { recordType: props.row.original },
+                query: { recordType: JSON.stringify(props.row.original) },
+                // query: {data: props.row.original}
               }}
             >
               <i
                 className="ri-eye-fill"
-                onClick={() => onClickView(props.row.original.recordType)}
+                onClick={() => onClickView(props.row.original)}
               />
             </Link>
           </>
@@ -95,17 +98,17 @@ const FieldMappingTable = () => {
       systemTwo: "Google Sheets™",
       action: "",
     },
-    {
-      integrationName: "GS",
-      recordType: "Employee",
-      creationDate: "10 Jan, 2023",
-      creationTime: "11:30 AM",
-      modifiedDate: "21 Jan, 2023",
-      modificationTime: "1:00 PM",
-      systemOne: "Microsoft Dynamics™",
-      systemTwo: "Google Sheets™",
-      action: "",
-    }
+    // {
+    //   integrationName: "NSGS",
+    //   recordType: "Employee",
+    //   creationDate: "10 Jan, 2023",
+    //   creationTime: "11:30 AM",
+    //   modifiedDate: "21 Jan, 2023",
+    //   modificationTime: "1:00 PM",
+    //   systemOne: "Microsoft Dynamics™",
+    //   systemTwo: "Google Sheets™",
+    //   action: "",
+    // },
   ];
 
   const onClickView = (row) => {

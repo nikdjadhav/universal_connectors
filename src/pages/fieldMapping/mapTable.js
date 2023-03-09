@@ -6,21 +6,41 @@ import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import BreadCrumb from "@/utils/BreadCrumb";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { json } from "react-router-dom";
 
 const MapTable = () => {
-  const [recordType, setRecorsType] = useState();
+  // const [recordType, setRecorsType] = useState();
+  const [parsedData, setParsedData] = useState(null);
   // get data from router
   const router = useRouter();
-  useEffect(() => {
-    // console.log("route==>", router.query);
-    if (router.query.recordType) {
-      console.log("route==>", router.query.recordType);
-      // const parseData = JSON.parse(router.query.recordType);
-      // console.log("parse==>", parseData);
-      // console.log('recordType==>', parseData.recordType.label);
-      setRecorsType(router.query.recordType);
-    }
-  }, [router.query]);
+  const { recordType } = router.query;
+  console.log("recordType in maptable", recordType);
+  // useEffect(() => {
+  //   console.log("route==>", router.query.recordType);
+  //   if (router.query.recordType) {
+  //     const data = JSON.parse(router.query.recordType);
+  //     console.log("data", data);
+  //     setParsedData(data);
+  //     // console.log("setParsedData",parsedData);
+
+  //     // if (data) {
+  //     //   setRecorsType(data.recordType.label || data.recordType);
+  //     // }
+  //   }
+  //   // if (router.query.recordType) {
+  //   //   console.log("route==>", router.query.recordType);
+  //   //   setRecorsType(router.query.recordType);
+  //   // }
+  // }, [router.query.recordType]);
+  // console.log("recordType=======", recordType);
+
+  let pageTitle = "";
+  if (recordType) {
+    pageTitle =
+      JSON.parse(recordType).recordType.label ||
+      JSON.parse(recordType).recordType;
+  }
+
   return (
     <>
       <TkPageHead>
@@ -29,10 +49,10 @@ const MapTable = () => {
 
       <div className="page-content">
         <BreadCrumb
-          parentTitle="Field Mapping"
+          parentTitle="Record /Field Mapping"
           parentLink="/fieldMapping"
           // pageTitle="Map content"
-          pageTitle={recordType}
+          pageTitle={pageTitle}
         />
 
         {/* <TkRow className="justify-content-cente">
@@ -47,7 +67,10 @@ const MapTable = () => {
         </TkRow> */}
 
         <TkContainer>
-          <MapTableComponent recordType={recordType} />
+          {/* <MapTableComponent data={parsedData} /> */}
+          {recordType ? (
+            <MapTableComponent data={JSON.parse(recordType)} />
+          ) : null}
         </TkContainer>
       </div>
     </>

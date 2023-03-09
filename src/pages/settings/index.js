@@ -8,11 +8,11 @@ const Settings = () => {
   return (
     <>
       <TkPageHead>
-        <title>{"Settings"}</title>
+        <title>{"Notification Settings"}</title>
       </TkPageHead>
 
       <div className="page-content">
-        <BreadCrumb pageTitle="Settings" />
+        <BreadCrumb pageTitle="Notification Settings" />
 
         <TkContainer>
           <NotificationSetting />

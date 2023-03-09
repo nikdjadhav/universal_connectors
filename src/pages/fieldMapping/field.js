@@ -13,7 +13,7 @@ const Field = () => {
 
       <div className="page-content">
         <BreadCrumb
-          parentTitle="Field Mapping"
+          parentTitle="Record /Field Mapping"
           parentLink="/fieldMapping"
           pageTitle="Field"
         />
