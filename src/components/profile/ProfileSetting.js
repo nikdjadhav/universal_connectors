@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
@@ -15,45 +15,129 @@ import TkModal, {
   TkModalHeader,
 } from "@/globalComponents/TkModal";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import avatar1 from "/public/images/users/avatar-1.jpg";
-import { TkToastInfo } from "@/globalComponents/TkToastContainer";
+import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
+import { useMutation } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = Yup.object({
+  firstName: Yup.string().required("First Name is required"),
+  lastName: Yup.string().required("Last Name is required"),
+  email: Yup.string().email("Email is invalid").required("Email is required"),
+  country: Yup.string().matches(/^[a-zA-Z]+$/, "Country must be only letters"),
+  city: Yup.string().matches(/^[a-zA-Z]+$/, "City must be only letters")
+}).required();
 
 const ProfileSetting = () => {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
+  //   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [fistName, setFirstName] = useState("Anna");
-  const [lastName, setLastName] = useState("Adame");
+  const [logedinUser, setLogedinUser] = useState();
 
-//   const toggle = React.useCallback(() => {
-//     if (isModalOpen) {
-//       setIsModalOpen(false);
-//       // setTask(null);
-//     } else {
-//       setIsModalOpen(true);
-//       // setDate(defaultdate());
-//     }
-//   }, [isModalOpen]);
+  //   const toggle = React.useCallback(() => {
+  //     if (isModalOpen) {
+  //       setIsModalOpen(false);
+  //       // setTask(null);
+  //     } else {
+  //       setIsModalOpen(true);
+  //       // setDate(defaultdate());
+  //     }
+  //   }, [isModalOpen]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
-    resolver: yupResolver(),
+    resolver: yupResolver(schema),
   });
 
   const Msg = () => (
     <div>
-      <h5>Profile Updated</h5>
+      <h5>Updated Successfully</h5>
     </div>
   );
 
+  const user = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getUser"),
+  });
+
+  const updateUser = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/updateUser"),
+  });
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("loginCredentials");
+    const userAccessToken = {
+      token: accessToken,
+    };
+    user.mutate(userAccessToken, {
+      onSuccess: (data) => {
+        const user = {
+          firstName: data[0].firstName,
+          lastName: data[0].lastName,
+          email: data[0].email,
+          country: data[0].country,
+          city: data[0].city,
+        };
+        // console.log("user", user);
+        setValue("firstName", user.firstName);
+        setValue("lastName", user.lastName);
+        setValue("email", user.email);
+        setValue("country", user.country);
+        setValue("city", user.city);
+        setLogedinUser(user);
+      },
+      onError: (error) => {
+        console.log("error", error);
+      },
+    });
+  }, []);
+
   const onSubmit = (data) => {
-    TkToastInfo(<Msg />, { hideProgressBar: true });
+    const apiData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      country: data.country,
+      city: data.city,
+    };
+
+    updateUser.mutate(apiData, {
+      onSuccess: (data) => {
+        // console.log("updated user", data);
+        const updatedUser = {
+          firstName: data[0].firstName,
+          lastName: data[0].lastName,
+          email: data[0].email,
+          country: data[0].country,
+          city: data[0].city,
+        };
+        setValue("firstName", updatedUser.firstName);
+        setValue("lastName", updatedUser.lastName);
+        setValue("email", updatedUser.email);
+        setValue("country", updatedUser.country);
+        setValue("city", updatedUser.city);
+        TkToastInfo("Updated Successfully", { hideProgressBar: true });
+        setLogedinUser(updatedUser);
+      },
+      onError: (error) => {
+        console.log("error", error);
+        TkToastError("Error Occured while updating");
+      },
+    });
+
+    // console.log("data", data);
     // TODO: submit form and do validations
     // toggle();
   };
+
+  const onClickCancel = () => {
+    history.back();
+  }
+  // console.log("logedinUser", logedinUser);
 
   return (
     <>
@@ -80,12 +164,13 @@ const ProfileSetting = () => {
                                 <Link href="/users/view/test-user">
                                   {/* <a> */}
                                   <h5 className="fs-16 mb-1">
-                                    {fistName} {lastName}
+                                    {logedinUser?.firstName}{" "}
+                                    {logedinUser?.lastName}
                                   </h5>
                                   {/* </a> */}
                                 </Link>
                                 <p className="text-muted mb-0">
-                                  Lead Designer / Developer
+                                  {/* Lead Designer / Developer */}
                                 </p>
                               </div>
                             </div>
@@ -114,9 +199,7 @@ const ProfileSetting = () => {
                     type="text"
                     labelName="First Name"
                     placeholder="Enter your first name"
-                    onChange={(e) => setFirstName(e.target.value)}
-                    value={fistName}
-                    defaultValue={fistName}
+                    requiredStarOnLabel={true}
                   />
                 </div>
                 {errors.firstName?.message ? (
@@ -131,48 +214,18 @@ const ProfileSetting = () => {
                     type="text"
                     labelName="Last Name"
                     placeholder="Enter your last name"
-                    onChange={(e) => setLastName(e.target.value)}
-                    value={lastName}
-                    defaultValue={lastName}
+                    requiredStarOnLabel={true}
                   />
                 </div>
                 {errors.lastName?.message ? (
                   <FormErrorText>{errors.lastName?.message}</FormErrorText>
                 ) : null}
               </TkCol>
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkInput
-                    {...register("phoneNumber")}
-                    id="phoneNumber"
-                    type="text"
-                    labelName="Phone Number"
-                    placeholder="Enter your phone number"
-                    className="form-control"
-                    defaultValue="+(1) 987 6543"
-                  />
-                  {errors.phoneNumber?.message ? (
-                    <FormErrorText>{errors.phoneNumber?.message}</FormErrorText>
-                  ) : null}
-                </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkSelect
-                    id="gender"
-                    name="gender"
-                    labelName="Gender"
-                    placeholder="Select your Gender"
-                    // options={genderOptions}
-                    // defaultValue={genderOptions[1]}
-                  />
-                </div>
-              </TkCol> */}
 
               <TkCol lg={4}>
                 <div className="mb-3">
                   <TkInput
+                    {...register("email")}
                     id="email"
                     name="email"
                     type="text"
@@ -180,12 +233,12 @@ const ProfileSetting = () => {
                     placeholder="Enter your email"
                     className="form-control"
                     disabled={true}
-                    defaultValue="daveadame@velzon.com"
+                    requiredStarOnLabel={true}
                   />
                 </div>
               </TkCol>
 
-              {/* <TkCol lg={4}>
+              <TkCol lg={4}>
                 <div className="mb-3">
                   <TkInput
                     {...register("country")}
@@ -195,172 +248,34 @@ const ProfileSetting = () => {
                     labelName="Country"
                     placeholder="Country"
                     className="form-control"
-                    defaultValue="United States"
                   />
                   {errors.country?.message ? (
                     <FormErrorText>{errors.country?.message}</FormErrorText>
                   ) : null}
                 </div>
-              </TkCol> */}
-              {/* <TkCol lg={4}>
+              </TkCol>
+
+              <TkCol lg={4}>
                 <div className="mb-3">
                   <TkInput
-                    {...register("zipCode")}
-                    id="zipCode"
-                    name="zipCode"
+                    {...register("city")}
+                    id="city"
+                    name="city"
                     type="text"
-                    labelName="Zip Code"
-                    placeholder="Enter zipcode"
+                    labelName="City"
+                    placeholder="City"
                     className="form-control"
-                    defaultValue="90011"
                   />
-                  {errors.zipCode?.message ? (
-                    <FormErrorText>{errors.zipCode?.message}</FormErrorText>
+                  {errors.city?.message ? (
+                    <FormErrorText>{errors.city?.message}</FormErrorText>
                   ) : null}
                 </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkInput
-                    {...register("designation")}
-                    id="designation"
-                    name="designation"
-                    type="text"
-                    labelName="Designation"
-                    placeholder="Designation"
-                    className="form-control"
-                    defaultValue="Lead Designer / Developer"
-                  />
-                  {errors.designation?.message ? (
-                    <FormErrorText>{errors.designation?.message}</FormErrorText>
-                  ) : null}
-                </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkSelect
-                    id="department"
-                    name="department"
-                    labelName="Department"
-                    placeholder="Select Department"
-                    // options={departmentOptions}
-                    // defaultValue={departmentOptions[0]}
-                    disabled={true}
-                  />
-                </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkSelect
-                    id="supervisor"
-                    name="supervisor"
-                    labelName="Supervisor"
-                    placeholder="Select Supervisor"
-                    // options={supervisorOptions}
-                    // defaultValue={supervisorOptions[0]}
-                    disabled={true}
-                  />
-                </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkSelect
-                    id="role"
-                    name="role"
-                    labelName="Role"
-                    placeholder="Select Role"
-                    // options={roleOptions}
-                    // defaultValue={roleOptions[2]}
-                    disabled={true}
-                  />
-                </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkSelect
-                    id="workCalender"
-                    name="workCalender"
-                    labelName="Work Calender"
-                    placeholder="Select Work Calender"
-                    // options={workCalenderOptions}
-                    // defaultValue={workCalenderOptions[0]}s
-                    disabled={true}
-                  />
-                </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={4}>
-                <div className="mb-3">
-                  <TkSelect
-                    id="typeOfUser"
-                    name="typeOfUser"
-                    labelName="Type of User"
-                    placeholder="Select Type of User"
-                    // options={typeOfUserOptions}
-                    // defaultValue={typeOfUserOptions[0]}
-                    disabled={true}
-                  />
-                </div>
-              </TkCol> */}
-
-              {/* <TkCol lg={8}>
-                <TkRow className="justify-content-start">
-                  <TkLabel tag="h5" className="mt-2"></TkLabel>
-                  <TkCol className="mt-3 text-nowrap">
-                    <TkLabel className="me-3" id="monday">
-                      Project Manager
-                    </TkLabel>
-                    <TkCheckBox
-                      id="monday"
-                      name="monday"
-                      type="checkbox"
-                      defaultChecked={true}
-                      disabled={true}
-                    />
-                  </TkCol>
-                  <TkCol className="mt-3 text-nowrap">
-                    <TkLabel className="me-3" id="tuesday">
-                      Suipervisor
-                    </TkLabel>
-                    <TkCheckBox
-                      id="tuesday"
-                      name="tuesday"
-                      type="checkbox"
-                      disabled={true}
-                    />
-                  </TkCol>
-                </TkRow>
-              </TkCol> */}
-
-              {/* <TkCol lg={12}>
-                <div className="mb-3">
-                  <TkInput
-                    id="notes"
-                    name="notes"
-                    type="textarea"
-                    labelName="Notes"
-                    placeholder="Enter your notes"
-                  />
-                </div>
-              </TkCol> */}
+              </TkCol>
 
               <TkCol lg={12}>
                 <div>
-                  {/* <div className="col-3">
-                    <a
-                      className="fw-semibold text-primary text-decoration-underline"
-                      onClick={toggle}
-                    >
-                      <p>Change Password</p>
-                    </a>
-                  </div> */}
                   <div className="hstack gap-2 justify-content-end">
-                    <TkButton type="button" color="secondary">
+                    <TkButton type="button" color="secondary" onClick={onClickCancel}>
                       Cancel
                     </TkButton>
                     <TkButton type="submit" color="success">
@@ -373,81 +288,6 @@ const ProfileSetting = () => {
           </TkForm>
         </TkCardBody>
       </TkCard>
-
-      {/* <TkModal
-        isOpen={isModalOpen}
-        toggle={toggle}
-        centered
-        size="lg"
-        className="border-0"
-        modalClassName="modal fade zoomIn"
-      >
-        <TkModalHeader className="p-3 bg-soft-info" toggle={toggle}>
-          {"Change Password"}
-        </TkModalHeader> */}
-        {/* TODO: there is huge rerenders while filling new task form , rectify it */}
-        {/* <TkModalBody className="modal-body">
-          <TkForm onSubmit={handleSubmit(onSubmit)}>
-            <TkRow>
-              <TkCol lg={4}>
-                <TkInput
-                  id="oldPassword"
-                  name="oldPassword"
-                  type="password"
-                  labelName="Old Password"
-                  placeholder="Enter Old Password"
-                  required={true}
-                />
-              </TkCol>
-
-              <TkCol lg={4}>
-                <TkInput
-                  {...register("password")}
-                  id="newPassword"
-                  name="newPassword"
-                  type="password"
-                  labelName="New Password"
-                  placeholder="Enter New Password"
-                  required={true}
-                  invalid={errors.password?.message ? true : false}
-                />
-                {errors.password?.message ? (
-                  <FormErrorText>{errors.password?.message}</FormErrorText>
-                ) : null}
-              </TkCol>
-
-              <TkCol lg={4}>
-                <TkInput
-                  {...register("confirmPassword")}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  labelName="Confirm Password"
-                  placeholder="Enter Confirm Password"
-                  required={true}
-                  invalid={errors.confirmPassword?.message ? true : false}
-                />
-                {errors.confirmPassword?.message ? (
-                  <FormErrorText>
-                    {errors.confirmPassword?.message}
-                  </FormErrorText>
-                ) : null}
-              </TkCol>
-
-              <TkCol lg={12} className="mt-3">
-                <div className="hstack gap-2 justify-content-end">
-                  <TkButton type="submit" color="secondary">
-                    Cancel
-                  </TkButton>
-                  <TkButton type="submit" color="primary">
-                    Update
-                  </TkButton>
-                </div>
-              </TkCol>
-            </TkRow>
-          </TkForm>
-        </TkModalBody>
-      </TkModal> */}
     </>
   );
 };

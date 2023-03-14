@@ -67,6 +67,7 @@ const SingleEvent = ({ toggleComponet }) => {
       data.noEndDate = false;
     } else {
       // console.log('no end date');
+      data.endDate = null;
       data.noEndDate = true;
     }
     toggleComponet("weeklyEvent");

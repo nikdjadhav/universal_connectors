@@ -125,6 +125,7 @@ const Login = () => {
         // TkToastSuccess("User Updated Successfully");
         console.log("success", data);
         const user = {
+          userId: data[0].userId,
           firstName: data[0].firstName,
           lastName: data[0].lastName,
           email: data[0].email,
@@ -134,6 +135,7 @@ const Login = () => {
         console.log("user==>", user);
         // localStorage.setItem("loginCredentials", JSON.stringify(user.token));
         sessionStorage.setItem("loginCredentials", user.token);
+        sessionStorage.setItem("userId", JSON.stringify(user.userId));
         router.push("/dashboard");
       },
       onError: (error) => {

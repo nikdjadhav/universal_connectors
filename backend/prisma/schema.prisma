@@ -11,11 +11,116 @@ datasource db {
 }
 
 model Users {
-  id        Int    @id @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String @unique
-  password  String
-  
+  id                   Int                    @id @default(autoincrement())
+  firstName            String
+  lastName             String
+  country              String?
+  city                 String?
+  email                String                 @unique
+  password             String
+  imageUrl             String?
+  Integrations         Integrations[]
+  MappedRecords        MappedRecords[]
+  Fields               Fields[]
+  Schedule             Schedule[]
+  Logs                 Logs[]
+  NotificationSettings NotificationSettings[]
+
   @@unique(fields: [email, password], name: "loginUser")
+}
+
+model Integrations {
+  id              Int              @id @default(autoincrement())
+  userId          Int
+  user            Users            @relation(fields: [userId], references: [id])
+  integrationName String
+  sourceName      String
+  destinationName String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  schedule        Boolean
+  fieldMapping    Boolean
+  status          String
+  syncWay         String
+  Configurations  Configurations[]
+  MappedRecords   MappedRecords[]
+  Schedule        Schedule[]
+  Logs            Logs[]
+}
+
+model Configurations {
+  id                 Int          @id @default(autoincrement())
+  integrationId      Int
+  integration        Integrations @relation(fields: [integrationId], references: [id])
+  systemName         String
+  url                String
+  accountId          String
+  consumerKey        String
+  consumerSecretKey  String
+  accessToken        String
+  accessSecretToken  String
+  authenticationType String
+}
+
+model MappedRecords {
+  id            Int          @id @default(autoincrement())
+  userId        Int
+  user          Users        @relation(fields: [userId], references: [id])
+  integrationId Int
+  integration   Integrations @relation(fields: [integrationId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  recordType    String
+  url           String
+  Fields        Fields[]
+  Logs          Logs[]
+}
+
+model Fields {
+  id                    Int           @id @default(autoincrement())
+  userId                Int
+  user                  Users         @relation(fields: [userId], references: [id])
+  mappedRecordId        Int
+  mappedRecord          MappedRecords @relation(fields: [mappedRecordId], references: [id])
+  sourceField           String
+  destinationField      String
+  sourceFieldValue      String
+  destinationFieldValue String
+}
+
+model Schedule {
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  user           Users        @relation(fields: [userId], references: [id])
+  integrationId  Int
+  integration    Integrations @relation(fields: [integrationId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  eventType      String
+  startDate      DateTime     @default(now())
+  endDate        DateTime
+  startTime      String
+  day            String
+  noEndDate      Boolean
+  repeatEveryDay Boolean
+}
+
+model Logs {
+  id             Int           @id @default(autoincrement())
+  userId         Int
+  user           Users         @relation(fields: [userId], references: [id])
+  integrationId  Int
+  integration    Integrations  @relation(fields: [integrationId], references: [id])
+  mappedRecordId Int
+  mappedRecord   MappedRecords @relation(fields: [mappedRecordId], references: [id])
+  status         String
+  logMessage     String
+}
+
+model NotificationSettings {
+  id                Int    @id @default(autoincrement())
+  userId            Int
+  user              Users  @relation(fields: [userId], references: [id])
+  notificationLabel String
+  email             String
 }

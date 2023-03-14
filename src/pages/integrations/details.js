@@ -7,6 +7,9 @@ import BreadCrumb from "@/utils/BreadCrumb";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import Image from "next/image";
 import TkButton from "@/globalComponents/TkButton";
+import { useRouter } from "next/router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
 // import TkButton from "@/globalComponents/TkButton";
 // import { useRouter } from "next/router";
 
@@ -14,6 +17,49 @@ const Details = () => {
   // useEffect(() => {
   //   const { data } = getQueryParams(window.location.search);
   // }, []);
+
+  const router = useRouter();
+  const [integrationData, setIntegrationData] = useState();
+  const [integrationID, setIntegrationID] = useState();
+  // const { integrationId } = router.query;
+  console.log("router.query", router.query.integrationId);
+  useEffect(() => {
+    if (router.query.integrationId) {
+      setIntegrationID(JSON.parse(router.query.integrationId));
+    }
+  }, []);
+  console.log("integration id", integrationID);
+
+  // const integration = useQuery({
+  //   queryKey: ["integration", integrationId],
+  //   queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById${integrationId}}`)
+  // })
+
+  // useEffect(() => {
+  //   if (integration.data) {
+  //     console.log("integration data", integration.data);
+  //   }
+  // })
+
+  const integration = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+  });
+  useEffect(() => {
+    if (integrationID) {
+      const id = {
+        id: integrationID,
+      };
+      integration.mutate(id, {
+        onSuccess: (data) => {
+          console.log("data", data);
+          setIntegrationData(data);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
+  }, [integrationID]);
 
   const [modal, setModal] = useState(false);
 
@@ -26,8 +72,10 @@ const Details = () => {
   }, [modal]);
 
   const onSubmit = () => {
+    // console.log("id", id);
     toggle();
   };
+  console.log("integration data==>", integrationData);
 
   // const router = useRouter();
 
@@ -49,7 +97,7 @@ const Details = () => {
         <h4 className="mb-5">Integration Details</h4>
         <TkContainer>
           <TkCard className="p-3">
-            <TkCardBody>
+            <TkCardBody >
               <TkRow>
                 <TkCol lg={6} sm={6}>
                   <Image
@@ -62,8 +110,12 @@ const Details = () => {
                 </TkCol>
                 <TkCol lg={6} sm={6}>
                   <h5>
-                    NetSuite™ to Google Sheets™ Two Way Integration for Smooth,
-                    Effortless & Swift Data Sync.
+                    {/* NetSuite™ to Google Sheets™ Two Way Integration for Smooth,
+                    Effortless & Swift Data Sync. */}
+                    {/* {integrationData.sourceName} to {integrationData.destinationName} */}
+                    {integrationData && integrationData[0]?.sourceName} to { integrationData && integrationData[0]?.destinationName}
+                    Two Way Integration for Smooth, Effortless & Swift Data
+                    Sync.
                   </h5>
                   <p>
                     So, you’re seeking to Data Sync from NetSuite™ to Google
@@ -88,7 +140,12 @@ const Details = () => {
             </TkCardBody>
           </TkCard>
         </TkContainer>
-        <ModalButton modal={modal} setModal={setModal} toggle={toggle} />
+        <ModalButton
+          modal={modal}
+          setModal={setModal}
+          toggle={toggle}
+          integrationID={integrationID}
+        />
 
         {/* <TkButton
           className="btn-success"

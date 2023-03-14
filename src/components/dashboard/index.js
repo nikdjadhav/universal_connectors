@@ -1,14 +1,64 @@
-import TkTableContainer from '@/globalComponents/TkTableContainer'
-import { data, filterFields, minSearchLength, serachFields } from '@/utils/Constants'
-import { convertToURLParamsString, isSearchonUI, searchAndFilterData, searchDebounce } from '@/utils/utilsFunctions'
-import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useReducer, useState } from 'react'
+import TkTableContainer from "@/globalComponents/TkTableContainer";
+import {
+  data,
+  filterFields,
+  minSearchLength,
+  serachFields,
+} from "@/utils/Constants";
+import {
+  convertToURLParamsString,
+  isSearchonUI,
+  searchAndFilterData,
+  searchDebounce,
+} from "@/utils/utilsFunctions";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
-import ModalButton from '../integrations/integrationModal'
-import TopBar from '../topBar'
+import ModalButton from "../integrations/integrationModal";
+import TopBar from "../topBar";
+import { useMutation } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
+import { FormErrorBox } from "@/globalComponents/ErrorText";
+import Link from "next/link";
 
 const DashBoard = () => {
-    const router = useRouter();
+  const [integrationData, setIntegrationData] = useState();
+  const [integrationID, setIntegrationID] = useState();
+  const [syncWay, setSyncWay] = useState();
+  const integration = useMutation({
+    // queryKey: "integrations",
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+    // enabled:  !!userID
+  });
+
+  const [id, setId] = useState(null);
+  useEffect(() => {
+    const userID = sessionStorage.getItem("userId");
+    // console.log("userID", userID);
+    setId({
+      userId: JSON.parse(userID),
+    });
+    // const id = {
+    //   "userId": JSON.parse(userID)
+    // }
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      integration.mutate(id, {
+        onSuccess: (data) => {
+          // console.log("data", data);
+          setIntegrationData(data);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
+  }, [id]);
+  // console.log("integrationData", integrationData);
+
+  const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [dashboardData, setDashboardData] = useState(data);
   const [urlParamsStr, setUrlParamsStr] = React.useState("");
@@ -34,7 +84,11 @@ const DashBoard = () => {
     if (searchText === "") {
       doSearch = false;
     }
-    if (Object.values(filters).every((val) => val === null || val === undefined || val === "")) {
+    if (
+      Object.values(filters).every(
+        (val) => val === null || val === undefined || val === ""
+      )
+    ) {
       doFilter = false;
     }
 
@@ -85,30 +139,22 @@ const DashBoard = () => {
     }
   }, [modal]);
 
-  const dates = [
-    {
-      h: "04 Jan-2021 10:34AM",
-      t: "10:34AM",
-    },
-    {
-      h: "12 Feb-2023 11:00PM",
-      t: "11:00PM",
-    },
-  ];
-
-  const onClickOpenModal = (row) => {
-    console.log("onClickOpenModal", row);
+  const onClickOpenModal = (id) => {
+    // console.log("onClickOpenModal", row);
     toggle();
-    setRecordId(row?.id);
-    setConfigData({
-      destination: { label: row?.destinationName },
-      source: { label: row?.sourceName },
-    });
-
-    // setConfigData([{
-    //   "source": row.sourceName,
-    //   "destination": row.destinationName,
-    // }])
+    setIntegrationID(id);
+    // setRecordId(row?.id);
+    // setConfigData({
+    //   integrationName: row?.integrationName,
+    //   destination: { label: row?.destinationName },
+    //   source: { label: row?.sourceName },
+    // });
+    // setSyncWay(row?.syncWay);
+    // setConfigData({
+    //   integrationName: row?.integrationName,
+    //   destination: row?.destinationName,
+    //   source: row?.sourceName,
+    // });
   };
 
   // useEffect(() => {
@@ -135,18 +181,23 @@ const DashBoard = () => {
     },
     {
       Header: "Creation Date",
-      accessor: "creationDate",
+      accessor: "createdAt",
       Cell: (props) => {
-        // console.log("props==>",props.row.original?.creationTime);
+        // console.log("props==>",props.row.original);
+        const dateTime = props.row.original?.createdAt;
+        const date = dateTime.split("T")[0];
+        const time = dateTime.split("T")[1];
+        // console.log("date==>", time);
+
         return (
           <>
             {/* {dates.map((d) => { */}
             <Tooltip
               color="invert"
-              content={`${props.value} ${props.row.original?.creationTime}`}
+              content={`${date} ${time}`}
               placement="bottom"
             >
-              <div>{props.value}</div>
+              <div>{date}</div>
             </Tooltip>
             {/* })} */}
           </>
@@ -157,13 +208,16 @@ const DashBoard = () => {
       Header: "Modified Date",
       accessor: "modifiedDate",
       Cell: (props) => {
+        const dateTime = props.row.original?.updatedAt;
+        const date = dateTime.split("T")[0];
+        const time = dateTime.split("T")[1];
         return (
           <Tooltip
             color="invert"
-            content={`${props.value} ${props.row.original?.modificationTime}`}
+            content={`${date} ${time}`}
             placement="bottom"
           >
-            <div>{props.value}</div>
+            <div>{date}</div>
           </Tooltip>
         );
       },
@@ -171,13 +225,44 @@ const DashBoard = () => {
     {
       Header: "Schedule",
       accessor: "schedule",
-      // Cell: () => {
-      //   return <Dropdown data={booleanValues}/>
-      // }
+      Cell: (props) => {
+        if (props.value) {
+          return (
+            <Link href="/schedule/event" className="">
+              <span className="">Yes</span>
+              <i className="ri-edit-2-fill ps-2"></i>
+            </Link>
+          );
+        } else {
+          return (
+            <Link href="/schedule/event" className="">
+              <span className="">No</span>
+              <i className="ri-add-fill ps-2"></i>
+            </Link>
+          );
+        }
+      },
     },
     {
       Header: "Field Mapping",
       accessor: "fieldMapping",
+      Cell: (props) => {
+        if (props.value) {
+          return (
+            <Link href="/fieldMapping/mapTable" className="">
+              <span className="">Yes</span>
+              <i className="ri-edit-2-fill ps-2"></i>
+            </Link>
+          );
+        } else {
+          return (
+            <Link href="/fieldMapping/mapTable" className="">
+              <span className="">No</span>
+              <i className="ri-add-fill ps-2"></i>
+            </Link>
+          );
+        }
+      },
       // Cell:() => {
       //   return <Dropdown data={booleanValues}/>
       // }
@@ -212,7 +297,7 @@ const DashBoard = () => {
             {/* <i className="ri-edit-2-fill mx-2" onClick={() => onClickOpenModal(props.row.original?.id)} /> */}
             <i
               className="ri-edit-2-fill mx-2"
-              onClick={() => onClickOpenModal(props.row.original)}
+              onClick={() => onClickOpenModal(props.row.original?.id)}
             />
 
             {/* </Link> */}
@@ -254,77 +339,28 @@ const DashBoard = () => {
   // ];
   return (
     <>
-      {/* <TkInput 
-      type="search"
-      placeholder="Search here"
-      /> */}
-      {/* <TkContainer>
-        <p>Dashboard</p>
-      </TkContainer>   */}
+      <TopBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />
 
-      {/* <Tooltip
-      color="invert"
-      content={data[0].creationDate}
-      placement="bottom"
-    /> */}
-      <TopBar
-        onSearchChange={searchDebounce(updateSearchText, searchonUI)}
-        // onDateChange={(dates) => {
-        //   updateFilters({
-        //     [filterFields.dashboard.startDate]: dates ? dates[0] : null,
-        //   });
-        //   updateFilters({
-        //     [filterFields.dashboard.endDate]: dates ? dates[1] : null,
-        //   });
-        // }}
-      />
       <TkTableContainer
         columns={columns}
-        data={dashboardData}
+        data={integrationData || []}
         tooltip="tooltip"
         // Toolbar={<TableToolBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />}
       />
 
-    {/* ***** */}
-    {/* <TkPageHead>
-      <title>{"DashBoard"}</title>
-    </TkPageHead>
-    <div className="page-content"> */}
-    {/*IMP: Always add a breadcrumb first, before Container and after page-content class */}
-    {/* <BreadCrumb pageTitle="Dashboard" />
+      <ModalButton
+        modal={modal}
+        setModal={setModal}
+        toggle={toggle}
+        integrationID={integrationID}
+        // recordId={recordId}
+        // configData={configData}
+        // syncWay={syncWay}
+      />
+    </>
+  );
+};
 
-      <TkContainer> */}
-    {/* TODO: apply logic to check if account is going to expire then show below component */}
-    {/* <UpgradeAccountNotice /> */}
-    {/* <div className="project-wrapper">
-          <Widgets />
-          <ProjectsOverview />
-        </div> */}
-    {/* <ActiveProjects />
+export default DashBoard;
 
-        <TkRow>
-          <TkCol xl={6}>
-            <MyTasks />
-          </TkCol>
-          <TkCol xl={6}>
-            <PendingApprovals />
-          </TkCol>
-          <TkCol xl={6}> */}
-    {/* <ProjectsStatus /> */}
-    {/* </TkCol>
-        </TkRow>
-      </TkContainer>
-    </div> */}
 
-    <ModalButton
-      modal={modal}
-      setModal={setModal}
-      toggle={toggle}
-      recordId={recordId}
-      configData={configData}
-    />
-  </>
-  )
-}
-
-export default DashBoard

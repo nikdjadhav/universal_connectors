@@ -8,71 +8,15 @@ import { random } from "nanoid";
 import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-// const netsuiteValues = [
-//   {
-//     value: "internalId",
-//     label: "Internal Id",
-//   },
-//   {
-//     value: "externalId",
-//     label: "External Id",
-//   },
-//   {
-//     value: "name",
-//     label: "Name",
-//   },
-//   {
-//     value: "email",
-//     label: "Email",
-//   },
-// ];
-
-const Primary = ({ recordType }) => {
-  const [netsuiteValues, setNetsuiteValues] = useState([
-    // {
-    //   value: "internalId",
-    //   label: "Internal Id",
-    // },
-    // {
-    //   value: "externalId",
-    //   label: "External Id",
-    // },
-  ]);
-  const [rows, setRows] = useState([
-    // {
-    //   id: 1,
-    //   googleSheets: "Add",
-    // },
-    // {
-    //   id: 2,
-    //   googleSheets: "Update",
-    // },
-    // {
-    //   id: 3,
-    //   googleSheets: "Delete",
-    // },
-    // {
-    //   id: 4,
-    //   googleSheets: "Internal Id",
-    //   netSuite: {
-    //     value: "internalId",
-    //     label: "Internal Id",
-    //   },
-    // },
-    // {
-    //   id: 5,
-    //   googleSheets: "External Id",
-    //   netSuite: {
-    //     value: "externalId",
-    //     label: "External Id",
-    //   },
-    // },
-  ]);
+const Primary = ({ fieldData }) => {
+  const [netsuiteValues, setNetsuiteValues] = useState([]);
+  const [rows, setRows] = useState([]);
+  console.log("fieldData in primary", fieldData.recordType.label);
 
   useEffect(() => {
-    console.log("recordType in primary", recordType);
-    if (recordType === "Customer") {
-      console.log("=>", recordType);
+    console.log("recordType in primary", fieldData.recordType.label);
+    if (fieldData.recordType.label === "Customer") {
+      console.log("=>", fieldData.recordType.label);
       setRows([
         {
           id: 1,
@@ -108,7 +52,7 @@ const Primary = ({ recordType }) => {
           netSuite: {
             value: "name",
             label: "Name",
-          }
+          },
         },
         {
           id: 7,
@@ -136,7 +80,7 @@ const Primary = ({ recordType }) => {
         },
       ]);
 
-      setNetsuiteValues( [
+      setNetsuiteValues([
         {
           value: "internalId",
           label: "Internal Id",
@@ -160,12 +104,12 @@ const Primary = ({ recordType }) => {
         {
           value: "address",
           label: "Address",
-        }
-      ])
+        },
+      ]);
       // return;
-    } else if (recordType === "Employee") {
-      console.log("=>", recordType);
-      setRows( [
+    } else if (fieldData.recordType.label === "Employee") {
+      console.log("=>", fieldData.recordType.label);
+      setRows([
         {
           id: 1,
           googleSheets: "Add",
@@ -228,7 +172,7 @@ const Primary = ({ recordType }) => {
         },
       ]);
 
-      setNetsuiteValues( [
+      setNetsuiteValues([
         {
           value: "internalId",
           label: "Internal Id",
@@ -252,12 +196,12 @@ const Primary = ({ recordType }) => {
         {
           value: "address",
           label: "Address",
-        }
-      ])
+        },
+      ]);
       // return;
-    } else if (recordType === "Contact") {
-      console.log("=>", recordType);
-      setRows( [
+    } else if (fieldData.recordType.label === "Contact") {
+      console.log("=>", fieldData.recordType.label);
+      setRows([
         {
           id: 1,
           googleSheets: "Add",
@@ -332,11 +276,11 @@ const Primary = ({ recordType }) => {
         {
           value: "address",
           label: "Address",
-        }
-      ])
-    } else if (recordType === "Vendor") {
-      console.log("=>", recordType);
-      setRows( [
+        },
+      ]);
+    } else if (fieldData.recordType.label === "Vendor") {
+      console.log("=>", fieldData.recordType.label);
+      setRows([
         {
           id: 1,
           googleSheets: "Add",
@@ -423,93 +367,21 @@ const Primary = ({ recordType }) => {
         {
           value: "fax",
           label: "Fax",
-        }
-      ])
+        },
+      ]);
     }
-  }, [recordType]);
-  
-
-  // useEffect(() => {
-  //   if(recordType === "Customer"){
-  //     console.log("recordType in primary", recordType);
-  //     // add new rows in existing rows
-  //     setRows([
-  //       ...rows,
-  //       {
-  //         id: 6,
-  //         googleSheets: "Name",
-  //         netSuite: {
-  //           value: "name",
-  //           label: "Name",
-  //         },
-  //       },
-  //       {
-  //         id: 7,
-  //         googleSheets: "Email",
-  //         netSuite: {
-  //           value: "email",
-  //           label: "Email",
-  //         },
-  //       }
-  //     ])
-  //   }
-  // }, [recordType, rows])
-
-  // if (recordType === "Customer") {
-  //   console.log("recordType in primary", recordType);
-  //   // add new rows in existing rows
-  //   setRows([
-  //     ...rows,
-  //     {
-  //       id: 6,
-  //       googleSheets: "Name",
-  //       netSuite: {
-  //         value: "name",
-  //         label: "Name",
-  //       },
-  //     },
-  //     {
-  //       id: 7,
-  //       googleSheets: "Email",
-  //       netSuite: {
-  //         value: "email",
-  //         label: "Email",
-  //       },
-  //     },
-  //   ]);
-  // }
+  }, [fieldData.recordType.label]);
 
   const { register, handleSubmit, setValue, control, watch } = useForm();
 
-  // const netsuiteValues = useMemo(
-  //   () => [
-  //     {
-  //       value: "internalId",
-  //       label: "Internal Id",
-  //     },
-  //     {
-  //       value: "externalId",
-  //       label: "External Id",
-  //     },
-  //     {
-  //       value: "name",
-  //       label: "Name",
-  //     },
-  //     {
-  //       value: "email",
-  //       label: "Email",
-  //     },
-  //   ],
-  //   []
-  // );
-const [num, setNum] = useState(0);
+  const [num, setNum] = useState(0);
   useEffect(() => {
     rows.map((row, index) => {
-      console.log("row", row.netSuite , "=>", index);
+      console.log("row", row.netSuite, "=>", index);
       setValue(`googleSheets[${index}]`, row.googleSheets);
       setValue(`netSuite[${index}]`, row.netSuite);
-    })
-  })
+    });
+  });
 
   const columns = useMemo(
     () => [
@@ -517,38 +389,33 @@ const [num, setNum] = useState(0);
         Header: "Google Sheets™ Columns",
         accessor: "googleSheets",
         Cell: ({ row }) => {
-          // console.log("row", row);
-          // console.log("row", `googleSheets[${row.index}]`);
-          return(
-          <TkInput
-            type="text"
-            name = {`googleSheets[${row.index}]`}
-            {...register(`googleSheets[${row.index}]`)}
-            // defaultValue={row.original.googleSheets}
-            // value={row.original.googleSheets}
-            disabled={row.original.googleSheets ? true : false}
-          />
-        )},
+          return (
+            <TkInput
+              type="text"
+              name={`googleSheets[${row.index}]`}
+              {...register(`googleSheets[${row.index}]`)}
+              disabled={row.original.googleSheets ? true : false}
+            />
+          );
+        },
       },
       {
         Header: "NetSuite™ Fields",
         accessor: "netSuite",
         Cell: ({ row }) => {
-          // row.original.googleSheets === "Address" ? console.log('address') : console.log('not address')
-          // if (row.original.netSuite) {
-            if ((row.original.googleSheets !== "Add") && (row.original.googleSheets !== "Update") && (row.original.googleSheets !== "Delete")) {
+          if (
+            row.original.googleSheets !== "Add" &&
+            row.original.googleSheets !== "Update" &&
+            row.original.googleSheets !== "Delete"
+          ) {
             return (
               <Controller
                 control={control}
                 name={`netSuite[${row.index}]`}
-                render={({ field, }) => (
+                render={({ field }) => (
                   <TkSelect
                     {...field}
                     options={netsuiteValues}
-                    // defaultValue={row.original.netSuite}
-                     // value={row.original.netSuite}
-                    // disabled={row.original.netSuite ? true : false}
-                    // onChange={row.original.netSuite}
                     maxMenuHeight="80px"
                   />
                 )}
@@ -563,24 +430,14 @@ const [num, setNum] = useState(0);
         Header: "Action",
         accessor: "action",
         Cell: (prop) => {
-          // console.log("row data", prop.row.original);
-          if ((prop.row.original.googleSheets !== "Add") && (prop.row.original.googleSheets !== "Update") && (prop.row.original.googleSheets !== "Delete")) {
-          // if (prop.row.original.netSuite) {
-            return (
-              <i
-                className="ri-delete-bin-5-line pe-auto px-3"
-                // onClick={() => onClickDelete(prop.row.original)}
-              />
-            );
+          if (
+            prop.row.original.googleSheets !== "Add" &&
+            prop.row.original.googleSheets !== "Update" &&
+            prop.row.original.googleSheets !== "Delete"
+          ) {
+            return <i className="ri-delete-bin-5-line pe-auto px-3" />;
           } else {
             return null;
-          }
-
-          {
-            /* <i
-             className="ri-edit-2-fill mx-2"
-             onClick={() => onClickEdit(prop.row.original)}
-            ></i> */
           }
         },
       },
@@ -589,8 +446,6 @@ const [num, setNum] = useState(0);
   );
 
   const handleAddRow = () => {
-    // create random number for id
-    // const randomNumber = Math.floor(Math.random() * 1000); 
     setRows([...rows, { googleSheets: "", netSuite: "" }]);
   };
 
@@ -624,9 +479,18 @@ const [num, setNum] = useState(0);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TkTableContainer columns={columns} data={rows || []} showPagination={true} thClass="text-dark" />
+        <TkTableContainer
+          columns={columns}
+          data={rows || []}
+          showPagination={true}
+          thClass="text-dark"
+        />
 
-        <TkButton className="btn-success my-2 me-2" onClick={handleAddRow} type="button">
+        <TkButton
+          className="btn-success my-2 me-2"
+          onClick={handleAddRow}
+          type="button"
+        >
           Add Row
         </TkButton>
         <TkButton className="btn-success m-2" type="submit">

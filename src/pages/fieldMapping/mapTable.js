@@ -14,7 +14,7 @@ const MapTable = () => {
   // get data from router
   const router = useRouter();
   const { recordType } = router.query;
-  console.log("recordType in maptable", recordType);
+  // console.log("recordType in maptable", recordType);
   // useEffect(() => {
   //   console.log("route==>", router.query.recordType);
   //   if (router.query.recordType) {

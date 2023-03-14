@@ -74,6 +74,7 @@ const FieldMappingTable = () => {
                 query: { recordType: JSON.stringify(props.row.original) },
                 // query: {data: props.row.original}
               }}
+              as="/fieldMapping/mapTable"
             >
               <i
                 className="ri-eye-fill"
@@ -117,14 +118,18 @@ const FieldMappingTable = () => {
 
   return (
     <>
-      <TkTableContainer
-        columns={columnHead}
-        data={data}
-        // isSearch={true}
-        // isFilters={true}
-        // defaultPageSize={10}
-        // customPageSize={true}
-      />
+      {data.length === 0 ? (
+        <div className="text-center">No data found</div>
+      ) : (
+        <TkTableContainer
+          columns={columnHead}
+          data={data || []}
+          // isSearch={true}
+          // isFilters={true}
+          // defaultPageSize={10}
+          // customPageSize={true}
+        />
+      )}
     </>
   );
 };

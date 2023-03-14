@@ -14,43 +14,73 @@ import GoogleSheetComponent from "./GoogleSheetComponent";
 import Verified from "./Verified";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import { data, destinationName, sourceName } from "@/utils/Constants";
+import { useMutation } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
 
 const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
-  console.log("3 model", configData)
+  // console.log("3 model", configData)
   // console.log('in modal==>', other);
-  
+
   const [NSCTitle, setNSCTitle] = useState("NetSuite™");
   const [GSCTitle, setGSCTitle] = useState("Google Sheets™");
+
+  const integration = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+  });
   useEffect(() => {
-    if (other) {
-      console.log("in modal==>", other);
-      data.map((item) => {
-        if (item.id === other.recordId) {
-          setNSCTitle(item.sourceName);
-          setGSCTitle(item.destinationName);
-          console.log("in modal==>", item.sourceName);
-        }
+    if (other.integrationID) {
+      console.log("in modal==>", other.integrationID);
+
+      const id = {
+        id: JSON.parse(other.integrationID),
+      };
+
+      integration.mutate(id, {
+        onSuccess: (data) => {
+          console.log("data", data);
+          setNSCTitle(data[0]?.sourceName);
+          setGSCTitle(data[0]?.destinationName);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
       });
     }
+  }, [other.integrationID]);
 
-  }, [other]);
+  // console.log("other==>", other.integrationID);
 
-    // sourceName.map((item) => {
-    //   destinationName.map((item2) => {})
-    //   if(item.source.label === NSCTitle){
-    //     configData = {
-    //       source: item.source.label,
-    //       destination: item.destination.label,
-    //     }
-    //   }
-    // })
-    // console.log("configData", configData)
+  // useEffect(() => {
+  //   if (other) {
+  //     console.log("in modal==>", other);
+  //     data.map((item) => {
+  //       if (item.id === other.recordId) {
+  //         setNSCTitle(item.sourceName);
+  //         setGSCTitle(item.destinationName);
+  //         console.log("in modal==>", item.sourceName);
+  //       }
+  //     });
+  //   }
 
+  // }, [other]);
+
+  // sourceName.map((item) => {
+  //   destinationName.map((item2) => {})
+  //   if(item.source.label === NSCTitle){
+  //     configData = {
+  //       source: item.source.label,
+  //       destination: item.destination.label,
+  //     }
+  //   }
+  // })
+  // console.log("configData", configData)
 
   useEffect(() => {
     if (configData) {
-      setNSCTitle(configData.source.label);
-      setGSCTitle(configData.destination.label);
+      setNSCTitle(configData.source);
+      setGSCTitle(configData.destination);
+      // setNSCTitle(configData.source.label || configData.source);
+      // setGSCTitle(configData.destination.label || configData.destination);
     }
   }, [configData]);
 
@@ -168,11 +198,16 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
                 syncWay={syncWay}
                 configData={configData}
                 toggle={toggle}
+                integrationID={other.integrationID}
               />
             </TabPane>
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>
-              <NetsuiteComponent onClickHandeler={onClickHandeler} />
+              <NetsuiteComponent
+                onClickHandeler={onClickHandeler}
+                integrationID={other.integrationID}
+                title={NSCTitle}
+              />
             </TabPane>
 
             <TabPane tabId={tabs.GoogleSheetConfiguration}>

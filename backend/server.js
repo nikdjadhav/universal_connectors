@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const userController = require("./controllers/user.controllers");
+const integrationController = require("./controllers/integration.controllers");
 // require("dotenv").config();
 // const session = require("express-session");
 // const prisma = require("./lib/prisma");
@@ -46,10 +47,17 @@ app.use(express.urlencoded({ extended: false }));
 const v1Router = express.Router();
 app.use("/v1", v1Router);
 
-// *** routes ***
+// *** user routes ***
 v1Router.post("/", userController.createUser);
 v1Router.post("/login", userController.userLogin);
 v1Router.post("/verifyToken", userController.verifyToken);
+v1Router.post("/getUser", userController.getUser);
+v1Router.post("/updateUser", userController.updateUser);
+
+// *** integration routes ***
+v1Router.post("/addIntegration", integrationController.createIntegration);
+v1Router.post("/getIntegrations", integrationController.getIntegrations);
+v1Router.post("/getIntegrationById", integrationController.getIntegrationById);
 
 // app.get("/v1/login", (req, res) => {
 //   const { authenticated } = req.session;

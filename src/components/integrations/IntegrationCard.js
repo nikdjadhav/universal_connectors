@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -18,6 +18,8 @@ import DropdownModal from "./DropdownModal";
 import TkForm from "@/globalComponents/TkForm";
 import { Controller, useForm } from "react-hook-form";
 import TkInput from "@/globalComponents/TkInput";
+import { useMutation } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
   const {
@@ -33,6 +35,38 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   const [oneWaySync, setOneWaySync] = useState(true);
   const [twoWaySync, setTwoWaySync] = useState(false);
   const [syncWay, setSyncWay] = useState();
+  const [integrationData, setIntegrationData] = useState();
+
+  const integration = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+  });
+
+  const [id, setId] = useState(null);
+  useEffect(() => {
+    const userID = sessionStorage.getItem("userId");
+    // console.log("userID", userID);
+    setId({
+      userId: JSON.parse(userID),
+    });
+    // const id = {
+    //   "userId": JSON.parse(userID)
+    // }
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      integration.mutate(id, {
+        onSuccess: (data) => {
+          // console.log("data", data);
+          setIntegrationData(data);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
+  }, [id]);
+  // console.log("integrationData", integrationData);
 
   const toggleComponet = (value) => {
     setOneWaySync(value === "oneWaySync" ? true : false);
@@ -57,19 +91,17 @@ const IntegrationCard = ({ modal, toggleModal }) => {
 
   //
   const router = useRouter();
-  // const [integrationModal, settntegrationModal] = useState(false);
-  // const integrationToggle = useCallback(() => {
-  //   if (integrationModal) {
-  //     settntegrationModal(false);
-  //     toggleModal();
-  //   } else {
-  //     settntegrationModal(true);
-  //   }
-  // }, [integrationModal]);
 
-  const onClickCard = () => {
-    // console.log("Clicked");
-    router.push("/integrations/details");
+  const onClickCard = (id) => {
+    console.log("Clicked", id);
+    // router.push("/integrations/details");
+    router.push(
+      {
+        pathname: "/integrations/details",
+        query: { integrationId: id },
+      },
+      "/integrations/details"
+    );
   };
 
   const onSubmit = (data) => {
@@ -81,30 +113,45 @@ const IntegrationCard = ({ modal, toggleModal }) => {
 
   return (
     <>
-      <TkCard className="mt-4" style={{ width: "300px" }}>
-        <TkCardBody className="p-4" onClick={onClickCard}>
-          <div className="text-center">
-            <Image
-              src={"/images/logo-sm.png"}
-              alt="NetSuite-img"
-              width={30}
-              height={30}
-              className="w-auto"
-            />
-            <h5 className="mt-3">NetSuite™ Google Sheets™</h5>
-            {/* <img src="/images/img/line-graph.jpg" style={{ width: "250px" }} /> */}
-            <Image
-              src={"/images/img/line-graph.jpg"}
-              alt="graph-img"
-              width={120}
-              height={120}
-              className="w-auto"
-              unoptimized={true}
-            />
-          </div>
-        </TkCardBody>
-      </TkCard>
+      <TkRow>
+        {integrationData ? (
+          integrationData.map((item) => {
+            // console.log("item", item.sourceName);
 
+            return (
+              <TkCol lg={3} key={item.id}>
+                <TkCard className="mt-4" style={{ width: "300px", boxShadow: "2px 2px 2px 2px gray" }}>
+                  <TkCardBody className="p-4" onClick={() => onClickCard(item.id)}>
+                    <div className="text-center">
+                      <Image
+                        src={"/images/logo-sm.png"}
+                        alt="NetSuite-img"
+                        width={30}
+                        height={30}
+                        className="w-auto"
+                      />
+                      {/* <h5 className="mt-3">NetSuite™ Google Sheets™</h5> */}
+                      <h5 className="mt-3">
+                        {item.sourceName} {item.destinationName}
+                      </h5>
+                      <Image
+                        src={"/images/img/line-graph.jpg"}
+                        alt="graph-img"
+                        width={120}
+                        height={120}
+                        className="w-auto"
+                        unoptimized={true}
+                      />
+                    </div>
+                  </TkCardBody>
+                </TkCard>
+              </TkCol>
+            );
+          })
+        ) : (
+          <div>loading</div>
+        )}
+      </TkRow>
       {/* *** radio button modal *** */}
       <TkModal
         isOpen={modal}
@@ -158,10 +205,8 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                   checked={oneWaySync}
                   onClick={() => toggleComponet("oneWaySync")}
                 />
-                <TkLabel id="oneWaySync">
-                One Way Sync
-                </TkLabel>
-                  {/* One Way Sync
+                <TkLabel id="oneWaySync">One Way Sync</TkLabel>
+                {/* One Way Sync
                 </TkInput> */}
               </TkCol>
 
@@ -176,10 +221,8 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                   checked={twoWaySync}
                   onClick={() => toggleComponet("twoWaySync")}
                 />
-                <TkLabel id="twoWaySync">
-                Two Way Sync
-                </TkLabel>
-                  {/* Two Way Sync
+                <TkLabel id="twoWaySync">Two Way Sync</TkLabel>
+                {/* Two Way Sync
                 </TkInput> */}
               </TkCol>
 

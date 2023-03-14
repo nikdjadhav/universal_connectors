@@ -13,6 +13,8 @@ import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorText from "@/globalComponents/ErrorText";
+import { useMutation } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
 
 const schema = Yup.object({
   integrationName: Yup.string().required("Integration name is required."),
@@ -22,7 +24,13 @@ const schema = Yup.object({
   // destinationName: Yup.object().required("Field is required."),
 }).required();
 
-const Integration = ({ onClickHandeler, syncWay, configData, toggle }) => {
+const Integration = ({
+  onClickHandeler,
+  syncWay,
+  configData,
+  toggle,
+  ...other
+}) => {
   const {
     control,
     register,
@@ -32,6 +40,43 @@ const Integration = ({ onClickHandeler, syncWay, configData, toggle }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const [integrationsData, setIntegrationsData] = useState();
+  const [integrationID, setIntegrationID] = useState();
+
+  const integration = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+  });
+  console.log("int==>",other);
+
+  useEffect(() => {
+    if (other.integrationID) {
+      const id = {
+        id: JSON.parse(other.integrationID),
+      };
+      integration.mutate(id, {
+        onSuccess: (data) => {
+          console.log("data",  sourceName);
+          setIntegrationsData(data);
+          setIntegrationID(data[0]?.id);
+          setValue("integrationName", data[0]?.integrationName);
+          setValue("sourceName", { label: data[0]?.sourceName });
+          setValue("destinationName", { label: data[0]?.destinationName });
+
+          if (data[0]?.syncWay === "twoWaySync") {
+            setFirstTitle("System One");
+            setSecondTitle("System Two");
+          } else {
+            setFirstTitle("Source");
+            setSecondTitle("Destination");
+          }
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
+  }, []);
 
   // console.log('integration',configData.source.label,configData.destination.label);
   const [firstLabel, setFirstTitle] = useState();
@@ -47,20 +92,48 @@ const Integration = ({ onClickHandeler, syncWay, configData, toggle }) => {
     }
 
     if (configData) {
-      setValue("sourceName", { label: configData.source.label });
-      setValue("destinationName", { label: configData.destination.label });
+      setValue("sourceName", { label: configData.source });
+      setValue("destinationName", { label: configData.destination });
+      // setValue("integrationName", configData.integrationName)
+      // setValue("sourceName", { label: configData.source.label } || { label: configData.source });
+      // setValue("destinationName", { label: configData.destination.label } || { label: configData.destination });
     }
   }, [configData, setValue, syncWay]);
 
+  const addIntegration = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
+  });
+
   const onSubmit = (data) => {
-    console.log("integration nav submitted data", data);
+    // console.log("integration nav submitted data", data);
+    const userId = sessionStorage.getItem("userId");
+    const integrationData = {
+      userId: JSON.parse(userId),
+      integrationName: data.integrationName,
+      sourceName: data.sourceName.label,
+      destinationName: data.destinationName.label,
+      syncWay: syncWay,
+    };
+    addIntegration.mutate(integrationData, {
+      onSuccess: (data) => {
+        // console.log("ittegration added==>", data);
+        setIntegrationID(data[0]?.id);
+      },
+      onError: (error) => {
+        console.log("error", error);
+      },
+    });
+
+    // console.log("integration nav submitted data", integrationData);
     onClickHandeler();
   };
 
   const OnClickExit = () => {
     // history.back();
     toggle();
-  }
+  };
+
+  console.log("integrationsData", integrationsData);
 
   return (
     <>
@@ -79,6 +152,7 @@ const Integration = ({ onClickHandeler, syncWay, configData, toggle }) => {
                   placeholder="Enter integration name"
                   requiredStarOnLabel={true}
                   invalid={errors.integrationName?.message ? true : false}
+                  disabled={integrationsData ? true : false}
                   // className={errors.integrationName?.message && "form-control is-invalid"}
                 />
                 {errors.integrationName?.message ? (
@@ -100,9 +174,10 @@ const Integration = ({ onClickHandeler, syncWay, configData, toggle }) => {
                         id="sourceName"
                         // labelName="Source Name"
                         options={sourceName}
-                        defaultValue={sourceName[0]}
+                        // defaultValue={sourceName[0]}
                         maxMenuHeight="130px"
                         disabled={true}
+                        // disabled={integrationsData ? true : false}
                       />
                     </>
                   )}
@@ -121,9 +196,10 @@ const Integration = ({ onClickHandeler, syncWay, configData, toggle }) => {
                         // labelName="Destination Name"
                         id="destinationName"
                         options={destinationName}
-                        defaultValue={destinationName[0]}
+                        // defaultValue={destinationName[0]}
                         maxMenuHeight="130px"
                         disabled={true}
+                        // disabled={integrationsData ? true : false}
                       />
                     </>
                   )}

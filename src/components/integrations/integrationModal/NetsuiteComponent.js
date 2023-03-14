@@ -5,10 +5,11 @@ import React, { useState } from "react";
 import ExistConnection from "./ExistConnection";
 import NewConnection from "./NewConnection";
 
-const NetsuiteComponent = ({ onClickHandeler }) => {
+const NetsuiteComponent = ({ onClickHandeler, ...other }) => {
   const [showComponent, setShowComponent] = useState("one");
   const [newTab, setNewTab] = useState(true);
   const [existTab, setExistTab] = useState(false);
+  console.log("nc==>", other);
 
   const toggleComponet = (value) => {
     // console.log(value);
@@ -52,7 +53,18 @@ const NetsuiteComponent = ({ onClickHandeler }) => {
           </TkRadioButton>
         </TkCol>
 
-        {showComponent === "one" ? <NewConnection onClickHandeler={onClickHandeler} /> : <ExistConnection onClickHandeler={onClickHandeler} />}
+        {showComponent === "one" ? (
+          <NewConnection
+            onClickHandeler={onClickHandeler}
+            integrationID={other.integrationID}
+            title={other.title}
+          />
+        ) : (
+          <ExistConnection
+            onClickHandeler={onClickHandeler}
+            // integrationID={other.integrationID}
+          />
+        )}
 
         {/* <TkCol lg={12}>
           <TkButton type="submit" className="btn btn-success">

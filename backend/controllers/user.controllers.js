@@ -29,7 +29,8 @@ const createUser = async (req, res) => {
         status_code: 200,
         data: [
           {
-            success: true,
+            // success: true,
+            userId: logedinUser.id,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
@@ -73,27 +74,134 @@ const createUser = async (req, res) => {
 };
 
 // *** to fetch all the users from the database ***
-const getUsers = async (req, res) => {
+// const getUsers = async (req, res) => {
+//   try {
+//     const users = await prisma.users.findMany();
+//     response({
+//       res,
+//       success: true,
+//       status_code: 200,
+//       data: users,
+//       message: "Users fetched successfully",
+//     });
+//     // res.json(users);
+//   } catch (error) {
+//     response({
+//       res,
+//       success: false,
+//       status_code: 400,
+//       data: [],
+//       message: "user not fetched",
+//     });
+//   }
+// };
+
+const getUser = async (req, res) => {
+  const reqBody = req.body;
+  // console.log("reqBody==>", reqBody);
   try {
-    const users = await prisma.users.findMany();
-    response({
-      res,
-      success: true,
-      status_code: 200,
-      data: users,
-      message: "Users fetched successfully",
+    const decodedToken = jwt.verify(
+      reqBody.token,
+      process.env.ACCESS_TOKEN_SECRET
+    );
+
+    const user = await prisma.users.findUnique({
+      where: {
+        loginUser: {
+          email: decodedToken.email,
+          password: decodedToken.password,
+        },
+      },
     });
-    // res.json(users);
+
+    if (user) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [
+          {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            country: user.country,
+            city: user.city,
+          },
+        ],
+        message: "user fetched successfully",
+      });
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        data: [],
+        message: "user not found",
+      });
+    }
   } catch (error) {
     response({
       res,
       success: false,
       status_code: 400,
       data: [],
-      message: "user not fetched",
+      message: "user not found",
     });
   }
 };
+
+const updateUser = async (req, res) => {
+  const user = req.body;
+  // console.log("user==>", user);
+  try {
+  //  update user if user is exist
+    const updatedUser = await prisma.users.update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        country: user.country,
+        city: user.city,
+      },
+    });
+    if (updatedUser) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [
+          {
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            email: updatedUser.email,
+            country: updatedUser.country,
+            city: updatedUser.city,
+          },
+        ],
+        message: "user updated successfully",
+      })
+    }else{
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        data: [],
+        message: "user not updated",
+      })
+    }
+
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      data: [],
+      message: "user not updated",
+    })
+  }
+}
 
 // *** route to check if the user is logged in or not ***
 // *** to fetch a single user from the database ***
@@ -121,7 +229,8 @@ const userLogin = async (req, res) => {
       status_code: 200,
       data: [
         {
-          success: true,
+          // success: true,
+          userId: logedinUser.id,
           firstName: logedinUser.firstName,
           lastName: logedinUser.lastName,
           email: logedinUser.email,
@@ -199,9 +308,11 @@ const verifyToken = async (req, res) => {
         res,
         success: true,
         status_code: 200,
-        data: [{
-          verified: true
-        }],
+        data: [
+          {
+            verified: true,
+          },
+        ],
         message: "User logged in successfully",
       });
       // console.log("logedinUser", logedinUser);
@@ -210,9 +321,11 @@ const verifyToken = async (req, res) => {
         res,
         success: false,
         status_code: 400,
-        data: [{
-          verified: false
-        }],
+        data: [
+          {
+            verified: false,
+          },
+        ],
         message: "User not found",
       });
       // console.log("**error");
@@ -222,9 +335,11 @@ const verifyToken = async (req, res) => {
       res,
       success: false,
       status_code: 400,
-      data: [{
-        verified: false
-      }],
+      data: [
+        {
+          verified: false,
+        },
+      ],
       message: "error",
       verified: false,
     });
@@ -234,7 +349,9 @@ const verifyToken = async (req, res) => {
 
 module.exports = {
   createUser,
-  getUsers,
+  // getUsers,
+  getUser,
+  updateUser,
   userLogin,
   verifyToken,
 };
