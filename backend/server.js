@@ -73,12 +73,12 @@ v1Router.post("/getIntegrationById", integrationController.getIntegrationById);
 
 //   }
 // });
-// app.get("/v1/logout", protect, (req, res) => {
+app.get("/v1/test", (req, res) => {
 //     console.log('rr',req.session.user);
 //   req.session.destroy(() => {
-//     res.send("Successfully logged out");
+    res.send("Successfully logged out");
 //   });
-// });
+});
 
 app.listen(port, () => {
   console.log("Server is running on port " + port);
