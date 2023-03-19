@@ -76,7 +76,9 @@ const Register = () => {
   });
 
   const user = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1")
+//     mutationFn: tkFetch.post("http://localhost:4000/v1")
+     mutationFn: tkFetch.post(" https://demo-40do.onrender.com/v1")
+   
   });
 
   const OnSubmit = async (formData) => {
