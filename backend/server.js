@@ -10,7 +10,8 @@ const integrationController = require("./controllers/integration.controllers");
 
 const app = express();
 dotenv.config();
-const port = 4000;
+// const port = 4000;
+cost port = procces.env.PORT || 4000;
 
 // const secret = process.env.SESSION_SECRET;
 // const store = new session.MemoryStore();
