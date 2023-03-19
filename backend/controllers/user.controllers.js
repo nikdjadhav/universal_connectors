@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 // *** to create a new user in the database ***
 const createUser = async (req, res) => {
-  // console.log('requestd body',req.body);
+  console.log('requestd body',req.body);
 
   try {
     const user = await prisma.users.create({
