@@ -30,7 +30,7 @@ const createUser = async (req, res) => {
         data: [
           {
             // success: true,
-            userId: logedinUser.id,
+            userId: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
