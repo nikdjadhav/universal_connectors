@@ -13,7 +13,7 @@ const createIntegration = async (req, res) => {
         destinationName: req.body.destinationName,
         // createdAt: new Date(),
         // updatedAt: undefined,
-        // creationDate: new Date(),
+        creationDate: new Date(),
         modificationDate: undefined, 
         schedule: false,
         fieldMapping: false,
