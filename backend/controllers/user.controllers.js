@@ -23,6 +23,7 @@ const createUser = async (req, res) => {
         { email: req.body.email, password: req.body.password },
         process.env.ACCESS_TOKEN_SECRET
       );
+      console.log("token==>", token);
       response({
         res,
         success: true,
@@ -68,8 +69,9 @@ const createUser = async (req, res) => {
           token: null,
         },
       ],
-      message: "Error while creating user",
+      message: "Error while creating user" + error,
     });
+    console.log("error==>", error);
   }
 };
 
