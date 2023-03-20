@@ -5,7 +5,7 @@ import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import React, { useEffect, useState } from "react";
-import { genderOptions, sourceName } from "@/utils/Constants";
+import { API_BASE_URL, genderOptions, sourceName } from "@/utils/Constants";
 import { destinationName } from "@/utils/Constants";
 import Select from "react-select";
 import TkLabel from "@/globalComponents/TkLabel";
@@ -45,7 +45,9 @@ const Integration = ({
   const [integrationID, setIntegrationID] = useState();
 
   const integration = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+
   });
   console.log("int==>",other);
 
@@ -101,7 +103,8 @@ const Integration = ({
   }, [configData, setValue, syncWay]);
 
   const addIntegration = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addIntegration`),
   });
 
   const onSubmit = (data) => {

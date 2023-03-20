@@ -16,6 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 // import tkFetch from "../../../src/utils/fetch";
 // import { TkToastError, TkToastSuccess } from "../TkToastContainer";
 import { useRouter } from "next/router";
+import { API_BASE_URL } from "@/utils/Constants";
 
 
 const steps = ["COMPANY INFO", "FEEDBACK", "INVITE"];

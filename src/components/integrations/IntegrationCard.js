@@ -38,7 +38,9 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   const [integrationData, setIntegrationData] = useState();
 
   const integration = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+
   });
 
   const [id, setId] = useState(null);

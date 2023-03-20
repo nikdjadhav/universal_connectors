@@ -68,7 +68,7 @@ const createUser = async (req, res) => {
           token: null,
         },
       ],
-      message: "User not created",
+      message: "Error while creating user",
     });
   }
 };

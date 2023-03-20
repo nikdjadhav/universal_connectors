@@ -61,11 +61,13 @@ const ProfileSetting = () => {
   );
 
   const user = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getUser"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getUser"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getUser`),
   });
 
   const updateUser = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/updateUser"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/updateUser"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/updateUser`),
   });
 
   useEffect(() => {

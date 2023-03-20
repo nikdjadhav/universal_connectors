@@ -42,7 +42,8 @@ const Details = () => {
   // })
 
   const integration = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
   });
   useEffect(() => {
     if (integrationID) {

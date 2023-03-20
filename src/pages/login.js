@@ -15,6 +15,7 @@ import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import FormErrorText from "@/globalComponents/ErrorText";
 import {
+  API_BASE_URL,
   MaxEmailLength,
   MaxPasswordLength,
   MinEmailLength,
@@ -111,7 +112,8 @@ const Login = () => {
   // const notify = () => toast("Wow so easy!");
 
   const user = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/login"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/login"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/login`)
   });
 
   const onSubmit = async (userData) => {

@@ -27,6 +27,7 @@ import TkNetworkStatus from "@/globalComponents/TkNetworkStatus";
 import useGlobalStore from "@/utils/globalStore";
 import Login from "./login";
 import tkFetch from "@/utils/fetch";
+import { API_BASE_URL } from "@/utils/Constants";
 
 export default function MyApp({ Component, pageProps }) {
   console.log("App rerendered");
@@ -69,7 +70,9 @@ export default function MyApp({ Component, pageProps }) {
         };
         // console.log("userToken===>", userToken);
         async function tokenVerifiedApi() {
-          const response = await fetch("http://localhost:4000/v1/verifyToken", {
+          // const response = await fetch("http://localhost:4000/v1/verifyToken", {
+          const response = await fetch(`${API_BASE_URL}/verifyToken`, {
+
             method: "POST",
             headers: {
               "Content-Type": "application/json",

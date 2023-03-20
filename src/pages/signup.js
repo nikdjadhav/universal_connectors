@@ -15,12 +15,19 @@ import TkContainer from "@/globalComponents/TkContainer";
 import TkButton from "@/globalComponents/TkButton";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import FormErrorText from "@/globalComponents/ErrorText";
-import { MaxEmailLength, MaxNameLength, MaxPasswordLength, MinEmailLength, MinNameLength, MinPasswordLength } from "@/utils/Constants";
+import {
+  API_BASE_URL,
+  MaxEmailLength,
+  MaxNameLength,
+  MaxPasswordLength,
+  MinEmailLength,
+  MinNameLength,
+  MinPasswordLength,
+} from "@/utils/Constants";
 import { TkToastError } from "@/globalComponents/TkToastContainer";
 import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
-
 
 const schema = Yup.object({
   email: Yup.string()
@@ -30,8 +37,14 @@ const schema = Yup.object({
     .required("Email is required"),
 
   password: Yup.string()
-    .min(MinPasswordLength, `Password should contain at least ${MinPasswordLength} character`)
-    .max(MaxPasswordLength, `Password cannot contain more than ${MaxPasswordLength} character`)
+    .min(
+      MinPasswordLength,
+      `Password should contain at least ${MinPasswordLength} character`
+    )
+    .max(
+      MaxPasswordLength,
+      `Password cannot contain more than ${MaxPasswordLength} character`
+    )
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#^()+!%*?&])[A-Za-z\d@$#^()+!%*?&]{8,32}$/,
       "Password must have One Uppercase, One Lowercase, One Number and one Special Character. \n Special Characters can be on of @ $ # ^ ( ) + ! % * ? &"
@@ -39,16 +52,31 @@ const schema = Yup.object({
     .required("Password is required"),
 
   firstName: Yup.string()
-    .min(MinNameLength, `First Name should contain at least ${MinNameLength} character`)
-    .max(MaxNameLength, `First Name cannot contain more than ${MaxNameLength} character`)
+    .min(
+      MinNameLength,
+      `First Name should contain at least ${MinNameLength} character`
+    )
+    .max(
+      MaxNameLength,
+      `First Name cannot contain more than ${MaxNameLength} character`
+    )
     .required("Name is required"),
 
   lastName: Yup.string()
-    .min(MinNameLength, `Last Name should contain at least ${MinNameLength} character`)
-    .max(MaxNameLength, `Last Name cannot contain more than ${MaxNameLength} character`)
+    .min(
+      MinNameLength,
+      `Last Name should contain at least ${MinNameLength} character`
+    )
+    .max(
+      MaxNameLength,
+      `Last Name cannot contain more than ${MaxNameLength} character`
+    )
     .required("Name is required"),
 
-  confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Password and Confirm Password must match"),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref("password"), null],
+    "Password and Confirm Password must match"
+  ),
 }).required();
 
 const Register = () => {
@@ -56,17 +84,17 @@ const Register = () => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("loginCredentials");
-    console.log("token",token);
+    console.log("token", token);
 
-    if(token){
+    if (token) {
       router.push("/dashboard");
     }
   }, [router]);
-  
+
   // const googleSignupHandler = async () => {
   //   await signIn("google", { callbackUrl: "/start" }); // it redirects use to dashboard after signIn
   // };
-  
+
   const {
     register,
     handleSubmit,
@@ -76,9 +104,9 @@ const Register = () => {
   });
 
   const user = useMutation({
-//     mutationFn: tkFetch.post("http://localhost:4000/v1")
-     mutationFn: tkFetch.post(" https://demo-40do.onrender.com/v1")
-   
+    //     mutationFn: tkFetch.post("http://localhost:4000/v1")
+    //  mutationFn: tkFetch.post(" https://demo-40do.onrender.com/v1")
+    mutationFn: tkFetch.post(`${API_BASE_URL}`),
   });
 
   const OnSubmit = async (formData) => {
@@ -88,11 +116,11 @@ const Register = () => {
       lastName: formData.lastName,
       email: formData.email,
       password: formData.password,
-    }
+    };
 
-    user.mutate(newUser,{
+    user.mutate(newUser, {
       onSuccess: (data) => {
-        console.log('user creat ed', data);
+        console.log("user creat ed", data);
         const user = {
           firstName: data[0].firstName,
           lastName: data[0].lastName,
@@ -100,8 +128,8 @@ const Register = () => {
           password: data[0].password,
           verrified: data[0].verrified,
           token: data[0].token,
-        }
-        console.log('user', user);
+        };
+        console.log("user", user);
         // localStorage.setItem("loginCredentials", JSON.stringify(user));
         sessionStorage.setItem("loginCredentials", user.token);
         router.push("/dashboard");
@@ -109,9 +137,8 @@ const Register = () => {
       onError: (err) => {
         console.log(err);
         TkToastError("Invalid Credentials");
-      }
-    })
-    
+      },
+    });
 
     // const user = await fetch("http://localhost:4000/createUser", {
     //   method: "POST",
@@ -148,8 +175,7 @@ const Register = () => {
     //   console.log(err);
     // });
 
-
-    // // *** 
+    // // ***
     // // // TODO: upadte this fetch call with react query wrapper
     // // const user = fetch("/api/v1/users/new-admin", {
     // //   method: "POST",
@@ -187,148 +213,176 @@ const Register = () => {
     // //   });
   };
 
-// const { status } = useSession({
-//   required: true,
-//   onUnauthenticated() {
-//     // dont remove this function though it has empty body, because else page will be refreshed with an error
-//     // console.log("unauthenticated");
-//   },
-// });
-// if (status === "authenticated") {
-//   router.push("/dashboard");
-// }
+  // const { status } = useSession({
+  //   required: true,
+  //   onUnauthenticated() {
+  //     // dont remove this function though it has empty body, because else page will be refreshed with an error
+  //     // console.log("unauthenticated");
+  //   },
+  // });
+  // if (status === "authenticated") {
+  //   router.push("/dashboard");
+  // }
 
-return (
-  <>
-    <TkPageHead>
-      <title>{`SignUp - ${process.env.NEXT_PUBLIC_APP_NAME}`}</title>
-    </TkPageHead>
+  return (
+    <>
+      <TkPageHead>
+        <title>{`SignUp - ${process.env.NEXT_PUBLIC_APP_NAME}`}</title>
+      </TkPageHead>
 
-    <ParticlesAuth>
-      <div className="auth-page-content">
-        <TkContainer>
-          <TkRow>
-            <TkCol lg={12}>
-              <div className="text-center mt-sm-5 mb-4 text-white-50">
-                <div>
-                  <Link href="/" className="d-inline-block auth-logo">
-                    <h2 className="logo-text text-light">{process.env.NEXT_PUBLIC_APP_NAME}</h2>
-                  </Link>
-                </div>
-              </div>
-            </TkCol>
-          </TkRow>
-
-          <TkRow className="justify-content-center">
-            <TkCol md={8} lg={6} xl={5}>
-              <TkCard className="mt-4">
-                <TkCardBody className="p-4">
-                  <div className="text-center mt-2">
-                    <h5 className="text-primary">Create New Account</h5>
-                    <p className="text-muted">Get your {process.env.NEXT_PUBLIC_APP_NAME} account now</p>
+      <ParticlesAuth>
+        <div className="auth-page-content">
+          <TkContainer>
+            <TkRow>
+              <TkCol lg={12}>
+                <div className="text-center mt-sm-5 mb-4 text-white-50">
+                  <div>
+                    <Link href="/" className="d-inline-block auth-logo">
+                      <h2 className="logo-text text-light">
+                        {process.env.NEXT_PUBLIC_APP_NAME}
+                      </h2>
+                    </Link>
                   </div>
-                  <div className="p-2 mt-4">
-                    <TkForm onSubmit={handleSubmit(OnSubmit)} className="needs-validation">
-                      <div className="mb-3">
-                        <TkInput
-                          {...register("email")}
-                          labelName="Email"
-                          type="email"
-                          id="email"
-                          name="email"
-                          placeholder="Enter Email Address"
-                          requiredStarOnLabel={true}
-                          required={true}
-                          invalid={errors.email?.message ? true : false}
-                        />
-                        {errors.email?.message ? <FormErrorText>{errors.email?.message}</FormErrorText> : null}
-                      </div>
+                </div>
+              </TkCol>
+            </TkRow>
 
-                      <TkRow>
-                        <TkCol md={6}>
-                          <div className="mb-3">
-                            <TkInput
-                              {...register("firstName")}
-                              labelName="First Name"
-                              type="text"
-                              id="firstName"
-                              placeholder="Enter First Name"
-                              requiredStarOnLabel={true}
-                              required={true}
-                            />
-                            {errors.firstName?.message ? (
-                              <FormErrorText>{errors.firstName?.message}</FormErrorText>
-                            ) : null}
-                          </div>
-                        </TkCol>
-
-                        <TkCol md={6}>
-                          <div className="mb-3">
-                            <TkInput
-                              {...register("lastName")}
-                              labelName="Last Name"
-                              type="text"
-                              id="lastName"
-                              placeholder="Enter Last Name"
-                              requiredStarOnLabel={true}
-                              required={true}
-                            />
-                            {errors.lastName?.message ? (
-                              <FormErrorText>{errors.lastName?.message}</FormErrorText>
-                            ) : null}
-                          </div>
-                        </TkCol>
-
+            <TkRow className="justify-content-center">
+              <TkCol md={8} lg={6} xl={5}>
+                <TkCard className="mt-4">
+                  <TkCardBody className="p-4">
+                    <div className="text-center mt-2">
+                      <h5 className="text-primary">Create New Account</h5>
+                      <p className="text-muted">
+                        Get your {process.env.NEXT_PUBLIC_APP_NAME} account now
+                      </p>
+                    </div>
+                    <div className="p-2 mt-4">
+                      <TkForm
+                        onSubmit={handleSubmit(OnSubmit)}
+                        className="needs-validation"
+                      >
                         <div className="mb-3">
                           <TkInput
-                            {...register("password")}
-                            labelName="Password"
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter Password"
+                            {...register("email")}
+                            labelName="Email"
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter Email Address"
                             requiredStarOnLabel={true}
                             required={true}
-                            invalid={errors.password?.message ? true : false}
+                            invalid={errors.email?.message ? true : false}
                           />
-                          {errors.password?.message ? (
-                            <FormErrorText>{errors.password?.message}</FormErrorText>
+                          {errors.email?.message ? (
+                            <FormErrorText>
+                              {errors.email?.message}
+                            </FormErrorText>
                           ) : null}
                         </div>
-                      </TkRow>
 
-                      <div className="mb-2">
-                        <TkInput
-                          {...register("confirmPassword")}
-                          labelName="Confirm Password"
-                          type="password"
-                          id="confirmPassword"
-                          name="confirmPassword"
-                          placeholder="Enter Confirm Password"
-                          requiredStarOnLabel={true}
-                          required={true}
-                          invalid={errors.confirmPassword?.message ? true : false}
-                        />
-                        {errors.confirmPassword?.message ? (
-                          <FormErrorText>{errors.confirmPassword?.message}</FormErrorText>
-                        ) : null}
-                      </div>
+                        <TkRow>
+                          <TkCol md={6}>
+                            <div className="mb-3">
+                              <TkInput
+                                {...register("firstName")}
+                                labelName="First Name"
+                                type="text"
+                                id="firstName"
+                                placeholder="Enter First Name"
+                                requiredStarOnLabel={true}
+                                required={true}
+                              />
+                              {errors.firstName?.message ? (
+                                <FormErrorText>
+                                  {errors.firstName?.message}
+                                </FormErrorText>
+                              ) : null}
+                            </div>
+                          </TkCol>
 
-                      <div className="mb-4">
-                        <p className="mb-0 fs-12 text-muted fst-italic">
-                          By registering you agree to the {process.env.NEXT_PUBLIC_APP_NAME}{" "}
-                          <Link href="/terms-and-conditions" className="text-primary text-decoration-underline fst-normal fw-medium">
-                            Terms of Use
-                          </Link>
-                        </p>
-                      </div>
+                          <TkCol md={6}>
+                            <div className="mb-3">
+                              <TkInput
+                                {...register("lastName")}
+                                labelName="Last Name"
+                                type="text"
+                                id="lastName"
+                                placeholder="Enter Last Name"
+                                requiredStarOnLabel={true}
+                                required={true}
+                              />
+                              {errors.lastName?.message ? (
+                                <FormErrorText>
+                                  {errors.lastName?.message}
+                                </FormErrorText>
+                              ) : null}
+                            </div>
+                          </TkCol>
 
-                      <div className="mt-4">
-                        <TkButton className="btn btn-success w-100" type="submit">
-                          Sign Up
-                        </TkButton>
-                      </div>
-                    </TkForm>
+                          <div className="mb-3">
+                            <TkInput
+                              {...register("password")}
+                              labelName="Password"
+                              type="password"
+                              id="password"
+                              name="password"
+                              placeholder="Enter Password"
+                              requiredStarOnLabel={true}
+                              required={true}
+                              invalid={errors.password?.message ? true : false}
+                            />
+                            {errors.password?.message ? (
+                              <FormErrorText>
+                                {errors.password?.message}
+                              </FormErrorText>
+                            ) : null}
+                          </div>
+                        </TkRow>
+
+                        <div className="mb-2">
+                          <TkInput
+                            {...register("confirmPassword")}
+                            labelName="Confirm Password"
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Enter Confirm Password"
+                            requiredStarOnLabel={true}
+                            required={true}
+                            invalid={
+                              errors.confirmPassword?.message ? true : false
+                            }
+                          />
+                          {errors.confirmPassword?.message ? (
+                            <FormErrorText>
+                              {errors.confirmPassword?.message}
+                            </FormErrorText>
+                          ) : null}
+                        </div>
+
+                        <div className="mb-4">
+                          <p className="mb-0 fs-12 text-muted fst-italic">
+                            By registering you agree to the{" "}
+                            {process.env.NEXT_PUBLIC_APP_NAME}{" "}
+                            <Link
+                              href="/terms-and-conditions"
+                              className="text-primary text-decoration-underline fst-normal fw-medium"
+                            >
+                              Terms of Use
+                            </Link>
+                          </p>
+                        </div>
+
+                        <div className="mt-4">
+                          <TkButton
+                            className="btn btn-success w-100"
+                            type="submit"
+                          >
+                            Sign Up
+                          </TkButton>
+                        </div>
+                      </TkForm>
                     </div>
                     <div className="mt-4 text-center">
                       {/* <div className="signin-other-title">
@@ -338,24 +392,27 @@ return (
                         <GoogleLoginBtn onClick={googleSignupHandler} btnText={"SignUp with Google"} />
                       </div>
                     </div> */}
-                  </div>
-                </TkCardBody>
-              </TkCard>
-              <div className="mt-4 text-center">
-                <p className="mb-0">
-                  Already have an account ?{" "}
-                  <Link href="/login" className="fw-semibold text-primary text-decoration-underline">
-                    Login
-                  </Link>
-                </p>
-              </div>
-            </TkCol>
-          </TkRow>
-        </TkContainer>
-      </div>
-    </ParticlesAuth>
-  </>
-);
+                    </div>
+                  </TkCardBody>
+                </TkCard>
+                <div className="mt-4 text-center">
+                  <p className="mb-0">
+                    Already have an account ?{" "}
+                    <Link
+                      href="/login"
+                      className="fw-semibold text-primary text-decoration-underline"
+                    >
+                      Login
+                    </Link>
+                  </p>
+                </div>
+              </TkCol>
+            </TkRow>
+          </TkContainer>
+        </div>
+      </ParticlesAuth>
+    </>
+  );
 };
 
 export default Register;

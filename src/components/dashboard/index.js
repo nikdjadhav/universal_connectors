@@ -1,5 +1,6 @@
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import {
+  API_BASE_URL,
   data,
   filterFields,
   minSearchLength,
@@ -27,7 +28,9 @@ const DashBoard = () => {
   const [syncWay, setSyncWay] = useState();
   const integration = useMutation({
     // queryKey: "integrations",
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+
     // enabled:  !!userID
   });
 

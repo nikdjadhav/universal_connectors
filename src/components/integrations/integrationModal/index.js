@@ -25,7 +25,8 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
   const [GSCTitle, setGSCTitle] = useState("Google Sheets™");
 
   const integration = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
   });
   useEffect(() => {
     if (other.integrationID) {
