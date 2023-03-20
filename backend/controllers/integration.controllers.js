@@ -11,8 +11,8 @@ const createIntegration = async (req, res) => {
         integrationName: req.body.integrationName,
         sourceName: req.body.sourceName,
         destinationName: req.body.destinationName,
-        // createdAt: new Date(),
-        // updatedAt: ,
+        createdAt: new Date(),
+        updatedAt: undefined,
         schedule: false,
         fieldMapping: false,
         status: "Completed",
@@ -46,6 +46,7 @@ const createIntegration = async (req, res) => {
       status_code: 400,
       message: "Error in creating integration",
     });
+    console.log("error", error);
     return;
   }
 };
