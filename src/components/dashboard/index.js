@@ -184,10 +184,10 @@ const DashBoard = () => {
     },
     {
       Header: "Creation Date",
-      accessor: "createdAt",
+      accessor: "creationDate",
       Cell: (props) => {
         // console.log("props==>",props.row.original);
-        const dateTime = props.row.original?.createdAt;
+        const dateTime = props.row.original?.creationDate;
         const date = dateTime.split("T")[0];
         const time = dateTime.split("T")[1];
         // console.log("date==>", time);
