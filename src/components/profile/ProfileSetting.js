@@ -21,6 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { API_BASE_URL } from "@/utils/Constants";
 
 const schema = Yup.object({
   firstName: Yup.string().required("First Name is required"),

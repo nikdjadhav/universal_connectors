@@ -13,7 +13,7 @@ import NetsuiteComponent from "./NetsuiteComponent";
 import GoogleSheetComponent from "./GoogleSheetComponent";
 import Verified from "./Verified";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import { data, destinationName, sourceName } from "@/utils/Constants";
+import { API_BASE_URL, data, destinationName, sourceName } from "@/utils/Constants";
 import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 

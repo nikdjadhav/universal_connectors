@@ -108,7 +108,7 @@ const Integration = ({
   });
 
   const onSubmit = (data) => {
-    // console.log("integration nav submitted data", data);
+    console.log("integration nav submitted data", data);
     const userId = sessionStorage.getItem("userId");
     const integrationData = {
       userId: JSON.parse(userId),

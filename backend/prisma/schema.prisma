@@ -30,22 +30,22 @@ model Users {
 }
 
 model Integrations {
-  id              Int              @id @default(autoincrement())
-  userId          Int
-  user            Users            @relation(fields: [userId], references: [id])
-  integrationName String
-  sourceName      String
-  destinationName String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  schedule        Boolean
-  fieldMapping    Boolean
-  status          String
-  syncWay         String
-  Configurations  Configurations[]
-  MappedRecords   MappedRecords[]
-  Schedule        Schedule[]
-  Logs            Logs[]
+  id               Int              @id @default(autoincrement())
+  userId           Int
+  user             Users            @relation(fields: [userId], references: [id])
+  integrationName  String
+  sourceName       String
+  destinationName  String
+  creationDate     DateTime         @default(now())
+  modificationDate DateTime         @updatedAt
+  schedule         Boolean
+  fieldMapping     Boolean
+  status           String
+  syncWay          String
+  Configurations   Configurations[]
+  MappedRecords    MappedRecords[]
+  Schedule         Schedule[]
+  Logs             Logs[]
 }
 
 model Configurations {
