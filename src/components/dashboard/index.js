@@ -209,9 +209,9 @@ const DashBoard = () => {
     },
     {
       Header: "Modified Date",
-      accessor: "modifiedDate",
+      accessor: "modificationDate",
       Cell: (props) => {
-        const dateTime = props.row.original?.updatedAt;
+        const dateTime = props.row.original?.modificationDate;
         const date = dateTime.split("T")[0];
         const time = dateTime.split("T")[1];
         return (
