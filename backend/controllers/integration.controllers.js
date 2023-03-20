@@ -55,7 +55,7 @@ const createIntegration = async (req, res) => {
 
 // get integration using id
 const getIntegrationById = async (req, res) => {
-  // console.log("requestd body", req.body);
+  console.log("requestd body", req.body);
   try {
     const integration = await prisma.integrations.findUnique({
       where: {
@@ -88,12 +88,14 @@ const getIntegrationById = async (req, res) => {
       status_code: 400,
       message: "Error in fetching integration",
     });
-    return;
+    console.log("error", error);
+    // return;
   }
 };
 
 const getIntegrations = async (req, res) => {
-  // console.log('requestd body',req.body);
+  console.log("requestd body");
+  console.log('requestd body',req.body);
   try {
     const integrations = await prisma.integrations.findMany({
       where: {
@@ -126,7 +128,8 @@ const getIntegrations = async (req, res) => {
       status_code: 400,
       message: "Error in fetching integrations",
     });
-    return;
+    console.log("error", error);
+    // return;
   }
 };
 

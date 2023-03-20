@@ -57,9 +57,10 @@ const IntegrationCard = ({ modal, toggleModal }) => {
 
   useEffect(() => {
     if (id) {
+      console.log("id", id);
       integration.mutate(id, {
         onSuccess: (data) => {
-          // console.log("data", data);
+          console.log("data", data);
           setIntegrationData(data);
         },
         onError: (error) => {
