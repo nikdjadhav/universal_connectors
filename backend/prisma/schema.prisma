@@ -68,8 +68,8 @@ model MappedRecords {
   user          Users        @relation(fields: [userId], references: [id])
   integrationId Int
   integration   Integrations @relation(fields: [integrationId], references: [id])
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  creationDate     DateTime     @default(now())
+  modificationDate     DateTime     @updatedAt
   recordType    String
   url           String
   Fields        Fields[]
@@ -94,8 +94,8 @@ model Schedule {
   user           Users        @relation(fields: [userId], references: [id])
   integrationId  Int
   integration    Integrations @relation(fields: [integrationId], references: [id])
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  creationDate      DateTime     @default(now())
+  modificationDate      DateTime     @updatedAt
   eventType      String
   startDate      DateTime     @default(now())
   endDate        DateTime

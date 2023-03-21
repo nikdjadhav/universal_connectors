@@ -28,14 +28,15 @@ const getRecordTypes = async (req, res) => {
       scriptDeploymentId: req.body.scriptDeploymentId,
       scriptId: req.body.scriptId,
       signatureMethod: "HMAC-SHA256",
-      base_url: req.body.base_url,
+    //   base_url: req.body.base_url,
     };
-    console.log("authentication.length", req.body);
+    // console.log("authentication.length", req.body);
 
-    if (req.body.base_url) {
+    if (req.body.scriptDeploymentId) {
+        const base_url= "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl"
       const concatenatedString = `deploy=${authentication.scriptDeploymentId}&oauth_consumer_key=${authentication.consumerKey}&oauth_nonce=${authentication.nonce}&oauth_signature_method=${authentication.signatureMethod}&oauth_timestamp=${authentication.timestamp}&oauth_token=${authentication.tokenId}&oauth_version=${authentication.version}&script=${authentication.scriptId}`;
       const baseString = `${authentication.http_method}&${encodeURIComponent(
-        authentication.base_url
+        base_url
       )}&${encodeURIComponent(concatenatedString)}`;
       const keys = `${authentication.consumerSecret}&${authentication.tokenSecret}`;
       const signature = crypto

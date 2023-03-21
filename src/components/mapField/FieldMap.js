@@ -5,14 +5,17 @@ import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import {
+  API_BASE_URL,
   destinationName,
   integrations,
   recordType,
   sourceName,
 } from "@/utils/Constants";
+import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -34,10 +37,48 @@ const FieldMap = () => {
   });
 
   useEffect(() => {
-    setValue("integrationName", integrations[0]);
+    // setValue("integrationName", integrations[0]);
   }, []);
 
   const router = useRouter();
+  const [recordTypes, setRecordTypes] = useState();
+  const [records, setRecords] = useState([]);
+
+  const getResletRecordType = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getRecordTypes`)
+  });
+
+  useEffect(() => {
+    const data = {
+      "account": "TSTDRV1423092",
+      "consumerKey": "7c5f5179740c2fd6bb6c73a6c1235d369ccc61f608abed76acf7cc1bc0245caf",
+      "consumerSecret": "f02dc5c3720c99b35efd1713941477e7bd34c9467d43727199a222d3596b11a3",
+      "tokenId": "df85b218f1627ea731b61d503330947261b512ca88a5e12beaa4a4316ee0cbe6",
+      "tokenSecret": "508004293fd1a44799817805c39208d781f909e69456f3b9d0184a54d51739ea",
+      "scriptDeploymentId": "1",
+      "scriptId": "1529",
+      "base_url": "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl",
+      "resttype": "ListOfRecordType"
+    }
+    getResletRecordType.mutate(data, {
+      onSuccess: (data) => {
+        console.log("data==", data);
+        setRecordTypes(data[0]);
+        data[0].list
+        .map((item) => {
+          // console.log("item==", item);
+          // setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
+        })
+      },
+      onError: (error) => {
+        console.log("error==", error);
+      }
+    })
+    
+  }, [])
+  console.log("recordTypes==", recordTypes);
+  console.log("records==", records);
+  
 
   const onsubmit = (data) => {
     console.log("data==", data);
@@ -81,7 +122,7 @@ const FieldMap = () => {
                   id="integrationName"
                   options={integrations}
                   // defaultValue={integrations[0]}
-                  disabled={true}
+                  // disabled={true}
                   maxMenuHeight="120px"
                   requiredStarOnLabel={true}
                 />
@@ -102,6 +143,7 @@ const FieldMap = () => {
                   labelName="NetSuite™ Record Type"
                   id="recordType"
                   options={recordType}
+                  // options={records || []}
                   maxMenuHeight="120px"
                   requiredStarOnLabel={true}
                 />
