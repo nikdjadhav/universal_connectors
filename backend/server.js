@@ -80,6 +80,69 @@ app.get("/v1/test", (req, res) => {
 //   });
 });
 
+const crypto = require("crypto");
+const axios = require("axios");
+
+function getNonce(length) {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  return Array.from(crypto.randomFillSync(new Uint8Array(length)))
+    .map((x) => alphabet[x % alphabet.length])
+    .join("");
+}
+
+const account = "TSTDRV1423092";
+const consumerKey = "7c5f5179740c2fd6bb6c73a6c1235d369ccc61f608abed76acf7cc1bc0245caf";
+const consumerSecret = "f02dc5c3720c99b35efd1713941477e7bd34c9467d43727199a222d3596b11a3";
+const tokenId = "df85b218f1627ea731b61d503330947261b512ca88a5e12beaa4a4316ee0cbe6";
+const tokenSecret = "508004293fd1a44799817805c39208d781f909e69456f3b9d0184a54d51739ea";
+const timestamp = Math.floor(Date.now() / 1000).toString();
+const nonce = getNonce(10);
+const http_method = "POST";
+const version = "1.0";
+const scriptDeploymentId = "1"; // replace your restlet URL deploy id
+const scriptId = "1529"; // replace your restlet URL script id
+const signatureMethod = "HMAC-SHA256";
+// replace your restlet script EXTERNAL URL (only base url not any parameters)
+const base_url = "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl";
+const concatenatedString = `deploy=${scriptDeploymentId}&oauth_consumer_key=${consumerKey}&oauth_nonce=${nonce}&oauth_signature_method=${signatureMethod}&oauth_timestamp=${timestamp}&oauth_token=${tokenId}&oauth_version=${version}&script=${scriptId}`;
+const baseString = `${http_method}&${encodeURIComponent(base_url)}&${encodeURIComponent(concatenatedString)}`;
+const keys = `${consumerSecret}&${tokenSecret}`;
+const signature = crypto.createHmac("sha256", keys).update(baseString).digest("base64");
+const oAuth_String = `OAuth realm="${account}", oauth_consumer_key="${consumerKey}", oauth_token="${tokenId}", oauth_nonce="${nonce}", oauth_timestamp="${timestamp}", oauth_signature_method="HMAC-SHA256", oauth_version="1.0", oauth_signature="${encodeURIComponent(
+  signature
+)}"`;
+// replace your restlet script EXTERNAL URL
+const url = `https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl?script=${scriptId}&deploy=${scriptDeploymentId}`;
+const data = {
+  // name: "VendBill_242391.pdf",
+  // fileType: "PDF",
+  // contents: "RXh0ZXJuYWwgSUQsTmFtZQ0KMTAzLHNjYXJsZXQNCjEwMixkYXduDQoxMDQsc3VuDQo=",
+  // folder: 4450,
+  // internalId: "",
+  // externalId: "VENBIL01ID",
+  resttype: "ListOfRecordType",
+};
+const payload = JSON.stringify(data);
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: oAuth_String,
+};
+v1Router.post("/getRecordTypes", (req, res) => {
+  axios({
+    method: "POST",
+    url: url,
+    headers: headers,
+    data: payload,
+  }).then((response) => {
+    console.log("res", response.data);
+    res.send(response.data);
+  }).catch ((error) => {
+    console.log("error", error);
+  });
+});
+
+
+
 app.listen(port, () => {
   console.log("Server is running on port " + port);
 });

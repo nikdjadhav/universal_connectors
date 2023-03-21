@@ -28,14 +28,14 @@ const FieldMap = () => {
     control,
     formState: { errors, isDirty },
     handleSubmit,
-    setValue
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   useEffect(() => {
-    setValue("integrationName", integrations[0])
-  })
+    setValue("integrationName", integrations[0]);
+  }, []);
 
   const router = useRouter();
 
@@ -45,7 +45,7 @@ const FieldMap = () => {
       {
         pathname: "/fieldMapping/mapTable",
         // query: { recordType: data.recordType.label },
-        query: {recordType: JSON.stringify(data)},
+        query: { recordType: JSON.stringify(data) },
         // query: { recordType: data },
       },
       "/fieldMapping/mapTable"
