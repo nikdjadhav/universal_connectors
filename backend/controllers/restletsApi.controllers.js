@@ -1,5 +1,7 @@
 const response = require("../lib/response");
 const crypto = require("crypto");
+// const fetch = require("node-fetch");
+const axios = require("axios");
 
 function getNonce(length) {
   const alphabet =
@@ -62,32 +64,60 @@ const getRecordTypes = async (req, res) => {
         Authorization: oAuth_String,
       };
 
-      fetch(url, {
+    //   using axios
+    await axios ({
         method: "POST",
+        url: url,
         headers: headers,
-        body: payload,
-      })
-        .then((res) => res.json())
-        .then((json) => {
-        //   console.log("json", json);
-          response({
+        data: payload,
+    })
+    .then((values) => {
+        // console.log("res", res);
+        response({
             res,
             success: true,
             status_code: 200,
-            data: json,
+            data: [values.data],
             message: "Record types fetched successfully",
-          });
-        })
-        .catch((error) => {
-          console.log("error", error);
-          response({
+        });
+    })
+    .catch((error) => {
+        console.log("error", error);
+        response({
             res,
             success: false,
             status_code: 400,
             data: [],
             message: "Record types not fetched",
-          });
         });
+    });   
+
+    //   await fetch(url, {
+    //     method: "POST",
+    //     headers: headers,
+    //     body: payload,
+    //   })
+    //     .then((res) => res.json())
+    //     .then((json) => {
+    //     //   console.log("json", json);
+    //       response({
+    //         res,
+    //         success: true,
+    //         status_code: 200,
+    //         data: json,
+    //         message: "Record types fetched successfully",
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.log("error", error);
+    //       response({
+    //         res,
+    //         success: false,
+    //         status_code: 400,
+    //         data: [],
+    //         message: "Record types not fetched",
+    //       });
+    //     });
     } else{
         response({
             res,
