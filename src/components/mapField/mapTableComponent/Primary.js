@@ -58,8 +58,7 @@ const Primary = ({ fieldData, mappedRecordId }) => {
                 setRows((prev) => [...prev, dieldDetails]);
                 // setRows([dieldDetails]);
               }
-              else if(field.FieldType !== "Primary" || field.FieldType !== "Sales" || field.FieldType !== "Address")
-              {
+              else{
                 setRows([
                   {
                     id: 1,
