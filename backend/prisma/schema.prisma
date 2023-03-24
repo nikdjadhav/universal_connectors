@@ -25,6 +25,7 @@ model Users {
   Schedule             Schedule[]
   Logs                 Logs[]
   NotificationSettings NotificationSettings[]
+  Configurations       Configurations[]
 
   @@unique(fields: [email, password], name: "loginUser")
 }
@@ -50,30 +51,34 @@ model Integrations {
 
 model Configurations {
   id                 Int          @id @default(autoincrement())
+  userId             Int
+  user               Users        @relation(fields: [userId], references: [id])
   integrationId      Int
   integration        Integrations @relation(fields: [integrationId], references: [id])
   systemName         String
   url                String
-  accountId          String
-  consumerKey        String
-  consumerSecretKey  String
-  accessToken        String
-  accessSecretToken  String
-  authenticationType String
+  accountId          String?
+  consumerKey        String?
+  consumerSecretKey  String?
+  accessToken        String?
+  accessSecretToken  String?
+  authenticationType String?
+
+  // @@unique(fields: [integrationId, systemName], name: "configDetails")
 }
 
 model MappedRecords {
-  id            Int          @id @default(autoincrement())
-  userId        Int
-  user          Users        @relation(fields: [userId], references: [id])
-  integrationId Int
-  integration   Integrations @relation(fields: [integrationId], references: [id])
+  id               Int          @id @default(autoincrement())
+  userId           Int
+  user             Users        @relation(fields: [userId], references: [id])
+  integrationId    Int
+  integration      Integrations @relation(fields: [integrationId], references: [id])
   creationDate     DateTime     @default(now())
-  modificationDate     DateTime     @updatedAt
-  recordType    String
-  url           String
-  Fields        Fields[]
-  Logs          Logs[]
+  modificationDate DateTime     @updatedAt
+  recordType       String
+  url              String
+  Fields           Fields[]
+  Logs             Logs[]
 }
 
 model Fields {
@@ -82,27 +87,28 @@ model Fields {
   user                  Users         @relation(fields: [userId], references: [id])
   mappedRecordId        Int
   mappedRecord          MappedRecords @relation(fields: [mappedRecordId], references: [id])
+  FieldType             String
   sourceField           String
   destinationField      String
-  sourceFieldValue      String
+  sourceFieldValue      String?
   destinationFieldValue String
 }
 
 model Schedule {
-  id             Int          @id @default(autoincrement())
-  userId         Int
-  user           Users        @relation(fields: [userId], references: [id])
-  integrationId  Int
-  integration    Integrations @relation(fields: [integrationId], references: [id])
-  creationDate      DateTime     @default(now())
-  modificationDate      DateTime     @updatedAt
-  eventType      String
-  startDate      DateTime     @default(now())
-  endDate        DateTime
-  startTime      String
-  day            String
-  noEndDate      Boolean
-  repeatEveryDay Boolean
+  id               Int          @id @default(autoincrement())
+  userId           Int
+  user             Users        @relation(fields: [userId], references: [id])
+  integrationId    Int
+  integration      Integrations @relation(fields: [integrationId], references: [id])
+  creationDate     DateTime     @default(now())
+  modificationDate DateTime     @updatedAt
+  eventType        String
+  startDate        DateTime     @default(now())
+  endDate          DateTime
+  startTime        String
+  day              String
+  noEndDate        Boolean
+  repeatEveryDay   Boolean
 }
 
 model Logs {

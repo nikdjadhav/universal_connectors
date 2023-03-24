@@ -4,7 +4,9 @@ import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
+import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { resolve } from "styled-jsx/css";
@@ -31,10 +33,43 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors, idDirty },
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const addConfigurations = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
+  })
+
+  const getConfigurationById = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
+  })
+
+  useEffect(() => {
+    if (other.integrationID) {
+      getConfigurationById.mutate({ integrationId: JSON.parse(other.integrationID) }, {
+        onSuccess: (data) => {
+          console.log("getConfigurationById NS", data);
+          data.map((item) => {
+            if(item.systemName === other.title){
+              console.log("item NS", item);
+              setValue("url", item.url);
+              setValue("accountID", item.accountId);
+              setValue("consumerKey", item.consumerKey);
+              setValue("consumerSecretKey", item.consumerSecretKey);
+              setValue("accessToken", item.accessToken);
+              setValue("accessSecretToken", item.accessSecretToken);
+            }
+          })
+
+        }, onError: (error) => {
+          console.log("error", error);
+        }
+      })
+    }
+  }, [])
 
   const [integrationID, setIntegrationID] = useState();
 console.log("other", other);
@@ -58,9 +93,17 @@ console.log("other", other);
       consumerSecretKey: data.consumerSecretKey,
       accessToken: data.accessToken,
       accessSecretToken: data.accessSecretToken,
-      // authenticationType: 
+      authenticationType: "xyz"
     }
     console.log("configurData", configurData);
+
+    addConfigurations.mutate(configurData, {
+      onSuccess: (data) => {
+        console.log("data", data);
+      }, onError: (error) => {
+        console.log("error", error);
+      }
+    })
 
     onClickHandeler();
   };

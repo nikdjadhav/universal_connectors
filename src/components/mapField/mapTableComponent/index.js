@@ -15,6 +15,8 @@ import Address from "./Address";
 import classnames from "classnames";
 import TkLabel from "@/globalComponents/TkLabel";
 import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
 // import { useLocation } from 'react-router-dom';
 
 // const schema = Yup.object({
@@ -22,16 +24,57 @@ import { useRouter } from "next/router";
 //   netSuite: "",
 // }).required();
 
-const MapTableComponent = ({ data }) => {
+const MapTableComponent = ({ data, mappedRecordId }) => {
   const [control, setControl] = useState(null);
   const [recordType, setRecordType] = useState(null);
+  const [integrationName, setIntegrationName] = useState(null);
+  const [url, setUrl] = useState(null);
   const router = useRouter();
 
-  console.log("data in maptablecomponent", data);
-  
+  console.log("mappedRecordId in maptablecomponent", mappedRecordId);
 
+  const getMappedRecordById = useMutation({
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/getMappedRecordById`),
+  });
 
-  // //  ***  change rows on click of record type "sales"
+  const getIntegrationById = useMutation({
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
+  });
+
+  useEffect(() => {
+    if (mappedRecordId) {
+      getMappedRecordById.mutate(
+        { mappedRecordId: mappedRecordId },
+        {
+          onSuccess: (data) => {
+            console.log("data in getMappedRecordById", data[0]);
+            setRecordType(data[0].recordType);
+            setUrl(data[0].url);
+
+            getIntegrationById.mutate(
+              { id: data[0].integrationId },
+              {
+                onSuccess: (data) => {
+                  console.log("data in getIntegrationById", data[0]);
+                  setIntegrationName(data[0].integrationName);
+                },
+                onError: (error) => {
+                  console.log("error in getIntegrationById", error);
+                },
+              }
+            );
+            // setControl(data.data[0].recordType);
+            // setRecordType(data.data[0].recordType);
+          },
+          onError: (error) => {
+            console.log("error in getMappedRecordById", error);
+          },
+        }
+      );
+    }
+  }, []);
+
+  //  ***  change rows on click of record type "sales"
   const onClickSales = () => {
     setControl("sales");
     //   console.log("sales");
@@ -162,15 +205,15 @@ const MapTableComponent = ({ data }) => {
   // console.log("recordType==>==>",data?.recordType);
 
   // // console.log("recordType==>==>", data?.recordType.label);
-  useEffect(() => {
-    if (data?.recordType.label) {
-      setRecordType(data?.recordType.label);
-      console.log("first", data);
-    } else {
-      setRecordType(data?.recordType);
-      console.log("second", data);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.recordType.label) {
+  //     setRecordType(data?.recordType.label);
+  //     console.log("first", data);
+  //   } else {
+  //     setRecordType(data?.recordType);
+  //     console.log("second", data);
+  //   }
+  // }, [data]);
 
   console.log("recordType==>==>", recordType);
   // // setRecordType(data?.recordType.label);
@@ -289,27 +332,30 @@ const MapTableComponent = ({ data }) => {
       <TkRow>
         <TkCol>
           <TkLabel>
-            <span className="fw-bold">Integration Name: </span>&nbsp;&nbsp;
-            <span>{data?.integrationName.label || data?.integrationName}</span>
+            <span className="fw-bold">Integration Name: {integrationName}</span>
+            &nbsp;&nbsp;
+            {/* <span>{data?.integrationName.label || data?.integrationName}</span> */}
           </TkLabel>
         </TkCol>
         <TkCol>
           <TkLabel>
-            <span className="fw-bold">Google Sheets™ Url:</span>&nbsp;&nbsp;
-            <span> {data?.googleSheetUrl || ""}</span>
+            <span className="fw-bold">Google Sheets™ Url: {url}</span>
+            &nbsp;&nbsp;
+            {/* <span> {data?.googleSheetUrl || ""}</span> */}
           </TkLabel>
         </TkCol>
       </TkRow>
 
       <TabContent activeTab={activeTab}>
         <TabPane tabId={tabs.Primary}>
-          {recordType? (
+          {/* {recordType ? ( */}
             <Primary
               onClickHandeler={onClickHandeler}
+              mappedRecordId={mappedRecordId}
               // recordType={recordType}
-              fieldData={data}
+              // fieldData={data}
             />
-          ) : null}
+          {/* ) : null} */}
         </TabPane>
 
         <TabPane tabId={tabs.Sales}>

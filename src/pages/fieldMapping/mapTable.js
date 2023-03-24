@@ -12,34 +12,13 @@ const MapTable = () => {
   // const [recordType, setRecorsType] = useState();
   const [parsedData, setParsedData] = useState(null);
   // get data from router
+  // mappedrecordid = 1
   const router = useRouter();
-  const { recordType } = router.query;
-  // console.log("recordType in maptable", recordType);
-  // useEffect(() => {
-  //   console.log("route==>", router.query.recordType);
-  //   if (router.query.recordType) {
-  //     const data = JSON.parse(router.query.recordType);
-  //     console.log("data", data);
-  //     setParsedData(data);
-  //     // console.log("setParsedData",parsedData);
-
-  //     // if (data) {
-  //     //   setRecorsType(data.recordType.label || data.recordType);
-  //     // }
-  //   }
-  //   // if (router.query.recordType) {
-  //   //   console.log("route==>", router.query.recordType);
-  //   //   setRecorsType(router.query.recordType);
-  //   // }
-  // }, [router.query.recordType]);
-  // console.log("recordType=======", recordType);
+  console.log("router", router);
+  const { mappedRecordId } = router.query;
+  console.log("mappedRecordId", mappedRecordId);
 
   let pageTitle = "";
-  if (recordType) {
-    pageTitle =
-      JSON.parse(recordType).recordType.label ||
-      JSON.parse(recordType).recordType;
-  }
 
   return (
     <>
@@ -68,9 +47,13 @@ const MapTable = () => {
 
         <TkContainer>
           {/* <MapTableComponent data={parsedData} /> */}
-          {recordType ? (
-            <MapTableComponent data={JSON.parse(recordType)} />
-          ) : null}
+          {mappedRecordId ? (
+            <MapTableComponent 
+            mappedRecordId={JSON.parse(mappedRecordId)}
+            // mappedRecordId={4}
+            // data={JSON.parse(recordType)} 
+            />
+          ): null}
         </TkContainer>
       </div>
     </>

@@ -6,8 +6,10 @@ import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import { netsuiteRecordTypes } from "@/utils/Constants";
+import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -17,18 +19,66 @@ const schema = Yup.object({
   googleSheetUrl: Yup.string().required("Google sheet url is required."),
 }).required();
 
-const GoogleSheetComponent = ({ onClickHandeler }) => {
+const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   const {
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const [integrationID, setIntegrationID] = useState();
+  const addConfigurations = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
+  })
+
+  const getConfigurationById = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
+  })
+
+  useEffect(() => {
+    if (other.integrationID) {
+      setIntegrationID(JSON.parse(other.integrationID));
+    }
+
+    if (other.integrationID) {
+      getConfigurationById.mutate({ integrationId: JSON.parse(other.integrationID) }, {
+        onSuccess: (data) => {
+          console.log("getConfigurationById GS", data);
+          data.map((item) => {
+            if(item.systemName === other.title){
+              console.log("item GS", item);
+              setValue("googleSheetUrl", item.url);
+            }
+          })
+
+        }, onError: (error) => {
+          console.log("error", error);
+        }
+      })
+    }
+  }, [other.integrationID])
 
   const onSubmit = (data) => {
     console.log("data", data);
+    const userId = sessionStorage.getItem("userId");
+    const configurData = {
+      userId: JSON.parse(userId),
+      integrationId: integrationID,
+      systemName: other.title,
+      url: data.googleSheetUrl
+    }
+    // console.log("configurData", configurData);
+    addConfigurations.mutate(configurData, {
+      onSuccess: (data) => {
+        console.log("data", data);
+      }, onError: (error) => {
+        console.log("error", error);
+      }
+    })
+
     onClickHandeler()
   };
 

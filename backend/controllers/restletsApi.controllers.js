@@ -2,6 +2,7 @@ const response = require("../lib/response");
 const crypto = require("crypto");
 // const fetch = require("node-fetch");
 const axios = require("axios");
+const { log } = require("console");
 
 function getNonce(length) {
   const alphabet =
@@ -91,6 +92,7 @@ const getRecordTypes = async (req, res) => {
             data: [],
             message: "Record types not fetched",
         });
+        console.log("error", error)
     });   
 
     //   await fetch(url, {

@@ -1,14 +1,86 @@
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { actions } from "react-table";
 import { Tooltip } from "@nextui-org/react";
+import { useMutation } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
 
 const FieldMappingTable = () => {
+  const [mappedRecords, setMappedRecords] = useState([]);
+  const [integrationNames, setIntegrationNames] = useState([]);
+
+  // const getMappedRecords = useMutation({
+  //   mutationFn: tkFetch.post("http://localhost:4000/v1/getAllMappedRecords"),
+  // });
+
+  const getMappedFieldsDetails = useMutation({
+    mutationFn: tkFetch.post(
+      " http://localhost:4000/v1/getMappedFieldsDetails"
+    ),
+  });
+
+  const integrationById = useMutation({
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
+  });
+
+  useEffect(() => {
+    const userID = {
+      userId: JSON.parse(sessionStorage.getItem("userId")),
+    };
+
+    getMappedFieldsDetails.mutate(userID, {
+      onSuccess: (data) => {
+        console.log("data", data);
+        setMappedRecords(data[0]);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+    // console.log("mappedRecords", mappedRecords.length);
+    //     if(mappedRecords.length > 0){
+    //       mappedRecords.map((item) => {
+    //         console.log("item", item.integrationId);
+    //         integrationById.mutate({id: item.integrationId}, {
+    //          onSuccess: (data) => {
+    //             console.log("integrationById", data);
+    //             // setIntegrationNames((prev) => [...prev, data[0]]);
+    //             setIntegrationNames((prev) => [
+    //               ...prev,
+    //               { integrationName: data[0].integrationName },
+    //             ]);
+    //           },
+    //           onError: (error) => {
+    //             console.log(error);
+    //           }
+    //         })
+    //       })
+    //       // integrationById.mutate({id: mappedRecords.integrationId}, {
+    //       //   onSuccess: (data) => {
+    //       //     console.log("integrationById", data);
+    //       //     setIntegrationNames(data[0]);
+    //       //   }, onError: (error) => {
+    //       //     console.log(error);
+    //       //   }
+    //       // })
+    //     }
+  }, []);
+
+  console.log("mappedRecords", mappedRecords);
+  console.log("integrationNames", integrationNames);
+
   const columnHead = [
     {
       Header: "Integration Name",
       accessor: "integrationName",
+      Cell: (props) => {
+        return (
+          // <Link href={`/mapField/${props.row.original?.id}`}>
+          <a>{props.row.original?.integration.integrationName}</a>
+          // </Link>
+        );
+      },
     },
     {
       Header: "Record Type",
@@ -18,43 +90,58 @@ const FieldMappingTable = () => {
       Header: "Creation Date",
       accessor: "creationDate",
       Cell: (props) => {
+        // console.log("props==>",props.row.original);
+        const dateTime = props.row.original?.creationDate;
+        const date = dateTime.split("T")[0];
+        const time = dateTime.split("T")[1];
+        // console.log("date==>", time);
+
         return (
           <>
+            {/* {dates.map((d) => { */}
             <Tooltip
               color="invert"
-              content={`${props.value} ${props.row.original?.creationTime}`}
+              content={`${date} ${time}`}
               placement="bottom"
             >
-              <span>{props.value}</span>
+              <div>{date}</div>
             </Tooltip>
+            {/* })} */}
           </>
         );
       },
     },
     {
       Header: "Modified Date",
-      accessor: "modifiedDate",
+      accessor: "modificationDate",
       Cell: (props) => {
+        const dateTime = props.row.original?.modificationDate;
+        const date = dateTime.split("T")[0];
+        const time = dateTime.split("T")[1];
         return (
-          <>
-            <Tooltip
-              color="invert"
-              content={`${props.value} ${props.row.original?.modificationTime}`}
-              placement="bottom"
-            >
-              <span>{props.value}</span>
-            </Tooltip>
-          </>
+          <Tooltip
+            color="invert"
+            content={`${date} ${time}`}
+            placement="bottom"
+          >
+            <div>{date}</div>
+          </Tooltip>
         );
       },
     },
     {
       Header: "System One",
       accessor: "systemOne",
+      Cell: (props) => {
+        return <a>{props.row.original?.integration.sourceName}</a>;
+      },
     },
     {
       Header: "System Two",
       accessor: "systemTwo",
+      Cell: (props) => {
+        return <a>{props.row.original?.integration.destinationName}</a>;
+      },
     },
     {
       Header: "Action",
@@ -71,14 +158,17 @@ const FieldMappingTable = () => {
               href={{
                 pathname: "/fieldMapping/mapTable",
                 // query: { recordType: props.row.original },
-                query: { recordType: JSON.stringify(props.row.original) },
+                // query: { mappedRecordId: JSON.stringify(props.row.original) },
                 // query: {data: props.row.original}
+                  query: {
+                      mappedRecordId: JSON.stringify(props.row.original.id),
+                  },
               }}
               as="/fieldMapping/mapTable"
             >
               <i
                 className="ri-eye-fill"
-                onClick={() => onClickView(props.row.original)}
+                onClick={() => onClickView(props.row.original.id)}
               />
             </Link>
           </>
@@ -87,49 +177,24 @@ const FieldMappingTable = () => {
     },
   ];
 
-  const data = [
-    {
-      integrationName: "NSGS",
-      recordType: "Customer",
-      creationDate: "16 Feb, 2022",
-      creationTime: "12:00 AM",
-      modifiedDate: "13 Feb, 2023",
-      modificationTime: "2:30 PM",
-      systemOne: "NetSuite™",
-      systemTwo: "Google Sheets™",
-      action: "",
-    },
-    // {
-    //   integrationName: "NSGS",
-    //   recordType: "Employee",
-    //   creationDate: "10 Jan, 2023",
-    //   creationTime: "11:30 AM",
-    //   modifiedDate: "21 Jan, 2023",
-    //   modificationTime: "1:00 PM",
-    //   systemOne: "Microsoft Dynamics™",
-    //   systemTwo: "Google Sheets™",
-    //   action: "",
-    // },
-  ];
-
   const onClickView = (row) => {
     console.log("row", row);
   };
 
   return (
     <>
-      {data.length === 0 ? (
+      {/* {data.length === 0 ? (
         <div className="text-center">No data found</div>
-      ) : (
-        <TkTableContainer
-          columns={columnHead}
-          data={data || []}
-          // isSearch={true}
-          // isFilters={true}
-          // defaultPageSize={10}
-          // customPageSize={true}
-        />
-      )}
+      ) : ( */}
+      <TkTableContainer
+        columns={columnHead}
+        data={mappedRecords || []}
+        // isSearch={true}
+        // isFilters={true}
+        // defaultPageSize={10}
+        // customPageSize={true}
+      />
+      {/* )} */}
     </>
   );
 };

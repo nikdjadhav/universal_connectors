@@ -133,8 +133,98 @@ const getIntegrations = async (req, res) => {
   }
 };
 
+const addConfigurations = async (req, res) => {
+  console.log("addConfigurations", req.body);
+  try{
+    const configurations = await prisma.configurations.create({
+      data: {
+        userId: req.body.userId,
+        integrationId: req.body.integrationId,
+        systemName: req.body.systemName,
+        url: req.body.url,
+        accountId: req.body.accountId,
+        consumerKey: req.body.consumerKey,
+        consumerSecretKey: req.body.consumerSecretKey,
+        accessToken: req.body.accessToken,
+        accessSecretToken: req.body.accessSecretToken,
+        authenticationType: req.body.authenticationType,
+      },
+    });
+
+    if (configurations) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [configurations],
+        message: "Configurations created successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Configurations not created",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in creating configurations",
+    });
+    console.log("error", error);
+    return;
+  }
+}
+
+const getConfigurationById = async (req, res) => {
+  console.log("requestd body", req.body);
+  try {
+    const configuration = await prisma.configurations.findMany({
+      where: {
+        // id: req.body.id,
+          integrationId: req.body.integrationId,
+      },
+    });
+
+    if (configuration) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: configuration,
+        message: "Configuration fetched successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Configuration not found",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in fetching configuration",
+    });
+    console.log("error", error);
+    // return;
+  }
+}
+
 module.exports = {
   createIntegration,
   getIntegrations,
-  getIntegrationById
+  getIntegrationById,
+  addConfigurations,
+  getConfigurationById
 };

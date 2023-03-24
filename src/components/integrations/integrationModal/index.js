@@ -13,7 +13,12 @@ import NetsuiteComponent from "./NetsuiteComponent";
 import GoogleSheetComponent from "./GoogleSheetComponent";
 import Verified from "./Verified";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import { API_BASE_URL, data, destinationName, sourceName } from "@/utils/Constants";
+import {
+  API_BASE_URL,
+  data,
+  destinationName,
+  sourceName,
+} from "@/utils/Constants";
 import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 
@@ -212,7 +217,11 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
             </TabPane>
 
             <TabPane tabId={tabs.GoogleSheetConfiguration}>
-              <GoogleSheetComponent onClickHandeler={onClickHandeler} />
+              <GoogleSheetComponent
+                onClickHandeler={onClickHandeler}
+                integrationID={other.integrationID}
+                title={GSCTitle}
+              />
             </TabPane>
 
             <TabPane tabId={tabs.Verified}>

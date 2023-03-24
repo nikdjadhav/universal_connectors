@@ -41,56 +41,107 @@ const FieldMap = () => {
   }, []);
 
   const router = useRouter();
+  const [userID, setUserID] = useState();
+  const [integrationOptions, setIntegrationOptions] = useState([]);
   const [recordTypes, setRecordTypes] = useState();
   const [records, setRecords] = useState([]);
 
+  const integrations = useMutation({
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrations`),
+  });
+
   const getResletRecordType = useMutation({
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getRecordTypes`)
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getRecordTypes`),
+  });
+
+  const AddMappedRecord = useMutation({
+    mutationFn: tkFetch.post("http://localhost:4000/v1/AddMappedRecord"),
   });
 
   useEffect(() => {
-    const data = {
-      "account": "TSTDRV1423092",
-      "consumerKey": "7c5f5179740c2fd6bb6c73a6c1235d369ccc61f608abed76acf7cc1bc0245caf",
-      "consumerSecret": "f02dc5c3720c99b35efd1713941477e7bd34c9467d43727199a222d3596b11a3",
-      "tokenId": "df85b218f1627ea731b61d503330947261b512ca88a5e12beaa4a4316ee0cbe6",
-      "tokenSecret": "508004293fd1a44799817805c39208d781f909e69456f3b9d0184a54d51739ea",
-      "scriptDeploymentId": "1",
-      "scriptId": "1529",
-      "base_url": "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl",
-      "resttype": "ListOfRecordType"
+    // const userID = sessionStorage.getItem("userId");
+    setUserID(sessionStorage.getItem("userId"));
+
+    if (userID) {
+      const id = {
+        userId: JSON.parse(userID),
+      };
+
+      integrations.mutate(id, {
+        onSuccess: (data) => {
+          console.log("integrations data==> ", data);
+          data.map((item) => {
+            setIntegrationOptions((prev) => [
+              ...prev,
+              { label: item.integrationName, value: item.id },
+            ]);
+          });
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
     }
+
+    // for reslet record types data
+    const data = {
+      account: "TSTDRV1423092",
+      consumerKey:
+        "7c5f5179740c2fd6bb6c73a6c1235d369ccc61f608abed76acf7cc1bc0245caf",
+      consumerSecret:
+        "f02dc5c3720c99b35efd1713941477e7bd34c9467d43727199a222d3596b11a3",
+      tokenId:
+        "df85b218f1627ea731b61d503330947261b512ca88a5e12beaa4a4316ee0cbe6",
+      tokenSecret:
+        "508004293fd1a44799817805c39208d781f909e69456f3b9d0184a54d51739ea",
+      scriptDeploymentId: "1",
+      scriptId: "1529",
+      base_url:
+        "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl",
+      resttype: "ListOfRecordType",
+    };
     getResletRecordType.mutate(data, {
       onSuccess: (data) => {
         console.log("data==", data);
         setRecordTypes(data[0]);
-        data[0].list
-        .map((item) => {
+        data[0].list.map((item) => {
           // console.log("item==", item);
-          // setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
-        })
+          setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
+        });
       },
       onError: (error) => {
         console.log("error==", error);
-      }
-    })
-    
-  }, [])
+      },
+    });
+  }, [userID]);
   console.log("recordTypes==", recordTypes);
   console.log("records==", records);
-  
 
   const onsubmit = (data) => {
-    console.log("data==", data);
-    router.push(
-      {
-        pathname: "/fieldMapping/mapTable",
-        // query: { recordType: data.recordType.label },
-        query: { recordType: JSON.stringify(data) },
-        // query: { recordType: data },
+    // console.log("data==", data);
+    const userID = sessionStorage.getItem("userId");
+    const mapprdRecord = {
+      userId: JSON.parse(userID),
+      integrationId: data.integrationName.value,
+      recordType: data.recordType.label,
+      url: data.googleSheetUrl,
+    };
+    AddMappedRecord.mutate(mapprdRecord, {
+      onSuccess: (data) => {
+        // console.log("data==", data);
+        router.push(
+          {
+            pathname: "/fieldMapping/mapTable",
+            query: { mappedRecordId: JSON.stringify(data[0].id) },
+            // query: { mappedRecordId: JSON.stringify(4) }
+          },
+          "/fieldMapping/mapTable"
+        );
       },
-      "/fieldMapping/mapTable"
-    );
+      onError: (error) => {
+        console.log("error==", error);
+      },
+    });
   };
 
   // const handleSubmit = () => {
@@ -120,7 +171,8 @@ const FieldMap = () => {
                   {...field}
                   labelName="Integration Name"
                   id="integrationName"
-                  options={integrations}
+                  // options={integrations}
+                  options={integrationOptions || []}
                   // defaultValue={integrations[0]}
                   // disabled={true}
                   maxMenuHeight="120px"

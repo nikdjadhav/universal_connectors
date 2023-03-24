@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const userController = require("./controllers/user.controllers");
 const integrationController = require("./controllers/integration.controllers");
 const resletController = require("./controllers/restletsApi.controllers");
+const fieldMappingController = require("./controllers/fieldMapping.controllers");
 // require("dotenv").config();
 // const session = require("express-session");
 // const prisma = require("./lib/prisma");
@@ -60,9 +61,21 @@ v1Router.post("/updateUser", userController.updateUser);
 v1Router.post("/addIntegration", integrationController.createIntegration);
 v1Router.post("/getIntegrations", integrationController.getIntegrations);
 v1Router.post("/getIntegrationById", integrationController.getIntegrationById);
+v1Router.post("/addConfigurations", integrationController.addConfigurations);
+v1Router.post("/getConfigurationById", integrationController.getConfigurationById);
 
 // *** reslet routes ***
 v1Router.post("/getRecordTypes", resletController.getRecordTypes);
+
+// *** field mapping routes ***
+v1Router.post("/AddMappedRecord", fieldMappingController.AddMappedRecord);
+v1Router.post("/getAllMappedRecords", fieldMappingController.getAllMappedRecords);
+v1Router.post("/getMappedRecordById", fieldMappingController.getMappedRecordById);
+v1Router.post("/getMappedFieldsDetails", fieldMappingController.getMappedFieldsDetails);
+// *** add fields routes
+v1Router.post("/addFields", fieldMappingController.addFields);
+v1Router.post("/addPrimaryFields", fieldMappingController.addPrimaryFields);
+v1Router.post("/getFields", fieldMappingController.getFields);
 
 // app.get("/v1/login", (req, res) => {
 //   const { authenticated } = req.session;

@@ -170,10 +170,10 @@ const DashBoard = () => {
   // }, []);
 
   const columns = [
-    // {
-    //   Header: "Integration Name",
-    //   accessor: "integrationName",
-    // },
+    {
+      Header: "Integration Name",
+      accessor: "integrationName",
+    },
     {
       Header: "Source Name",
       accessor: "sourceName",
