@@ -74,7 +74,7 @@ v1Router.post("/getMappedRecordById", fieldMappingController.getMappedRecordById
 v1Router.post("/getMappedFieldsDetails", fieldMappingController.getMappedFieldsDetails);
 // *** add fields routes
 v1Router.post("/addFields", fieldMappingController.addFields);
-v1Router.post("/addPrimaryFields", fieldMappingController.addPrimaryFields);
+// v1Router.post("/addPrimaryFields", fieldMappingController.addPrimaryFields);
 v1Router.post("/getFields", fieldMappingController.getFields);
 
 // app.get("/v1/login", (req, res) => {

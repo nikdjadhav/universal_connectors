@@ -246,12 +246,12 @@ const getMappedFieldsDetails = async (req, res) => {
 const addFields = async (req, res) => {
   console.log("addFields", req.body);
   try {
-// delete all fields from fields table using userid and then add new fields
-    const fields = await prisma.fields.deleteMany({
-      where: {
-        // userId: req.body.userId,
-        mappedRecordId: req.body.mappedRecordId,
-      },
+   const fields = await prisma.fields.deleteMany({
+      where : {
+        mappedRecordId: {
+          in: req.body.map((field) => field.mappedRecordId),
+        }
+      }
     });
 
     if (fields) {
@@ -390,93 +390,93 @@ const addFields = async (req, res) => {
 //   }
 // };
 
-const addPrimaryFields = async (req, res) => {
-  console.log("addPrimaryFields", req.body);
-  try {
-    // if recordType is primary and req.body.userId is not present in Fields table then insert add, update, delete text for destinationFieldValue and blank for sourceFieldValue in Fields table
-    const primaryFields = await prisma.fields.upsert({
-      where: {
-        // values: {
-          // not: {
-            userId: req.body.userId,
-          // }
-        // }
-      },
-      create: {
-      data: 
-      [
-        {
-          userId: req.body.userId,
-          mappedRecordId: req.body.mappedRecordId,
-          FieldType: "Primary",
-          sourceField: req.body.sourceField,
-          destinationField: req.body.destinationField,
-          sourceFieldValue: undefined,
-          destinationFieldValue: "Add",
-        },
-        {
-          userId: req.body.userId,
-          mappedRecordId: req.body.mappedRecordId,
-          FieldType: "Primary",
-          sourceField: req.body.sourceField,
-          destinationField: req.body.destinationField,
-          sourceFieldValue: undefined,
-          destinationFieldValue: "Update",
-        },
-        {
-          userId: req.body.userId,
-          mappedRecordId: req.body.mappedRecordId,
-          FieldType: "Primary",
-          sourceField: req.body.sourceField,
-          destinationField: req.body.destinationField,
-          sourceFieldValue: undefined,
-          destinationFieldValue: "Delete",
-        },
-      ],
-    },
-    update: {}
-      // where: {
-      //   values: {
-      //     not: {
-      //       userId: req.body.userId,
-      //     }
-      //   }
-      // },
-      // where: {
-      //   userId:! req.body.userId,
-      // },
+// const addPrimaryFields = async (req, res) => {
+//   console.log("addPrimaryFields", req.body);
+//   try {
+//     // if recordType is primary and req.body.userId is not present in Fields table then insert add, update, delete text for destinationFieldValue and blank for sourceFieldValue in Fields table
+//     const primaryFields = await prisma.fields.upsert({
+//       where: {
+//         // values: {
+//           // not: {
+//             userId: req.body.userId,
+//           // }
+//         // }
+//       },
+//       create: {
+//       data: 
+//       [
+//         {
+//           userId: req.body.userId,
+//           mappedRecordId: req.body.mappedRecordId,
+//           FieldType: "Primary",
+//           sourceField: req.body.sourceField,
+//           destinationField: req.body.destinationField,
+//           sourceFieldValue: undefined,
+//           destinationFieldValue: "Add",
+//         },
+//         {
+//           userId: req.body.userId,
+//           mappedRecordId: req.body.mappedRecordId,
+//           FieldType: "Primary",
+//           sourceField: req.body.sourceField,
+//           destinationField: req.body.destinationField,
+//           sourceFieldValue: undefined,
+//           destinationFieldValue: "Update",
+//         },
+//         {
+//           userId: req.body.userId,
+//           mappedRecordId: req.body.mappedRecordId,
+//           FieldType: "Primary",
+//           sourceField: req.body.sourceField,
+//           destinationField: req.body.destinationField,
+//           sourceFieldValue: undefined,
+//           destinationFieldValue: "Delete",
+//         },
+//       ],
+//     },
+//     update: {}
+//       // where: {
+//       //   values: {
+//       //     not: {
+//       //       userId: req.body.userId,
+//       //     }
+//       //   }
+//       // },
+//       // where: {
+//       //   userId:! req.body.userId,
+//       // },
       
-    });
+//     });
 
-    if (primaryFields) {
-      response({
-        res,
-        success: true,
-        status_code: 200,
-        data: primaryFields,
-        message: "Primary Fields added successfully",
-      });
-      return;
-    } else {
-      response({
-        res,
-        success: false,
-        status_code: 400,
-        message: "Primary Fields not added",
-      });
-      return;
-    }
-  } catch (error) {
-    response({
-      res,
-      success: false,
-      status_code: 400,
-      message: "Error in adding Primary Fields",
-    });
-    console.log("error", error);
-    return;
-  }
-}
+//     if (primaryFields) {
+//       response({
+//         res,
+//         success: true,
+//         status_code: 200,
+//         data: primaryFields,
+//         message: "Primary Fields added successfully",
+//       });
+//       return;
+//     } else {
+//       response({
+//         res,
+//         success: false,
+//         status_code: 400,
+//         message: "Primary Fields not added",
+//       });
+//       return;
+//     }
+//   } catch (error) {
+//     response({
+//       res,
+//       success: false,
+//       status_code: 400,
+//       message: "Error in adding Primary Fields",
+//     });
+//     console.log("error", error);
+//     return;
+//   }
+// }
 
 const getFields = async (req, res) => {
   // console.log("getFields", req.params.mappedRecordId);
@@ -524,6 +524,6 @@ module.exports = {
   getMappedRecordById,
   getMappedFieldsDetails,
   addFields,
-  addPrimaryFields,
+  // addPrimaryFields,
   getFields
 };

@@ -12,6 +12,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 const Primary = ({ fieldData, mappedRecordId }) => {
+  const { register, handleSubmit, setValue, control, watch } = useForm();
   const [netsuiteValues, setNetsuiteValues] = useState([
     {
       value: "internalId",
@@ -46,11 +47,13 @@ const Primary = ({ fieldData, mappedRecordId }) => {
         {
           onSuccess: (data) => {
             console.log("get data in primary==>", data);
-            data.map((field) => {
+            data.map((field, index) => {
+              // console.log("field in primary==>", field.sourceFieldValue);
               const dieldDetails = {
                 googleSheets: field.destinationFieldValue,
                 netsuite: field.sourceFieldValue,
               };
+              setValue(`netSuite[${index}]`, field.sourceFieldValue);
               setRows((prev) => [...prev, dieldDetails]);
               // setRows([dieldDetails]);
             });
@@ -464,8 +467,6 @@ const Primary = ({ fieldData, mappedRecordId }) => {
   //   }
   // }, [fieldData.recordType.label]);
 
-  const { register, handleSubmit, setValue, control, watch } = useForm();
-
   const [num, setNum] = useState(0);
   useEffect(() => {
     rows.map((row, index) => {
@@ -495,7 +496,7 @@ const Primary = ({ fieldData, mappedRecordId }) => {
         Header: "NetSuite™ Fields",
         accessor: "netSuite",
         Cell: ({ row }) => {
-          console.log("row", row.original);
+          // console.log("row", row.original);
           if (
             row.original.googleSheets !== "Add" &&
             row.original.googleSheets !== "Update" &&
@@ -507,13 +508,14 @@ const Primary = ({ fieldData, mappedRecordId }) => {
                 name={`netSuite[${row.index}]`}
                 render={({ field }) => (
                   <TkSelect
-                  {...field}
-                  options={netsuiteValues}
-                  maxMenuHeight="80px"
-                  // defaultValue={{
-                  //   value: row.original.netSuite,
-                  //   label: row.original.netSuite,
-                  // }}
+                    {...field}
+                    options={netsuiteValues}
+                    maxMenuHeight="80px"
+                    // disabled={row.original.netSuite ? true : false}
+                    // defaultValue={{
+                    //   value: row.original.netSuite,
+                    //   label: row.original.netSuite,
+                    // }}
                   />
                 )}
               />
@@ -595,6 +597,7 @@ const Primary = ({ fieldData, mappedRecordId }) => {
     addFields.mutate(tableRecord, {
       onSuccess: (data) => {
         console.log("**data==>", data);
+        setValue("netSuite", data.netSuite);
       },
       onError: (error) => {
         console.log("error", error);
