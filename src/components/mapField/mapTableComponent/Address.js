@@ -2,10 +2,13 @@ import TkButton from "@/globalComponents/TkButton";
 import TkInput from "@/globalComponents/TkInput";
 import TkSelect from "@/globalComponents/TkSelect";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
-import React, { useMemo, useState } from "react";
+import tkFetch from "@/utils/fetch";
+import { useMutation } from "@tanstack/react-query";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-const Address = () => {
+const Address = ({ mappedRecordId }) => {
+  console.log("mappedRecordId in address", mappedRecordId);
   const { register, handleSubmit, setValue, control } = useForm();
 
   const netsuiteValues = useMemo(
@@ -25,6 +28,105 @@ const Address = () => {
     ],
     []
   );
+
+  const [rows, setRows] = useState([
+    // {
+    //   id: 1,
+    //   googleSheets: "Name",
+    //   netSuite: {
+    //     value: "name",
+    //     label: "Name",
+    //   },
+    // },
+    // {
+    //   id: 1,
+    //   googleSheets: "Address",
+    //   netSuite: {
+    //     value: "address",
+    //     label: "Address",
+    //   },
+    // },
+    // {
+    //   id: 2,
+    //   googleSheets: "Phone",
+    //   netSuite: {
+    //     value: "phone",
+    //     label: "Phone",
+    //   },
+    // },
+  ]);
+
+  const addFields = useMutation({
+    // mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`)
+    mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
+  });
+
+  const getFields = useMutation({
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/getFields`),
+  });
+
+  useEffect(() => {
+    if (mappedRecordId) {
+      setRows([]);
+      getFields.mutate(
+        { mappedRecordId: mappedRecordId },
+        {
+          onSuccess: (data) => {
+            console.log("get data in primary==>", data);
+            data.map((field, index) => {
+              if (field.FieldType === "Address") {
+                console.log("field in primary==>", field);
+                const dieldDetails = {
+                  googleSheets: field.destinationFieldValue,
+                  netsuite: field.sourceFieldValue,
+                };
+                setValue(`netSuite[${index}]`, field.sourceFieldValue);
+                setRows((prev) => [...prev, dieldDetails]);
+                // setRows([dieldDetails]);
+              }
+              // else{
+              //   setRows([
+              //     {
+              //       id: 1,
+              //       googleSheets: "Add",
+              //     },
+              //     {
+              //       id: 2,
+              //       googleSheets: "Update",
+              //     },
+              //     {
+              //       id: 3,
+              //       googleSheets: "Delete",
+              //     },
+              //   ]);
+              // }
+            });
+            // if (data.length == 0) {
+            //   // console.log("rows in primary==>", data.length);
+            //   setRows([
+            //     {
+            //       id: 1,
+            //       googleSheets: "Add",
+            //     },
+            //     {
+            //       id: 2,
+            //       googleSheets: "Update",
+            //     },
+            //     {
+            //       id: 3,
+            //       googleSheets: "Delete",
+            //     },
+            //   ]);
+            // }
+            // setRows(data);
+          },
+          onError: (error) => {
+            console.log("error in primary", error);
+          },
+        }
+      );
+    }
+  }, [mappedRecordId]);
 
   const columns = useMemo(
     () => [
@@ -96,49 +198,56 @@ const Address = () => {
     [control, netsuiteValues, register]
   );
 
-  const [rows, setRows] = useState([
-    // {
-    //   id: 1,
-    //   googleSheets: "Name",
-    //   netSuite: {
-    //     value: "name",
-    //     label: "Name",
-    //   },
-    // },
-    {
-      id: 1,
-      googleSheets: "Address",
-      netSuite: {
-        value: "address",
-        label: "Address",
-      },
-    },
-    {
-      id: 2,
-      googleSheets: "Phone",
-      netSuite: {
-        value: "phone",
-        label: "Phone",
-      },
-    },
-  ]);
-
   const handleAddRow = () => {
     setRows([...rows, { googleSheets: "", netSuite: "" }]);
   };
 
   // *** to get formatted values from table
-  const [tableRecords, setTableRecords] = useState([{}]);
+  const [tableRecords, setTableRecords] = useState([]);
   const onSubmit = (values) => {
+    // ***addFields
     console.log("values", values);
     // format values in array of objects
-    const tableRecords = values.googleSheets.map((googleSheets, index) => {
+    const userId = sessionStorage.getItem("userId");
+    const tableRecord = values.googleSheets.map((googleSheets, index) => {
       return {
-        googleSheets,
-        netSuite: values.netSuite[index],
+        id: index,
+        userId: JSON.parse(userId),
+        mappedRecordId: mappedRecordId,
+        FieldType: "Address",
+        sourceField: "NetSuite™",
+        destinationField: "Google Sheets™",
+        destinationFieldValue: googleSheets,
+        sourceFieldValue: values.netSuite[index]?.label,
       };
     });
-    setTableRecords(tableRecords);
+    const tableRows = values.googleSheets.map((googleSheets, index) => {
+      return {
+        id: index,
+        userId: JSON.parse(userId),
+        mappedRecordId: mappedRecordId,
+        FieldType: "Address",
+        sourceField: "NetSuite™",
+        destinationField: "Google Sheets™",
+        googleSheets: googleSheets,
+        sourceFieldValue: values.netSuite[index],
+      };
+    });
+    console.log("tableRecord=>", tableRecord);
+    setTableRecords(tableRecord);
+    // setRows(tableRecord);
+    addFields.mutate(tableRecord, {
+      onSuccess: (data) => {
+        console.log("**data==>", data);
+        setValue("netSuite", data.netSuite);
+      },
+      onError: (error) => {
+        console.log("error", error);
+      },
+    });
+    setRows(tableRows);
+
+    // fieldData
   };
   //   console.log("tableRecords", tableRecords);
 

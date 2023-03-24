@@ -48,14 +48,31 @@ const Primary = ({ fieldData, mappedRecordId }) => {
           onSuccess: (data) => {
             console.log("get data in primary==>", data);
             data.map((field, index) => {
-              // console.log("field in primary==>", field.sourceFieldValue);
-              const dieldDetails = {
-                googleSheets: field.destinationFieldValue,
-                netsuite: field.sourceFieldValue,
-              };
-              setValue(`netSuite[${index}]`, field.sourceFieldValue);
-              setRows((prev) => [...prev, dieldDetails]);
-              // setRows([dieldDetails]);
+              if (field.FieldType === "Primary") {
+                console.log("field in primary==>", field);
+                const dieldDetails = {
+                  googleSheets: field.destinationFieldValue,
+                  netsuite: field.sourceFieldValue,
+                };
+                setValue(`netSuite[${index}]`, field.sourceFieldValue);
+                setRows((prev) => [...prev, dieldDetails]);
+                // setRows([dieldDetails]);
+              }else{
+                setRows([
+                  {
+                    id: 1,
+                    googleSheets: "Add",
+                  },
+                  {
+                    id: 2,
+                    googleSheets: "Update",
+                  },
+                  {
+                    id: 3,
+                    googleSheets: "Delete",
+                  },
+                ]);
+              }
             });
             if (data.length == 0) {
               // console.log("rows in primary==>", data.length);
@@ -551,18 +568,6 @@ const Primary = ({ fieldData, mappedRecordId }) => {
   // *** to get formatted values from table
   const [tableRecords, setTableRecords] = useState([]);
   const onSubmit = (values) => {
-    // console.log("values", values);
-    // format values in array of objects
-    // const tableRecord = values.googleSheets.map((googleSheets, index) => {
-    //   return {
-    //     googleSheets,
-    //     netSuite: values.netSuite[index],
-    //   };
-    // });
-    // console.log("tableRecord=>", tableRecord);
-    // setTableRecords(tableRecord);
-    // setRows(tableRecord);
-
     // ***addFields
     console.log("values", values);
     // format values in array of objects

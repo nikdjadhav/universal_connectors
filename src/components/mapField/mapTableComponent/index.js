@@ -349,21 +349,27 @@ const MapTableComponent = ({ data, mappedRecordId }) => {
       <TabContent activeTab={activeTab}>
         <TabPane tabId={tabs.Primary}>
           {/* {recordType ? ( */}
-            <Primary
-              onClickHandeler={onClickHandeler}
-              mappedRecordId={mappedRecordId}
-              // recordType={recordType}
-              // fieldData={data}
-            />
+          <Primary
+            onClickHandeler={onClickHandeler}
+            mappedRecordId={mappedRecordId}
+            // recordType={recordType}
+            // fieldData={data}
+          />
           {/* ) : null} */}
         </TabPane>
 
         <TabPane tabId={tabs.Sales}>
-          <Sales onClickHandeler={onClickHandeler} />
+          <Sales
+            onClickHandeler={onClickHandeler}
+            mappedRecordId={mappedRecordId}
+          />
         </TabPane>
 
         <TabPane tabId={tabs.Address}>
-          <Address onClickHandeler={onClickHandeler} />
+          <Address
+            onClickHandeler={onClickHandeler}
+            mappedRecordId={mappedRecordId}
+          />
         </TabPane>
       </TabContent>
       {/* )} */}
