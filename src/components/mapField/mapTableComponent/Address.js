@@ -74,7 +74,7 @@ const Address = ({ mappedRecordId }) => {
           onSuccess: (data) => {
             console.log("get data in primary==>", data);
             data.map((field, index) => {
-              if (field.FieldType === "Address") {
+              if (field.FieldType === "Address" && field.mappedRecordId === mappedRecordId) {
                 console.log("field in primary==>", field);
                 const dieldDetails = {
                   googleSheets: field.destinationFieldValue,

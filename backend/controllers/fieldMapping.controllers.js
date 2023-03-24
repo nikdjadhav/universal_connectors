@@ -247,11 +247,20 @@ const addFields = async (req, res) => {
   console.log("addFields", req.body);
   try {
    const fields = await prisma.fields.deleteMany({
-      where : {
+      // where : {
+      //   mappedRecordId: {
+      //     in: req.body.map((field) => field.mappedRecordId),
+      //   }
+      // }
+      // delete fields if mappedRecordId and FieldType is same
+      where: {
         mappedRecordId: {
           in: req.body.map((field) => field.mappedRecordId),
-        }
-      }
+        },
+        FieldType: {
+          in: req.body.map((field) => field.FieldType),
+        },
+      },
     });
 
     if (fields) {

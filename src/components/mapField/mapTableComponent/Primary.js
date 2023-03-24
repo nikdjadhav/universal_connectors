@@ -48,7 +48,7 @@ const Primary = ({ fieldData, mappedRecordId }) => {
           onSuccess: (data) => {
             console.log("get data in primary==>", data);
             data.map((field, index) => {
-              if (field.FieldType === "Primary") {
+              if (field.FieldType === "Primary" && field.mappedRecordId === mappedRecordId) {
                 console.log("field in primary==>", field);
                 const dieldDetails = {
                   googleSheets: field.destinationFieldValue,
@@ -57,7 +57,9 @@ const Primary = ({ fieldData, mappedRecordId }) => {
                 setValue(`netSuite[${index}]`, field.sourceFieldValue);
                 setRows((prev) => [...prev, dieldDetails]);
                 // setRows([dieldDetails]);
-              }else{
+              }
+              else if(field.FieldType !== "Primary" || field.FieldType !== "Sales" || field.FieldType !== "Address")
+              {
                 setRows([
                   {
                     id: 1,
