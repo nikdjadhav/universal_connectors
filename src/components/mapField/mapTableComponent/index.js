@@ -204,21 +204,21 @@ const MapTableComponent = ({ mappedRecordId }) => {
 
   const handleChange = (index, e) => {
     console.log("***e", e);
+    const addedRow = [...rows];
     if(e.label){
-      const addedRow = [...rows];
       // addedRow[index].netSuite = e.label;
       addedRow[index].sourceFieldValue= e.label;
       setRows(addedRow);
     }else{
-      const addedRow = [...rows];
       // addedRow[index].googleSheets= e.target.value;
-      addedRow[index].destinationFieldValue= e.target.value;
-      setRows(addedRow);
+      // settimeout to set the value
+      setTimeout(() => {
+        addedRow[index].destinationFieldValue = e.target.value;
+        setRows(addedRow);
+      }, 2000);
     }
-    // console.log('***e', e.target.value);
-    // const addedRow = [...rows];
-    // addedRow[index].googleSheets = e.target.value;
     // setRows(addedRow);
+
   };
   console.log("*************rows***********", rows);
 
@@ -230,7 +230,7 @@ const MapTableComponent = ({ mappedRecordId }) => {
         Header: "Google Sheets™ Columns",
         accessor: "googleSheets",
         Cell: ({ row }) => {
-          console.log("row.original", row.original);
+          // console.log("row.original", row.original);
           return (
             <TkInput
               type="text"
@@ -269,26 +269,26 @@ const MapTableComponent = ({ mappedRecordId }) => {
         Header: "Action",
         accessor: "action",
         Cell: (prop) => {
-          if (
-            prop.row.original.googleSheets !== "Add" &&
-            prop.row.original.googleSheets !== "Update" &&
-            prop.row.original.googleSheets !== "Delete"
-          ) {
+          // if (
+          //   prop.row.original.googleSheets !== "Add" &&
+          //   prop.row.original.googleSheets !== "Update" &&
+          //   prop.row.original.googleSheets !== "Delete"
+          // ) {
             return <i className="ri-delete-bin-5-line pe-auto px-3" />;
-          } else {
-            return null;
-          }
+          // } else {
+          //   return null;
+          // }
         },
       },
     ];
   // [control, netsuiteValues, register]
   // );
 
-  console.log("before add", rows);
+  // console.log("before add", rows);
   const handleAddRow = () => {
     setRows([...rows, { googleSheets: "", netSuite: "" }]);
   };
-  console.log("after add", rows);
+  // console.log("after add", rows);
 
   // *** to get formatted values from table
   const [tableRecords, setTableRecords] = useState([]);
@@ -406,7 +406,7 @@ const MapTableComponent = ({ mappedRecordId }) => {
           <div>
             {/* no data found */}
             <div className="text-center py-4">
-              <h4>No data found</h4>
+              <h4>Loadding...</h4>
             </div>
           </div>
         ) : (

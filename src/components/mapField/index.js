@@ -186,9 +186,11 @@ const FieldMappingTable = () => {
 
   return (
     <>
-      {/* {data.length === 0 ? (
-        <div className="text-center">No data found</div>
-      ) : ( */}
+      {mappedRecords.length === 0 ? (
+        <div className="text-center">
+          <h4>Loading...</h4>
+        </div>
+      ) : (
       <TkTableContainer
         columns={columnHead}
         data={mappedRecords || []}
@@ -197,7 +199,7 @@ const FieldMappingTable = () => {
         // defaultPageSize={10}
         // customPageSize={true}
       />
-      {/* )} */}
+       )} 
     </>
   );
 };
