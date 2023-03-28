@@ -15,20 +15,16 @@ const FieldMappingTable = () => {
   //   mutationFn: tkFetch.post("http://localhost:4000/v1/getAllMappedRecords"),
   // });
 
-  const getMappedFieldsDetails = useMutation({
+  const mappedFieldsDetails = useMutation({
     // mutationFn: tkFetch.post(
     //   " http://localhost:4000/v1/getMappedFieldsDetails"
     // ),
-    mutationFn: tkFetch.post(
-      `${API_BASE_URL}/getMappedFieldsDetails`
-    ),
-    
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getMappedFieldsDetails`),
   });
 
   const integrationById = useMutation({
     // mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
     mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-
   });
 
   useEffect(() => {
@@ -36,7 +32,7 @@ const FieldMappingTable = () => {
       userId: JSON.parse(sessionStorage.getItem("userId")),
     };
 
-    getMappedFieldsDetails.mutate(userID, {
+    mappedFieldsDetails.mutate(userID, {
       onSuccess: (data) => {
         console.log("data", data);
         setMappedRecords(data[0]);
@@ -167,9 +163,9 @@ const FieldMappingTable = () => {
                 // query: { recordType: props.row.original },
                 // query: { mappedRecordId: JSON.stringify(props.row.original) },
                 // query: {data: props.row.original}
-                  query: {
-                      mappedRecordId: JSON.stringify(props.row.original.id),
-                  },
+                query: {
+                  mappedRecordId: JSON.stringify(props.row.original.id),
+                },
               }}
               as="/fieldMapping/mapTable"
             >

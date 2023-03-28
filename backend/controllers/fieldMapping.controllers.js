@@ -22,7 +22,7 @@ const AddMappedRecord = async (req, res) => {
         success: true,
         status_code: 200,
         data: [recordMapping],
-        message: "Record Mapping created successfully",
+        message: "Mapped record added successfully",
       });
       return;
     } else {
@@ -30,7 +30,7 @@ const AddMappedRecord = async (req, res) => {
         res,
         success: false,
         status_code: 400,
-        message: "Record Mapping not created",
+        message: "Mapped record not added",
       });
       return;
     }
@@ -39,7 +39,7 @@ const AddMappedRecord = async (req, res) => {
       res,
       success: false,
       status_code: 400,
-      message: "Error in creating Record Mapping",
+      message: "Error in creating Mapped record",
     });
     console.log("error", error);
     return;
@@ -64,7 +64,7 @@ const getAllMappedRecords = async (req, res) => {
         success: true,
         status_code: 200,
         data: [recordMapping],
-        message: "Record Mapping fetched successfully",
+        message: "Mapped record fetched successfully",
       });
       return;
     } else {
@@ -72,7 +72,7 @@ const getAllMappedRecords = async (req, res) => {
         res,
         success: false,
         status_code: 400,
-        message: "Record Mapping not fetched",
+        message: "Mapped record not fetched",
       });
       return;
     }
@@ -81,7 +81,7 @@ const getAllMappedRecords = async (req, res) => {
       res,
       success: false,
       status_code: 400,
-      message: "Error in fetching Record Mapping",
+      message: "Error in fetching Mapped record",
     });
     console.log("error", error);
     return;
@@ -104,7 +104,7 @@ const getMappedRecordById = async (req, res) => {
         success: true,
         status_code: 200,
         data: recordMapping,
-        message: "Record Mapping fetched successfully",
+        message: "Mapped record fetched successfully",
       });
       return;
     } else {
@@ -112,7 +112,7 @@ const getMappedRecordById = async (req, res) => {
         res,
         success: false,
         status_code: 400,
-        message: "Record Mapping not fetched",
+        message: "Mapped record not fetched",
       });
       return;
     }
@@ -121,7 +121,7 @@ const getMappedRecordById = async (req, res) => {
       res,
       success: false,
       status_code: 400,
-      message: "Error in fetching Record Mapping",
+      message: "Error in fetching Mapped record",
     });
     console.log("error", error);
     return;
@@ -152,6 +152,8 @@ const getMappedFieldsDetails = async (req, res) => {
       },
     });
 
+    console.log("recordMapping", recordMapping);
+
     if (recordMapping) {
       // console.log(recordMapping)
       response({
@@ -159,7 +161,7 @@ const getMappedFieldsDetails = async (req, res) => {
         success: true,
         status_code: 200,
         data: [recordMapping],
-        message: "Record Mapping fetched successfully",
+        message: "Mapped record fetched successfully",
       });
       return;
     } else {
@@ -167,7 +169,7 @@ const getMappedFieldsDetails = async (req, res) => {
         res,
         success: false,
         status_code: 400,
-        message: "Record Mapping not fetched",
+        message: "Mapped record not fetched",
       });
       return;
     }
@@ -176,10 +178,10 @@ const getMappedFieldsDetails = async (req, res) => {
       res,
       success: false,
       status_code: 400,
-      message: "Error in fetching Record Mapping",
+      message: "Error in fetching Mapped record",
     });
     console.log("error", error);
-    return;
+    // return;
   }
 };
 
@@ -282,7 +284,7 @@ const addFields = async (req, res) => {
           success: true,
           status_code: 200,
           data: fields,
-          message: "Fields updated successfully",
+          message: "Fields added successfully",
         });
         return;
       } else {
@@ -290,7 +292,7 @@ const addFields = async (req, res) => {
           res,
           success: false,
           status_code: 400,
-          message: "Fields not updated",
+          message: "Fields not added",
         });
         return;
       }
@@ -308,7 +310,7 @@ const addFields = async (req, res) => {
       res,
       success: false,
       status_code: 400,
-      message: "Error in updating fields",
+      message: "Error in adding fields",
     });
     console.log("error", error);
     // return;
