@@ -50,6 +50,8 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`)
   })
 
+  console.log('other in new connection', other);
+
   useEffect(() => {
     if (other.integrationID) {
       getConfigurationById.mutate({ integrationId: JSON.parse(other.integrationID) }, {
@@ -102,7 +104,7 @@ console.log("other", other);
 
     addConfigurations.mutate(configurData, {
       onSuccess: (data) => {
-        console.log("data", data);
+        console.log("addConfigurations data", data);
       }, onError: (error) => {
         console.log("error", error);
       }

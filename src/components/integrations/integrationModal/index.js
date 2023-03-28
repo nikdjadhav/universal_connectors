@@ -28,6 +28,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
 
   const [NSCTitle, setNSCTitle] = useState("NetSuite™");
   const [GSCTitle, setGSCTitle] = useState("Google Sheets™");
+  const [integrationID, setIntegrationID] = useState();
 
   const integration = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
@@ -89,6 +90,12 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
       // setGSCTitle(configData.destination.label || configData.destination);
     }
   }, [configData]);
+
+  // callback to get integrationID from child component
+  const getIntegrationID = (id) => {
+    setIntegrationID(id);
+  };
+  console.log("integrationID########", typeof(integrationID));
 
   const tabs = {
     Integration: 1,
@@ -205,13 +212,14 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
                 configData={configData}
                 toggle={toggle}
                 integrationID={other.integrationID}
+                getIntegrationID={getIntegrationID}
               />
             </TabPane>
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>
               <NetsuiteComponent
                 onClickHandeler={onClickHandeler}
-                integrationID={other.integrationID}
+                integrationID={other.integrationID || integrationID}
                 title={NSCTitle}
               />
             </TabPane>
@@ -219,7 +227,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
             <TabPane tabId={tabs.GoogleSheetConfiguration}>
               <GoogleSheetComponent
                 onClickHandeler={onClickHandeler}
-                integrationID={other.integrationID}
+                integrationID={other.integrationID || integrationID}
                 title={GSCTitle}
               />
             </TabPane>

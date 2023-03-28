@@ -44,6 +44,7 @@ const Integration = ({
   const [integrationsData, setIntegrationsData] = useState();
   const [integrationID, setIntegrationID] = useState();
 
+
   const integration = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
     mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
@@ -121,6 +122,8 @@ const Integration = ({
       onSuccess: (data) => {
         // console.log("ittegration added==>", data);
         setIntegrationID(data[0]?.id);
+        // using other.getIntegrationID callback send data[0]?.id to parent component
+        other.getIntegrationID(data[0]?.id);
       },
       onError: (error) => {
         console.log("error", error);

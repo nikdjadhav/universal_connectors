@@ -34,6 +34,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`)
   })
+  console.log("other", other);
 
   const getConfigurationById = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")

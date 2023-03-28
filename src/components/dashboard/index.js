@@ -21,6 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { FormErrorBox } from "@/globalComponents/ErrorText";
 import Link from "next/link";
+import { Spinner } from "reactstrap";
 
 const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
@@ -343,13 +344,19 @@ const DashBoard = () => {
   return (
     <>
       <TopBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />
-
-      <TkTableContainer
-        columns={columns}
-        data={integrationData || []}
-        tooltip="tooltip"
-        // Toolbar={<TableToolBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />}
-      />
+{integrationData ? 
+      (<TkTableContainer
+      columns={columns}
+      data={integrationData || []}
+      tooltip="tooltip"
+      // Toolbar={<TableToolBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />}
+      />) : (
+        <div className="d-flex justify-content-center " style={{height: "100vh"}}>
+          {/* <Spinner /> */}
+          <h4 className="text-center">No Data Found</h4>
+        </div>
+      ) 
+    }  
 
       <ModalButton
         modal={modal}
