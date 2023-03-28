@@ -42,47 +42,70 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
 
   const addConfigurations = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
-    mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`)
-  })
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
+  });
 
   const getConfigurationById = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`)
-  })
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
+  });
 
-  console.log('other in new connection', other);
+  const integration = useMutation({
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+  });
+
+  console.log("other in new connection", other);
 
   useEffect(() => {
     if (other.integrationID) {
-      getConfigurationById.mutate({ integrationId: JSON.parse(other.integrationID) }, {
-        onSuccess: (data) => {
-          console.log("getConfigurationById NS", data);
-          data.map((item) => {
-            if(item.systemName === other.title){
-              console.log("item NS", item);
-              setValue("url", item.url);
-              setValue("accountID", item.accountId);
-              setValue("consumerKey", item.consumerKey);
-              setValue("consumerSecretKey", item.consumerSecretKey);
-              setValue("accessToken", item.accessToken);
-              setValue("accessSecretToken", item.accessSecretToken);
-            }
-          })
-
-        }, onError: (error) => {
-          console.log("error", error);
+      getConfigurationById.mutate(
+        { integrationId: JSON.parse(other.integrationID) },
+        {
+          onSuccess: (data) => {
+            console.log("getConfigurationById NS", data);
+            data.map((item) => {
+              if (item.systemName === other.title) {
+                console.log("item NS", item);
+                setValue("url", item.url);
+                setValue("accountID", item.accountId);
+                setValue("consumerKey", item.consumerKey);
+                setValue("consumerSecretKey", item.consumerSecretKey);
+                setValue("accessToken", item.accessToken);
+                setValue("accessSecretToken", item.accessSecretToken);
+              }
+            });
+          },
+          onError: (error) => {
+            console.log("error", error);
+          },
         }
-      })
+      );
+
+      integration.mutate(
+        {
+          id: other.integrationID,
+        },
+        {
+          onSuccess: (data) => {
+            console.log("integration data*&*&", data[0]);
+            setValue("integrationName", data[0].integrationName);
+          },
+          onError: (error) => {
+            console.log("error", error);
+          },
+        }
+      );
     }
-  }, [])
+  }, [other.integrationID]);
 
   const [integrationID, setIntegrationID] = useState();
-console.log("other", other);
+  console.log("other", other);
   useEffect(() => {
     if (other.integrationID) {
       setIntegrationID(JSON.parse(other.integrationID));
     }
-  }, [other.integrationID])
+  }, [other.integrationID]);
 
   const onSubmit = (data) => {
     // console.log("Set up new connection data", data);
@@ -98,17 +121,18 @@ console.log("other", other);
       consumerSecretKey: data.consumerSecretKey,
       accessToken: data.accessToken,
       accessSecretToken: data.accessSecretToken,
-      authenticationType: "xyz"
-    }
+      authenticationType: "xyz",
+    };
     console.log("configurData", configurData);
 
     addConfigurations.mutate(configurData, {
       onSuccess: (data) => {
         console.log("addConfigurations data", data);
-      }, onError: (error) => {
+      },
+      onError: (error) => {
         console.log("error", error);
-      }
-    })
+      },
+    });
 
     onClickHandeler();
   };

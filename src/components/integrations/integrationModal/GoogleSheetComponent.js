@@ -32,15 +32,19 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   const [integrationID, setIntegrationID] = useState();
   const addConfigurations = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
-    mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`)
-  })
-  console.log("other", other);
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
+  });
+  // console.log("other", other);
 
   const getConfigurationById = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`)
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
+  });
 
-  })
+  const integration = useMutation({
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+  });
 
   useEffect(() => {
     if (other.integrationID) {
@@ -48,22 +52,40 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
     }
 
     if (other.integrationID) {
-      getConfigurationById.mutate({ integrationId: JSON.parse(other.integrationID) }, {
-        onSuccess: (data) => {
-          console.log("getConfigurationById GS", data);
-          data.map((item) => {
-            if(item.systemName === other.title){
-              console.log("item GS", item);
-              setValue("googleSheetUrl", item.url);
-            }
-          })
-
-        }, onError: (error) => {
-          console.log("error", error);
+      getConfigurationById.mutate(
+        { integrationId: JSON.parse(other.integrationID) },
+        {
+          onSuccess: (data) => {
+            console.log("getConfigurationById GS", data);
+            data.map((item) => {
+              if (item.systemName === other.title) {
+                console.log("item GS", item);
+                setValue("googleSheetUrl", item.url);
+              }
+            });
+          },
+          onError: (error) => {
+            console.log("error", error);
+          },
         }
-      })
+      );
+
+      integration.mutate(
+        {
+          id: other.integrationID,
+        },
+        {
+          onSuccess: (data) => {
+            console.log("integration data", data[0]);
+            setValue("integrationName", data[0].integrationName);
+          },
+          onError: (error) => {
+            console.log("error", error);
+          },
+        }
+      );
     }
-  }, [other.integrationID])
+  }, [other.integrationID]);
 
   const onSubmit = (data) => {
     console.log("data", data);
@@ -72,18 +94,19 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
       userId: JSON.parse(userId),
       integrationId: integrationID,
       systemName: other.title,
-      url: data.googleSheetUrl
-    }
+      url: data.googleSheetUrl,
+    };
     // console.log("configurData", configurData);
     addConfigurations.mutate(configurData, {
       onSuccess: (data) => {
         console.log("data", data);
-      }, onError: (error) => {
+      },
+      onError: (error) => {
         console.log("error", error);
-      }
-    })
+      },
+    });
 
-    onClickHandeler()
+    onClickHandeler();
   };
 
   return (
@@ -91,26 +114,24 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
       {/* <h5 className="text-center">Google Sheet Configuration</h5> */}
       {/* <TkCard>
         <TkCardBody> */}
-          <TkForm onSubmit={handleSubmit(onSubmit)}>
-            <TkRow className="g-3">
-              <TkCol lg={12}>
-                <TkInput
-                  {...register("integrationName")}
-                  id="integrationName"
-                  type="text"
-                  labelName="Integration Name"
-                  placeholder="Enter integration name"
-                  requiredStarOnLabel={true}
-                  invalid={errors.integrationName?.message ? true : false}
-                />
-                {errors.integrationName?.message ? (
-                  <FormErrorText>
-                    {errors.integrationName?.message}
-                  </FormErrorText>
-                ) : null}
-              </TkCol>
+      <TkForm onSubmit={handleSubmit(onSubmit)}>
+        <TkRow className="g-3">
+          <TkCol lg={12}>
+            <TkInput
+              {...register("integrationName")}
+              id="integrationName"
+              type="text"
+              labelName="Integration Name"
+              placeholder="Enter integration name"
+              requiredStarOnLabel={true}
+              invalid={errors.integrationName?.message ? true : false}
+            />
+            {errors.integrationName?.message ? (
+              <FormErrorText>{errors.integrationName?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
 
-              {/* <TkCol lg={12}>
+          {/* <TkCol lg={12}>
                 <TkSelect
                   id="netsuiteRecordType"
                   name="netsuiteRecordType"
@@ -121,42 +142,40 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
                 />
               </TkCol> */}
 
-              <TkCol lg={12}>
-                <TkInput
-                  {...register("googleSheetUrl")}
-                  id="googleSheetUrl"
-                  type="text"
-                  labelName="Google Sheets™ Url"
-                  placeholder="Enter google sheet url"
-                  requiredStarOnLabel={true}
-                  invalid={errors.googleSheetUrl?.message ? true : false}
-                />
-                {errors.googleSheetUrl?.message ? (
-                  <FormErrorText>
-                    {errors.googleSheetUrl?.message}
-                  </FormErrorText>
-                ) : null}
-              </TkCol>
+          <TkCol lg={12}>
+            <TkInput
+              {...register("googleSheetUrl")}
+              id="googleSheetUrl"
+              type="text"
+              labelName="Google Sheets™ Url"
+              placeholder="Enter google sheet url"
+              requiredStarOnLabel={true}
+              invalid={errors.googleSheetUrl?.message ? true : false}
+            />
+            {errors.googleSheetUrl?.message ? (
+              <FormErrorText>{errors.googleSheetUrl?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
 
-              {/* <TkCol lg={12}>
+          {/* <TkCol lg={12}>
                 <TkButton type="submit" className="btn btn-success">
                   Authorize
                 </TkButton>
               </TkCol> */}
 
-              <TkCol lg={12}>
-                <TkButton
-                  type="submit"
-                  className="btn-success float-end"
-                  // onClick={onClickHandeler}
-                >
-                  {/* Next Step */}
-                  Authorize
-                </TkButton>
-              </TkCol>
-            </TkRow>
-          </TkForm>
-        {/* </TkCardBody>
+          <TkCol lg={12}>
+            <TkButton
+              type="submit"
+              className="btn-success float-end"
+              // onClick={onClickHandeler}
+            >
+              {/* Next Step */}
+              Authorize
+            </TkButton>
+          </TkCol>
+        </TkRow>
+      </TkForm>
+      {/* </TkCardBody>
       </TkCard> */}
     </>
   );
