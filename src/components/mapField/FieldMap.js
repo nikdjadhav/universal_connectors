@@ -123,9 +123,10 @@ const FieldMap = () => {
     const mapprdRecord = {
       userId: JSON.parse(userID),
       integrationId: data.integrationName.value,
-      recordType: data.recordType.label,
+      recordType: data.recordType.value,
       url: data.googleSheetUrl,
     };
+    // console.log("mapprdRecord==>", mapprdRecord);
     AddMappedRecord.mutate(mapprdRecord, {
       onSuccess: (data) => {
         // console.log("data==", data);
@@ -194,8 +195,8 @@ const FieldMap = () => {
                   {...field}
                   labelName="NetSuite™ Record Type"
                   id="recordType"
-                  options={recordType}
-                  // options={records || []}
+                  // options={recordType}
+                  options={records || []}
                   maxMenuHeight="120px"
                   requiredStarOnLabel={true}
                 />

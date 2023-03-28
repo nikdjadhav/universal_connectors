@@ -257,9 +257,9 @@ const addFields = async (req, res) => {
         mappedRecordId: {
           in: req.body.map((field) => field.mappedRecordId),
         },
-        FieldType: {
-          in: req.body.map((field) => field.FieldType),
-        },
+        // FieldType: {
+        //   in: req.body.map((field) => field.FieldType),
+        // },
       },
     });
 
@@ -268,7 +268,7 @@ const addFields = async (req, res) => {
         data: req.body.map((field) => ({
           userId: field.userId,
           mappedRecordId: field.mappedRecordId,
-          FieldType: field.FieldType,
+          // FieldType: field.FieldType,
           sourceField: field.sourceField,
           destinationField: field.destinationField,
           sourceFieldValue: field.sourceFieldValue,

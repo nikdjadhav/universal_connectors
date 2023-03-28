@@ -66,6 +66,7 @@ v1Router.post("/getConfigurationById", integrationController.getConfigurationByI
 
 // *** reslet routes ***
 v1Router.post("/getRecordTypes", resletController.getRecordTypes);
+v1Router.post("/getOptions", resletController.getOptions);
 
 // *** field mapping routes ***
 v1Router.post("/AddMappedRecord", fieldMappingController.AddMappedRecord);

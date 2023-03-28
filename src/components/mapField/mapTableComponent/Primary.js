@@ -58,22 +58,22 @@ const Primary = ({ fieldData, mappedRecordId }) => {
                 setRows((prev) => [...prev, dieldDetails]);
                 // setRows([dieldDetails]);
               }
-              else{
-                setRows([
-                  {
-                    id: 1,
-                    googleSheets: "Add",
-                  },
-                  {
-                    id: 2,
-                    googleSheets: "Update",
-                  },
-                  {
-                    id: 3,
-                    googleSheets: "Delete",
-                  },
-                ]);
-              }
+              // else if (field.FieldType != "Primary"){
+              //   setRows([
+              //     {
+              //       id: 1,
+              //       googleSheets: "Add",
+              //     },
+              //     {
+              //       id: 2,
+              //       googleSheets: "Update",
+              //     },
+              //     {
+              //       id: 3,
+              //       googleSheets: "Delete",
+              //     },
+              //   ]);
+              // }
             });
             if (data.length == 0) {
               // console.log("rows in primary==>", data.length);

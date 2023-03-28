@@ -87,10 +87,10 @@ model Fields {
   user                  Users         @relation(fields: [userId], references: [id])
   mappedRecordId        Int
   mappedRecord          MappedRecords @relation(fields: [mappedRecordId], references: [id])
-  FieldType             String
+  // FieldType             String
   sourceField           String
   destinationField      String
-  sourceFieldValue      String?
+  sourceFieldValue      String
   destinationFieldValue String
 }
 
