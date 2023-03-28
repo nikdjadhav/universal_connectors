@@ -188,7 +188,7 @@ const FieldMappingTable = () => {
     <>
       {mappedRecords.length === 0 ? (
         <div className="text-center">
-          <h4>Loading...</h4>
+          <h4>No Data Found</h4>
         </div>
       ) : (
       <TkTableContainer
