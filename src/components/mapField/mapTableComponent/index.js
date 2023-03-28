@@ -46,25 +46,32 @@ const MapTableComponent = ({ mappedRecordId }) => {
   // console.log('typrof mappedRecordId', typeof(mappedRecordId));
 
   const getMappedRecordById = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getMappedRecordById`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getMappedRecordById`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getMappedRecordById`),
   });
 
   const getIntegrationById = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+
   });
 
   const addFields = useMutation({
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`)
-    mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`)
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
   });
 
   const getMappedFieldsDetails = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getFields"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getFields"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getFields`),
+
   });
 
   // *** resle API
   const getResletOptions = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getOptions`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getOptions`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getOptions`),
+
   });
 
   useEffect(() => {

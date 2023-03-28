@@ -47,7 +47,8 @@ const FieldMap = () => {
   const [records, setRecords] = useState([]);
 
   const integrations = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrations`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrations`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
   });
 
   const getResletRecordType = useMutation({
@@ -55,7 +56,9 @@ const FieldMap = () => {
   });
 
   const AddMappedRecord = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/AddMappedRecord"),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/AddMappedRecord"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/AddMappedRecord`),
+
   });
 
   useEffect(() => {

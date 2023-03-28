@@ -2,6 +2,7 @@ import TkButton from "@/globalComponents/TkButton";
 import TkInput from "@/globalComponents/TkInput";
 import TkSelect from "@/globalComponents/TkSelect";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
+import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useMemo, useState } from "react";
@@ -57,12 +58,14 @@ const Address = ({ mappedRecordId }) => {
   ]);
 
   const addFields = useMutation({
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`)
-    mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`)
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
   });
 
   const getFields = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getFields`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getFields`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getFields`),
+
   });
 
   useEffect(() => {

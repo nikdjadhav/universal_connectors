@@ -5,6 +5,7 @@ import { actions } from "react-table";
 import { Tooltip } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
+import { API_BASE_URL } from "@/utils/Constants";
 
 const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
@@ -15,13 +16,19 @@ const FieldMappingTable = () => {
   // });
 
   const getMappedFieldsDetails = useMutation({
+    // mutationFn: tkFetch.post(
+    //   " http://localhost:4000/v1/getMappedFieldsDetails"
+    // ),
     mutationFn: tkFetch.post(
-      " http://localhost:4000/v1/getMappedFieldsDetails"
+      `${API_BASE_URL}/getMappedFieldsDetails`
     ),
+    
   });
 
   const integrationById = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+
   });
 
   useEffect(() => {

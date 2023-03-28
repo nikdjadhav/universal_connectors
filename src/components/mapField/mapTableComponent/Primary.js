@@ -31,12 +31,14 @@ const Primary = ({ fieldData, mappedRecordId }) => {
   console.log("mappedRecordId in primary", mappedRecordId);
 
   const addFields = useMutation({
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`)
-    mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`)
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
   });
 
   const getFields = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getFields`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getFields`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getFields`),
+
   });
 
   useEffect(() => {

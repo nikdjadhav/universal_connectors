@@ -4,6 +4,7 @@ import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
+import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
@@ -40,11 +41,13 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   });
 
   const addConfigurations = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`)
   })
 
   const getConfigurationById = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`)
   })
 
   useEffect(() => {
