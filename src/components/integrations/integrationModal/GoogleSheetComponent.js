@@ -30,6 +30,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
     resolver: yupResolver(schema),
   });
   const [integrationID, setIntegrationID] = useState();
+  const [integrationsData, setIntegrationsData] = useState();
   const addConfigurations = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
@@ -41,10 +42,10 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
   });
 
-  const integration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-  });
+  // const integration = useMutation({
+  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+  // });
 
   useEffect(() => {
     if (other.integrationID) {
@@ -60,6 +61,8 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
             data.map((item) => {
               if (item.systemName === other.title) {
                 // console.log("item GS", item);
+                setIntegrationsData(item);
+                setValue("integrationName", item.integration.integrationName);
                 setValue("googleSheetUrl", item.url);
               }
             });
@@ -70,20 +73,20 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
         }
       );
 
-      integration.mutate(
-        {
-          id: other.integrationID,
-        },
-        {
-          onSuccess: (data) => {
-            // console.log("integration data", data[0]);
-            setValue("integrationName", data[0].integrationName);
-          },
-          onError: (error) => {
-            console.log("error", error);
-          },
-        }
-      );
+      // integration.mutate(
+      //   {
+      //     id: other.integrationID,
+      //   },
+      //   {
+      //     onSuccess: (data) => {
+      //       // console.log("integration data", data[0]);
+      //       setValue("integrationName", data[0].integrationName);
+      //     },
+      //     onError: (error) => {
+      //       console.log("error", error);
+      //     },
+      //   }
+      // );
     }
   }, [other.integrationID]);
 
@@ -125,6 +128,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
               placeholder="Enter integration name"
               requiredStarOnLabel={true}
               invalid={errors.integrationName?.message ? true : false}
+              disabled={integrationsData ? true : false}
             />
             {errors.integrationName?.message ? (
               <FormErrorText>{errors.integrationName?.message}</FormErrorText>

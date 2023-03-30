@@ -63,13 +63,14 @@ v1Router.post("/getIntegrations", integrationController.getIntegrations);
 v1Router.post("/getIntegrationById", integrationController.getIntegrationById);
 v1Router.post("/addConfigurations", integrationController.addConfigurations);
 v1Router.post("/getConfigurationById", integrationController.getConfigurationById);
+v1Router.post("/getConfigurationByIntegrationId", integrationController.getConfigurationByIntegrationId);
 
 // *** reslet routes ***
 v1Router.post("/getRecordTypes", resletController.getRecordTypes);
 v1Router.post("/getOptions", resletController.getOptions);
 
 // *** field mapping routes ***
-v1Router.post("/AddMappedRecord", fieldMappingController.AddMappedRecord);
+v1Router.post("/addMappedRecord", fieldMappingController.addMappedRecord);
 v1Router.post("/getAllMappedRecords", fieldMappingController.getAllMappedRecords);
 v1Router.post("/getMappedRecordById", fieldMappingController.getMappedRecordById);
 v1Router.post("/getMappedFieldsDetails", fieldMappingController.getMappedFieldsDetails);
