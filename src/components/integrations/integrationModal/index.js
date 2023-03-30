@@ -36,7 +36,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
   });
   useEffect(() => {
     if (other.integrationID) {
-      console.log("in modal==>", other.integrationID);
+      // console.log("in modal==>", other.integrationID);
 
       const id = {
         id: JSON.parse(other.integrationID),
@@ -44,7 +44,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
 
       integration.mutate(id, {
         onSuccess: (data) => {
-          console.log("data", data);
+          // console.log("data", data);
           setNSCTitle(data[0]?.sourceName);
           setGSCTitle(data[0]?.destinationName);
         },
@@ -95,7 +95,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
   const getIntegrationID = (id) => {
     setIntegrationID(id);
   };
-  console.log("integrationID########", typeof(integrationID));
+  // console.log("integrationID########", typeof(integrationID));
 
   const tabs = {
     Integration: 1,

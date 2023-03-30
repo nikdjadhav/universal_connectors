@@ -59,7 +59,7 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
   }, [integrationModal]);
 
   const onSubmit = (values) => {
-    console.log("values", values);
+    // console.log("values", values);
     // console.log('data',values.source.label, values.destination.label);
     integrationToggle();
     const lables = {

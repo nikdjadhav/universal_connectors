@@ -37,12 +37,12 @@ model Integrations {
   integrationName  String
   sourceName       String
   destinationName  String
-  creationDate     DateTime         @default(now())
-  modificationDate DateTime         @updatedAt
   schedule         Boolean
   fieldMapping     Boolean
   status           String
   syncWay          String
+  creationDate     DateTime         @default(now())
+  modificationDate DateTime         @updatedAt
   Configurations   Configurations[]
   MappedRecords    MappedRecords[]
   Schedule         Schedule[]
@@ -56,13 +56,15 @@ model Configurations {
   integrationId      Int
   integration        Integrations @relation(fields: [integrationId], references: [id])
   systemName         String
-  url                String
+  url                String?
   accountId          String?
   consumerKey        String?
   consumerSecretKey  String?
   accessToken        String?
   accessSecretToken  String?
   authenticationType String?
+  creationDate       DateTime     @default(now())
+  modificationDate   DateTime     @updatedAt
 
   // @@unique(fields: [integrationId, systemName], name: "configDetails")
 }
@@ -73,10 +75,10 @@ model MappedRecords {
   user             Users        @relation(fields: [userId], references: [id])
   integrationId    Int
   integration      Integrations @relation(fields: [integrationId], references: [id])
+  source           String
+  destination      String
   creationDate     DateTime     @default(now())
   modificationDate DateTime     @updatedAt
-  recordType       String
-  url              String
   Fields           Fields[]
   Logs             Logs[]
 }
@@ -100,8 +102,6 @@ model Schedule {
   user             Users        @relation(fields: [userId], references: [id])
   integrationId    Int
   integration      Integrations @relation(fields: [integrationId], references: [id])
-  creationDate     DateTime     @default(now())
-  modificationDate DateTime     @updatedAt
   eventType        String
   startDate        DateTime     @default(now())
   endDate          DateTime
@@ -109,6 +109,8 @@ model Schedule {
   day              String
   noEndDate        Boolean
   repeatEveryDay   Boolean
+  creationDate     DateTime     @default(now())
+  modificationDate DateTime     @updatedAt
 }
 
 model Logs {

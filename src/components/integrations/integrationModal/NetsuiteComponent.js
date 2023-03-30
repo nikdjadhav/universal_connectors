@@ -9,7 +9,7 @@ const NetsuiteComponent = ({ onClickHandeler, ...other }) => {
   const [showComponent, setShowComponent] = useState("one");
   const [newTab, setNewTab] = useState(true);
   const [existTab, setExistTab] = useState(false);
-  console.log("nc==>", other);
+  // console.log("nc==>", other);
 
   const toggleComponet = (value) => {
     // console.log(value);

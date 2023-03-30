@@ -25,7 +25,7 @@ const ExistConnection = ({ onClickHandeler }) => {
   });
 
   const onSubmit = (data) => {
-    console.log("data", data);
+    // console.log("data", data);
     onClickHandeler();
   };
   return (

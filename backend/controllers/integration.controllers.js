@@ -55,7 +55,7 @@ const createIntegration = async (req, res) => {
 
 // get integration using id
 const getIntegrationById = async (req, res) => {
-  console.log("requestd body", req.body);
+  // console.log("requestd body", req.body);
   try {
     const integration = await prisma.integrations.findUnique({
       where: {
@@ -94,8 +94,8 @@ const getIntegrationById = async (req, res) => {
 };
 
 const getIntegrations = async (req, res) => {
-  console.log("requestd body");
-  console.log('requestd body',req.body);
+  // console.log("requestd body");
+  // console.log('requestd body',req.body);
   try {
     const integrations = await prisma.integrations.findMany({
       where: {
@@ -134,7 +134,7 @@ const getIntegrations = async (req, res) => {
 };
 
 const addConfigurations = async (req, res) => {
-  console.log("addConfigurations", req.body);
+  // console.log("addConfigurations", req.body);
   try{
     const configurations = await prisma.configurations.create({
       data: {
@@ -182,7 +182,7 @@ const addConfigurations = async (req, res) => {
 }
 
 const getConfigurationById = async (req, res) => {
-  console.log("requestd body", req.body);
+  // console.log("requestd body", req.body);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {

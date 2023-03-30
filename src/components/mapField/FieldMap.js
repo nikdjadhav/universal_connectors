@@ -43,7 +43,7 @@ const FieldMap = () => {
   const router = useRouter();
   const [userID, setUserID] = useState();
   const [integrationOptions, setIntegrationOptions] = useState([]);
-  const [recordTypes, setRecordTypes] = useState();
+  // const [recordTypes, setRecordTypes] = useState();
   const [records, setRecords] = useState([]);
 
   const integrations = useMutation({
@@ -106,10 +106,14 @@ const FieldMap = () => {
     getResletRecordType.mutate(data, {
       onSuccess: (data) => {
         console.log("data==", data);
-        setRecordTypes(data[0]);
+        // setRecordTypes(data[0]);
         data[0].list.map((item) => {
           // console.log("item==", item);
           setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
+
+          if(item.id === "customer"){
+            console.log("==item==", item);
+          }
         });
       },
       onError: (error) => {
@@ -117,7 +121,7 @@ const FieldMap = () => {
       },
     });
   }, [userID]);
-  console.log("recordTypes==", recordTypes);
+  // console.log("recordTypes==", recordTypes);
   console.log("records==", records);
 
   const onsubmit = (data) => {
@@ -126,7 +130,8 @@ const FieldMap = () => {
     const mapprdRecord = {
       userId: JSON.parse(userID),
       integrationId: data.integrationName.value,
-      recordType: data.recordType.value,
+      // recordType: data.recordType.value,
+      recordType: data.recordType.label,
       url: data.googleSheetUrl,
     };
     // console.log("mapprdRecord==>", mapprdRecord);

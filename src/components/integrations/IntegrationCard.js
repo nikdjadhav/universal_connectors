@@ -57,10 +57,10 @@ const IntegrationCard = ({ modal, toggleModal }) => {
 
   useEffect(() => {
     if (id) {
-      console.log("id", id);
+      // console.log("id", id);
       integration.mutate(id, {
         onSuccess: (data) => {
-          console.log("data", data);
+          // console.log("data", data);
           setIntegrationData(data);
         },
         onError: (error) => {
@@ -96,7 +96,7 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   const router = useRouter();
 
   const onClickCard = (id) => {
-    console.log("Clicked", id);
+    // console.log("Clicked", id);
     // router.push("/integrations/details");
     router.push(
       {
