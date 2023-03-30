@@ -16,7 +16,7 @@ import * as Yup from "yup";
 const schema = Yup.object({
   integrationName: Yup.string().required("Integration name is required."),
 
-  url: Yup.string().required("URL is required."),
+  // url: Yup.string().required("URL is required."),
 
   accountID: Yup.string().required("Account ID is required."),
 
@@ -39,6 +39,8 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const [integrationsData, setIntegrationsData] = useState();
 
   const addConfigurations = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
@@ -63,11 +65,11 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
         { integrationId: JSON.parse(other.integrationID) },
         {
           onSuccess: (data) => {
-            // console.log("getConfigurationById NS", data);
+            console.log("getConfigurationById NS", data);
             data.map((item) => {
               if (item.systemName === other.title) {
                 // console.log("item NS", item);
-                setValue("url", item.url);
+                // setValue("url", item.url);
                 setValue("accountID", item.accountId);
                 setValue("consumerKey", item.consumerKey);
                 setValue("consumerSecretKey", item.consumerSecretKey);
@@ -123,7 +125,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
       accessSecretToken: data.accessSecretToken,
       authenticationType: "xyz",
     };
-    // console.log("configurData", configurData);
+    console.log("configurData", configurData);
 
     addConfigurations.mutate(configurData, {
       onSuccess: (data) => {

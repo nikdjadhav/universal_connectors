@@ -189,6 +189,13 @@ const getConfigurationById = async (req, res) => {
         // id: req.body.id,
           integrationId: req.body.integrationId,
       },
+      include: {
+        integration: {
+          select: {
+            integrationName: true,
+          }
+        }
+      }
     });
 
     if (configuration) {
