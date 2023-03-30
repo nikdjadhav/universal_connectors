@@ -14,7 +14,7 @@ const createIntegration = async (req, res) => {
         // createdAt: new Date(),
         // updatedAt: undefined,
         creationDate: new Date(),
-        modificationDate: undefined, 
+        modificationDate: undefined,
         schedule: false,
         fieldMapping: false,
         status: "Completed",
@@ -135,7 +135,7 @@ const getIntegrations = async (req, res) => {
 
 const addConfigurations = async (req, res) => {
   // console.log("addConfigurations", req.body);
-  try{
+  try {
     const configurations = await prisma.configurations.create({
       data: {
         userId: req.body.userId,
@@ -179,7 +179,7 @@ const addConfigurations = async (req, res) => {
     console.log("error", error);
     return;
   }
-}
+};
 
 const getConfigurationById = async (req, res) => {
   // console.log("requestd body", req.body);
@@ -187,15 +187,15 @@ const getConfigurationById = async (req, res) => {
     const configuration = await prisma.configurations.findMany({
       where: {
         // id: req.body.id,
-          integrationId: req.body.integrationId,
+        integrationId: req.body.integrationId,
       },
       include: {
         integration: {
           select: {
             integrationName: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (configuration) {
@@ -226,12 +226,68 @@ const getConfigurationById = async (req, res) => {
     console.log("error", error);
     // return;
   }
-}
+};
+
+const getConfigurationByIntegrationId = async (req, res) => {
+  // console.log("requestd body", req.body);
+  try {
+    const configuration = await prisma.configurations.findMany({
+      where: {
+        // id: req.body.id,
+        integrationId: req.body.integrationId,
+      },
+      // include: {
+      //   cofigData: {
+          select: {
+            id: true,
+            systemName: true,
+            url: true,
+            accountId: true,
+            consumerKey: true,
+            consumerSecretKey: true,
+            accessToken: true,
+            accessSecretToken: true,
+            authenticationType: true,
+          },
+      //   },
+      // },
+    });
+
+    if (configuration) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: configuration,
+        message: "Configuration fetched successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Configuration not found",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in fetching configuration",
+    });
+    console.log("error", error);
+    // return;
+  }
+};
 
 module.exports = {
   createIntegration,
   getIntegrations,
   getIntegrationById,
   addConfigurations,
-  getConfigurationById
+  getConfigurationById,
+  getConfigurationByIntegrationId,
 };

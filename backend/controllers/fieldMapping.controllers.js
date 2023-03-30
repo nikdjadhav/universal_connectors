@@ -1,7 +1,7 @@
 const prisma = require("../lib/prisma");
 const response = require("../lib/response");
 
-const AddMappedRecord = async (req, res) => {
+const addMappedRecord = async (req, res) => {
   //   console.log("AddMappedRecord", req.body);
 
   try {
@@ -9,8 +9,8 @@ const AddMappedRecord = async (req, res) => {
       data: {
         userId: req.body.userId,
         integrationId: req.body.integrationId,
-        recordType: req.body.recordType,
-        url: req.body.url,
+        source: req.body.recordType,
+        destination: req.body.url,
         creationDate: new Date(),
         modificationDate: undefined,
       },
@@ -42,7 +42,7 @@ const AddMappedRecord = async (req, res) => {
       message: "Error in creating Mapped record",
     });
     console.log("error", error);
-    return;
+    // return;
   }
 };
 
@@ -537,7 +537,7 @@ const getFields = async (req, res) => {
 }
 
 module.exports = {
-  AddMappedRecord,
+  addMappedRecord,
   getAllMappedRecords,
   getMappedRecordById,
   getMappedFieldsDetails,

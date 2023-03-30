@@ -52,10 +52,10 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
   });
 
-  const integration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-  });
+  // const integration = useMutation({
+  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+  // });
 
   // console.log("other in new connection", other);
 
@@ -65,11 +65,11 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
         { integrationId: JSON.parse(other.integrationID) },
         {
           onSuccess: (data) => {
-            console.log("getConfigurationById NS", data);
+            // console.log("getConfigurationById NS", data);
             data.map((item) => {
               if (item.systemName === other.title) {
-                // console.log("item NS", item);
-                // setValue("url", item.url);
+                setIntegrationsData(item);
+                setValue("integrationName", item.integration.integrationName);
                 setValue("accountID", item.accountId);
                 setValue("consumerKey", item.consumerKey);
                 setValue("consumerSecretKey", item.consumerSecretKey);
@@ -84,20 +84,20 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
         }
       );
 
-      integration.mutate(
-        {
-          id: other.integrationID,
-        },
-        {
-          onSuccess: (data) => {
-            // console.log("integration data*&*&", data[0]);
-            setValue("integrationName", data[0].integrationName);
-          },
-          onError: (error) => {
-            console.log("error", error);
-          },
-        }
-      );
+      // integration.mutate(
+      //   {
+      //     id: other.integrationID,
+      //   },
+      //   {
+      //     onSuccess: (data) => {
+      //       // console.log("integration data*&*&", data[0]);
+      //       setValue("integrationName", data[0].integrationName);
+      //     },
+      //     onError: (error) => {
+      //       console.log("error", error);
+      //     },
+      //   }
+      // );
     }
   }, [other.integrationID]);
 
@@ -110,7 +110,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   }, [other.integrationID]);
 
   const onSubmit = (data) => {
-    // console.log("Set up new connection data", data);
+    console.log("Set up new connection data", data);
     const userId = sessionStorage.getItem("userId");
 
     const configurData = {
@@ -125,7 +125,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
       accessSecretToken: data.accessSecretToken,
       authenticationType: "xyz",
     };
-    console.log("configurData", configurData);
+    // console.log("configurData", configurData);
 
     addConfigurations.mutate(configurData, {
       onSuccess: (data) => {
@@ -157,6 +157,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
                   requiredStarOnLabel={true}
                   invalid={errors.integrationName?.message ? true : false}
                   // disabled={viewMode}
+                  disabled={integrationsData ? true : false}
                 />
                 {errors.integrationName?.message ? (
                   <FormErrorText>

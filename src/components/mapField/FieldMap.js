@@ -4,6 +4,7 @@ import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
+import field from "@/pages/schedule/field";
 import {
   API_BASE_URL,
   destinationName,
@@ -45,6 +46,8 @@ const FieldMap = () => {
   const [integrationOptions, setIntegrationOptions] = useState([]);
   // const [recordTypes, setRecordTypes] = useState();
   const [records, setRecords] = useState([]);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState([]);
+  const [integrationName, setIntegrationName] = useState();
 
   const integrations = useMutation({
     // mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrations`),
@@ -55,10 +58,16 @@ const FieldMap = () => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/getRecordTypes`),
   });
 
-  const AddMappedRecord = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/AddMappedRecord"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/AddMappedRecord`),
+  const addMappedRecord = useMutation({
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addMappedRecord"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addMappedRecord`),
+  });
 
+  const getConfigurationDetails = useMutation({
+    mutationFn: tkFetch.post(
+      "http://localhost:4000/v1/getConfigurationByIntegrationId"
+    ),
+    // mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationByIntegrationId`),
   });
 
   useEffect(() => {
@@ -87,45 +96,105 @@ const FieldMap = () => {
     }
 
     // for reslet record types data
-    const data = {
-      account: "TSTDRV1423092",
-      consumerKey:
-        "7c5f5179740c2fd6bb6c73a6c1235d369ccc61f608abed76acf7cc1bc0245caf",
-      consumerSecret:
-        "f02dc5c3720c99b35efd1713941477e7bd34c9467d43727199a222d3596b11a3",
-      tokenId:
-        "df85b218f1627ea731b61d503330947261b512ca88a5e12beaa4a4316ee0cbe6",
-      tokenSecret:
-        "508004293fd1a44799817805c39208d781f909e69456f3b9d0184a54d51739ea",
-      scriptDeploymentId: "1",
-      scriptId: "1529",
-      base_url:
-        "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl",
-      resttype: "ListOfRecordType",
-    };
-    getResletRecordType.mutate(data, {
-      onSuccess: (data) => {
-        console.log("data==", data);
-        // setRecordTypes(data[0]);
-        data[0].list.map((item) => {
-          // console.log("item==", item);
-          setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
+    // const data = {
+    //   account: "TSTDRV1423092",
+    //   consumerKey:
+    //     "7c5f5179740c2fd6bb6c73a6c1235d369ccc61f608abed76acf7cc1bc0245caf",
+    //   consumerSecret:
+    //     "f02dc5c3720c99b35efd1713941477e7bd34c9467d43727199a222d3596b11a3",
+    //   tokenId:
+    //     "df85b218f1627ea731b61d503330947261b512ca88a5e12beaa4a4316ee0cbe6",
+    //   tokenSecret:
+    //     "508004293fd1a44799817805c39208d781f909e69456f3b9d0184a54d51739ea",
+    //   scriptDeploymentId: "1",
+    //   scriptId: "1529",
+    //   base_url:
+    //     "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl",
+    //   resttype: "ListOfRecordType",
+    // };
+    // getResletRecordType.mutate(data, {
+    //   onSuccess: (data) => {
+    //     console.log("data==", data);
+    //     // setRecordTypes(data[0]);
+    //     data[0].list.map((item) => {
+    //       // console.log("item==", item);
+    //       setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
 
-          if(item.id === "customer"){
-            console.log("==item==", item);
-          }
-        });
-      },
-      onError: (error) => {
-        console.log("error==", error);
-      },
-    });
+    //       if(item.id === "customer"){
+    //         console.log("==item==", item);
+    //       }
+    //     });
+    //   },
+    //   onError: (error) => {
+    //     console.log("error==", error);
+    //   },
+    // });
   }, [userID]);
   // console.log("recordTypes==", recordTypes);
   console.log("records==", records);
 
+  const handleOnChange = (e) => {
+    // setValue("integrationName", e.lable);
+    // setIntegrationName(e.lable);
+    setRecords([]);
+    console.log("e==", e.value);
+
+    getConfigurationDetails.mutate(
+      { integrationId: e.value },
+      {
+        onSuccess: (data) => {
+          console.log("data==", data);
+          data.map((item) => {
+            if (item.systemName === "NetSuite™") {
+              console.log("==item==>", item);
+
+              // *** restlet api to get record types
+              const configData = {
+                account: item.accountId,
+                consumerKey: item.consumerKey,
+                consumerSecret: item.consumerSecretKey,
+                tokenId: item.accessToken,
+                tokenSecret: item.accessSecretToken,
+                scriptDeploymentId: "1",
+                scriptId: "1529",
+                resttype: "ListOfRecordType",
+              };
+              getResletRecordType.mutate(configData, {
+                onSuccess: (data) => {
+                  console.log("data==", data);
+                  // setRecordTypes(data[0]);
+                  data[0].list.map((item) => {
+                    // console.log("item==", item);
+                    setRecords((prev) => [
+                      ...prev,
+                      { label: item.text, value: item.id },
+                    ]);
+
+                    // if(item.id === "customer"){
+                    //   console.log("==item==", item);
+                    // }
+                  });
+                },
+                onError: (error) => {
+                  console.log("error==", error);
+                },
+              });
+            } else if (item.systemName === "Google Sheets™") {
+              console.log("==item==>>", item);
+              setGoogleSheetUrl(item.url);
+              setValue("googleSheetUrl", item.url);
+            }
+          });
+        },
+        onError: (error) => {
+          console.log("error==", error);
+        },
+      }
+    );
+  };
+
   const onsubmit = (data) => {
-    // console.log("data==", data);
+    console.log("data==", data);
     const userID = sessionStorage.getItem("userId");
     const mapprdRecord = {
       userId: JSON.parse(userID),
@@ -135,7 +204,7 @@ const FieldMap = () => {
       url: data.googleSheetUrl,
     };
     // console.log("mapprdRecord==>", mapprdRecord);
-    AddMappedRecord.mutate(mapprdRecord, {
+    addMappedRecord.mutate(mapprdRecord, {
       onSuccess: (data) => {
         // console.log("data==", data);
         router.push(
@@ -182,10 +251,13 @@ const FieldMap = () => {
                   id="integrationName"
                   // options={integrations}
                   options={integrationOptions || []}
-                  // defaultValue={integrations[0]}
-                  // disabled={true}
                   maxMenuHeight="120px"
                   requiredStarOnLabel={true}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleOnChange(e)
+                  }}
+                  // value={integrationName}
                 />
               )}
             />
