@@ -56,10 +56,10 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
         { integrationId: JSON.parse(other.integrationID) },
         {
           onSuccess: (data) => {
-            console.log("getConfigurationById GS", data);
+            // console.log("getConfigurationById GS", data);
             data.map((item) => {
               if (item.systemName === other.title) {
-                console.log("item GS", item);
+                // console.log("item GS", item);
                 setValue("googleSheetUrl", item.url);
               }
             });
@@ -76,7 +76,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
         },
         {
           onSuccess: (data) => {
-            console.log("integration data", data[0]);
+            // console.log("integration data", data[0]);
             setValue("integrationName", data[0].integrationName);
           },
           onError: (error) => {
@@ -88,7 +88,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   }, [other.integrationID]);
 
   const onSubmit = (data) => {
-    console.log("data", data);
+    // console.log("data", data);
     const userId = sessionStorage.getItem("userId");
     const configurData = {
       userId: JSON.parse(userId),
@@ -99,7 +99,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
     // console.log("configurData", configurData);
     addConfigurations.mutate(configurData, {
       onSuccess: (data) => {
-        console.log("data", data);
+        // console.log("data", data);
       },
       onError: (error) => {
         console.log("error", error);

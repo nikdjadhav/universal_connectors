@@ -89,12 +89,19 @@ const getAllMappedRecords = async (req, res) => {
 };
 
 const getMappedRecordById = async (req, res) => {
-  console.log("getMappedRecordById", req.body);
+  // console.log("getMappedRecordById", req.body);
 
   try {
     const recordMapping = await prisma.mappedRecords.findMany({
       where: {
         id: req.body.mappedRecordId,
+      },
+      include: {
+        integration: {
+          select: {
+            integrationName: true,
+          },
+        },
       },
     });
 
@@ -129,7 +136,7 @@ const getMappedRecordById = async (req, res) => {
 };
 
 const getMappedFieldsDetails = async (req, res) => {
-  console.log("getAllMappedRecords", req.body);
+  // console.log("getAllMappedRecords", req.body);
 
   try {
     const recordMapping = await prisma.mappedRecords.findMany({
@@ -152,7 +159,7 @@ const getMappedFieldsDetails = async (req, res) => {
       },
     });
 
-    console.log("recordMapping", recordMapping);
+    // console.log("recordMapping", recordMapping);
 
     if (recordMapping) {
       // console.log(recordMapping)
@@ -246,7 +253,7 @@ const getMappedFieldsDetails = async (req, res) => {
 // };
 
 const addFields = async (req, res) => {
-  console.log("addFields", req.body);
+  // console.log("addFields", req.body);
   try {
    const fields = await prisma.fields.deleteMany({
       // where : {

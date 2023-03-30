@@ -20,6 +20,7 @@ const MapTable = () => {
 
   let pageTitle = "";
 
+
   return (
     <>
       <TkPageHead>
@@ -50,6 +51,7 @@ const MapTable = () => {
           {mappedRecordId ? (
             <MapTableComponent 
             mappedRecordId={JSON.parse(mappedRecordId)}
+            mappedRecordType={router.query.mappedRecordType}
             // mappedRecordId={4}
             // data={JSON.parse(recordType)} 
             />

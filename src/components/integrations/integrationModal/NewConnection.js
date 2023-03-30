@@ -55,7 +55,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
   });
 
-  console.log("other in new connection", other);
+  // console.log("other in new connection", other);
 
   useEffect(() => {
     if (other.integrationID) {
@@ -63,10 +63,10 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
         { integrationId: JSON.parse(other.integrationID) },
         {
           onSuccess: (data) => {
-            console.log("getConfigurationById NS", data);
+            // console.log("getConfigurationById NS", data);
             data.map((item) => {
               if (item.systemName === other.title) {
-                console.log("item NS", item);
+                // console.log("item NS", item);
                 setValue("url", item.url);
                 setValue("accountID", item.accountId);
                 setValue("consumerKey", item.consumerKey);
@@ -88,7 +88,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
         },
         {
           onSuccess: (data) => {
-            console.log("integration data*&*&", data[0]);
+            // console.log("integration data*&*&", data[0]);
             setValue("integrationName", data[0].integrationName);
           },
           onError: (error) => {
@@ -100,7 +100,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   }, [other.integrationID]);
 
   const [integrationID, setIntegrationID] = useState();
-  console.log("other", other);
+  // console.log("other", other);
   useEffect(() => {
     if (other.integrationID) {
       setIntegrationID(JSON.parse(other.integrationID));
@@ -115,7 +115,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
       userId: JSON.parse(userId),
       integrationId: integrationID,
       systemName: other.title,
-      url: data.url,
+      // url: data.url,
       accountId: data.accountID,
       consumerKey: data.consumerKey,
       consumerSecretKey: data.consumerSecretKey,
@@ -123,11 +123,11 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
       accessSecretToken: data.accessSecretToken,
       authenticationType: "xyz",
     };
-    console.log("configurData", configurData);
+    // console.log("configurData", configurData);
 
     addConfigurations.mutate(configurData, {
       onSuccess: (data) => {
-        console.log("addConfigurations data", data);
+        // console.log("addConfigurations data", data);
       },
       onError: (error) => {
         console.log("error", error);
@@ -163,7 +163,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
                 ) : null}
               </TkCol>
 
-              <TkCol lg={12}>
+              {/* <TkCol lg={12}>
                 <TkInput
                   {...register("url")}
                   id="url"
@@ -177,7 +177,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
                 {errors.url?.message ? (
                   <FormErrorText>{errors.url?.message}</FormErrorText>
                 ) : null}
-              </TkCol>
+              </TkCol> */}
 
               <TkCol lg={12}>
                 <TkInput

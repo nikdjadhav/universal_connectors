@@ -50,7 +50,7 @@ const Integration = ({
     mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
 
   });
-  console.log("int==>",other);
+  // console.log("int==>",other);
 
   useEffect(() => {
     if (other.integrationID) {
@@ -59,7 +59,7 @@ const Integration = ({
       };
       integration.mutate(id, {
         onSuccess: (data) => {
-          console.log("data",  sourceName);
+          // console.log("data",  sourceName);
           setIntegrationsData(data);
           setIntegrationID(data[0]?.id);
           setValue("integrationName", data[0]?.integrationName);
@@ -109,7 +109,7 @@ const Integration = ({
   });
 
   const onSubmit = (data) => {
-    console.log("integration nav submitted data", data);
+    // console.log("integration nav submitted data", data);
     const userId = sessionStorage.getItem("userId");
     const integrationData = {
       userId: JSON.parse(userId),
@@ -139,7 +139,7 @@ const Integration = ({
     toggle();
   };
 
-  console.log("integrationsData", integrationsData);
+  // console.log("integrationsData", integrationsData);
 
   return (
     <>
