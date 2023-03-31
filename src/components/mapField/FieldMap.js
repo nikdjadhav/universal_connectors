@@ -199,8 +199,8 @@ const FieldMap = () => {
     const mapprdRecord = {
       userId: JSON.parse(userID),
       integrationId: data.integrationName.value,
-      // recordType: data.recordType.value,
-      recordType: data.recordType.label,
+      recordType: data.recordType.value,
+      // recordType: data.recordType.label,
       url: data.googleSheetUrl,
     };
     // console.log("mapprdRecord==>", mapprdRecord);

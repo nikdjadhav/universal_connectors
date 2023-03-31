@@ -144,7 +144,7 @@ const getRecordTypes = async (req, res) => {
 };
 
 const getOptions = async(req, res) => {
-  // console.log("req", req.body);
+  console.log("req", req.body);
 
   try {
     const authentication = {
@@ -164,7 +164,7 @@ const getOptions = async(req, res) => {
     };
     // console.log("authentication.length", req.body);
 
-    if (req.body.scriptDeploymentId) {
+    if (req.body.recordtype) {
         const base_url= "https://tstdrv1423092.restlets.api.netsuite.com/app/site/hosting/restlet.nl"
       const concatenatedString = `deploy=${authentication.scriptDeploymentId}&oauth_consumer_key=${authentication.consumerKey}&oauth_nonce=${authentication.nonce}&oauth_signature_method=${authentication.signatureMethod}&oauth_timestamp=${authentication.timestamp}&oauth_token=${authentication.tokenId}&oauth_version=${authentication.version}&script=${authentication.scriptId}`;
       const baseString = `${authentication.http_method}&${encodeURIComponent(
