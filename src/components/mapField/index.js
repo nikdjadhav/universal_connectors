@@ -6,7 +6,7 @@ import { Tooltip } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
-import { formatDate } from "@/utils/date";
+import { formatDate, formatTime } from "@/utils/date";
 
 const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
@@ -62,13 +62,12 @@ const FieldMappingTable = () => {
         // const date = dateTime.split("T")[0];
         // const time = dateTime.split("T")[1];
         const date = formatDate(props.row.original?.creationDate);
-
+        const time = formatTime(props.row.original?.creationDate);
         return (
           <>
             <Tooltip
               color="invert"
-              // content={`${date} ${time}`}
-              content={`${date}`}
+              content={`${date} ${time}`}
               placement="bottom"
             >
               <div>{date}</div>
@@ -82,8 +81,13 @@ const FieldMappingTable = () => {
       accessor: "modificationDate",
       Cell: (props) => {
         const date = formatDate(props.row.original?.modificationDate);
+        const time = formatTime(props.row.original?.modificationDate);
         return (
-          <Tooltip color="invert" content={`${date}`} placement="bottom">
+          <Tooltip
+            color="invert"
+            content={`${date} ${time}`}
+            placement="bottom"
+          >
             <div>{date}</div>
           </Tooltip>
         );

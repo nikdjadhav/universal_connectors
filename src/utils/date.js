@@ -8,6 +8,13 @@ function formatDate(date) {
   return date1;
 }
 
+function formatTime(time){
+  if (!time) return null;
+  const t = new Date(time);
+  const time1 = isValid(t) ? format(t, "hh:mm a") : "Invalid Time";
+  return time1;
+}
+
 function formatDateForAPI(date) {
   if (!date) return null;
   const d = new Date(date);
@@ -15,4 +22,4 @@ function formatDateForAPI(date) {
   return date1;
 }
 
-export { formatDate, formatDateForAPI };
+export { formatDate,formatTime, formatDateForAPI };
