@@ -22,7 +22,7 @@ import tkFetch from "@/utils/fetch";
 import { FormErrorBox } from "@/globalComponents/ErrorText";
 import Link from "next/link";
 import { Spinner } from "reactstrap";
-import { formatDate } from "@/utils/date";
+import { formatDate, formatTime } from "@/utils/date";
 
 const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
@@ -189,13 +189,13 @@ const DashBoard = () => {
       accessor: "creationDate",
       Cell: (props) => {
         const date = formatDate(props.row.original?.creationDate);
-
+        const time = formatTime(props.row.original?.creationDate);
         return (
           <>
             {/* {dates.map((d) => { */}
             <Tooltip
               color="invert"
-              content={`${date}`}
+              content={`${date} ${time}`}
               placement="bottom"
             >
               <div>{date}</div>
@@ -210,11 +210,12 @@ const DashBoard = () => {
       accessor: "modificationDate",
       Cell: (props) => {
         const date = formatDate(props.row.original?.modificationDate);
+        const time = formatTime(props.row.original?.modificationDate);
 
         return (
           <Tooltip
             color="invert"
-            content={`${date}`}
+            content={`${date} ${time}`}
             placement="bottom"
           >
             <div>{date}</div>
@@ -340,19 +341,22 @@ const DashBoard = () => {
   return (
     <>
       <TopBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />
-{integrationData ? 
-      (<TkTableContainer
-      columns={columns}
-      data={integrationData || []}
-      tooltip="tooltip"
-      // Toolbar={<TableToolBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />}
-      />) : (
-        <div className="d-flex justify-content-center " style={{height: "100vh"}}>
+      {integrationData ? (
+        <TkTableContainer
+          columns={columns}
+          data={integrationData || []}
+          tooltip="tooltip"
+          // Toolbar={<TableToolBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />}
+        />
+      ) : (
+        <div
+          className="d-flex justify-content-center "
+          style={{ height: "100vh" }}
+        >
           {/* <Spinner /> */}
           <h4 className="text-center">No Data Found</h4>
         </div>
-      ) 
-    }  
+      )}
 
       <ModalButton
         modal={modal}
@@ -368,5 +372,3 @@ const DashBoard = () => {
 };
 
 export default DashBoard;
-
-
