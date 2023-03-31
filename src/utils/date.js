@@ -3,7 +3,8 @@ import { format, isValid } from "date-fns";
 function formatDate(date) {
   if (!date) return null;
   const d = new Date(date);
-  const date1 = isValid(d) ? format(d, "dd-MMM-yyyy") : "Invalid Date";
+  // const date1 = isValid(d) ? format(d, "dd-MMM-yyyy") : "Invalid Date";
+  const date1 = isValid(d) ? format(d, "dd MMM, yyyy") : "Invalid Date";
   return date1;
 }
 

@@ -6,6 +6,7 @@ import { Tooltip } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
+import { formatDate } from "@/utils/date";
 
 const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
@@ -57,23 +58,21 @@ const FieldMappingTable = () => {
       Header: "Creation Date",
       accessor: "creationDate",
       Cell: (props) => {
-        // console.log("props==>",props.row.original);
-        const dateTime = props.row.original?.creationDate;
-        const date = dateTime.split("T")[0];
-        const time = dateTime.split("T")[1];
-        // console.log("date==>", time);
+        // const dateTime = props.row.original?.creationDate;
+        // const date = dateTime.split("T")[0];
+        // const time = dateTime.split("T")[1];
+        const date = formatDate(props.row.original?.creationDate);
 
         return (
           <>
-            {/* {dates.map((d) => { */}
             <Tooltip
               color="invert"
-              content={`${date} ${time}`}
+              // content={`${date} ${time}`}
+              content={`${date}`}
               placement="bottom"
             >
               <div>{date}</div>
             </Tooltip>
-            {/* })} */}
           </>
         );
       },
@@ -82,15 +81,9 @@ const FieldMappingTable = () => {
       Header: "Modified Date",
       accessor: "modificationDate",
       Cell: (props) => {
-        const dateTime = props.row.original?.modificationDate;
-        const date = dateTime.split("T")[0];
-        const time = dateTime.split("T")[1];
+        const date = formatDate(props.row.original?.modificationDate);
         return (
-          <Tooltip
-            color="invert"
-            content={`${date} ${time}`}
-            placement="bottom"
-          >
+          <Tooltip color="invert" content={`${date}`} placement="bottom">
             <div>{date}</div>
           </Tooltip>
         );
