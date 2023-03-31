@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { actions } from "react-table";
 import { Tooltip } from "@nextui-org/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { formatDate, formatTime } from "@/utils/date";
@@ -11,6 +11,7 @@ import { formatDate, formatTime } from "@/utils/date";
 const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
   const [integrationNames, setIntegrationNames] = useState([]);
+  const [mappedRecordData, setMappedRecordData] = useState([]);
 
   const mappedFieldsDetails = useMutation({
     // mutationFn: tkFetch.post(
@@ -19,11 +20,29 @@ const FieldMappingTable = () => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/getMappedFieldsDetails`),
   });
 
+  // const getConfigurationDetails = useMutation({
+  //   // mutationFn: tkFetch.post(
+  //   //   "http://localhost:4000/v1/getConfigurationByIntegrationId"
+  //   // ),
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationByIntegrationId`),
+  // });
+// let temp = 1;
+//   const { data, isLoading, isFetched, isError, error } = useQuery({
+//     queryKey: ["integration", temp],
+
+//     queryFn: tkFetch.get(
+//       `http://localhost:4000/v1/getConfigurationByIntegrationId/${temp}`
+//     ),
+//   });
+// console.log("using get", data);
+  const getResletRecordType = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getRecordTypes`),
+  });
+
   useEffect(() => {
     const userID = {
       userId: JSON.parse(sessionStorage.getItem("userId")),
     };
-
     mappedFieldsDetails.mutate(userID, {
       onSuccess: (data) => {
         console.log("data", data);
@@ -34,6 +53,69 @@ const FieldMappingTable = () => {
       },
     });
   }, []);
+
+  // useEffect(() => {
+  //   if (mappedRecords.length > 0) {
+  //     mappedRecords.map((item) => {
+  //       console.log("first loop", item);
+  //       getConfigurationDetails.mutate(
+  //         { integrationId: item.integrationId },
+  //         {
+  //           onSuccess: (data) => {
+  //             console.log("getConfigurationDetails", data);
+  //             data.map((configItem) => {
+  //               if (configItem.systemName === "NetSuite™") {
+  //                 console.log("second loop", configItem);
+  //                 const restletData = {
+  //                   account: configItem.accountId,
+  //                   consumerKey: configItem.consumerKey,
+  //                   consumerSecret: configItem.consumerSecretKey,
+  //                   tokenId: configItem.accessToken,
+  //                   tokenSecret: configItem.accessSecretToken,
+  //                   scriptDeploymentId: "1",
+  //                   scriptId: "1529",
+  //                   resttype: "ListOfRecordType",
+  //                 };
+
+  //                 getResletRecordType.mutate(restletData, {
+  //                   onSuccess: (data) => {
+  //                     console.log("restlet data", item.source);
+  //                     data[0]?.list.map((restletItem) => {
+  //                       if (restletItem.id === item.source) {
+  //                         console.log("third loop", restletItem);
+  //                         console.log("match^^^^^^", restletItem.id);
+  //                         setMappedRecordData([
+  //                           ...mappedRecordData,
+  //                           {
+  //                             id: item.id,
+  //                             integrationName: item.integration.integrationName,
+  //                             creationDate: item.creationDate,
+  //                             modificationDate: item.modificationDate,
+  //                             systemOne: item.integration.sourceName,
+  //                             systemTwo: item.integration.destinationName,
+  //                             recordType: restletItem.text,
+  //                           },
+  //                         ]);
+  //                       }
+  //                     });
+  //                   },
+  //                   onError: (error) => {
+  //                     console.log(error);
+  //                   },
+  //                 });
+  //               }
+  //             });
+  //           },
+  //           onError: (error) => {
+  //             console.log(error);
+  //           },
+  //         }
+  //       );
+  //     });
+  //   }
+  // }, [mappedRecords]);
+
+  console.log("mappedRecordData**********", mappedRecordData);
 
   console.log("mappedRecords", mappedRecords);
   console.log("integrationNames", integrationNames);

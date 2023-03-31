@@ -63,7 +63,7 @@ v1Router.post("/getIntegrations", integrationController.getIntegrations);
 v1Router.post("/getIntegrationById", integrationController.getIntegrationById);
 v1Router.post("/addConfigurations", integrationController.addConfigurations);
 v1Router.post("/getConfigurationById", integrationController.getConfigurationById);
-v1Router.post("/getConfigurationByIntegrationId", integrationController.getConfigurationByIntegrationId);
+v1Router.get("/getConfigurationByIntegrationId/:id", integrationController.getConfigurationByIntegrationId);
 
 // *** reslet routes ***
 v1Router.post("/getRecordTypes", resletController.getRecordTypes);

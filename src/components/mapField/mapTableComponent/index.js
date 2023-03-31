@@ -53,7 +53,7 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
   // *** resle API
   const getResletOptions = useMutation({
     // mutationFn: tkFetch.post(`http://localhost:4000/v1/getOptions`),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getOptions`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getRecordTypes`),
   });
   const getConfigurationDetails = useMutation({
     // mutationFn: tkFetch.post(
@@ -71,7 +71,7 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
         {
           onSuccess: (data) => {
             setMappedRecordData(data[0]);
-            setRecordType(data[0].source);
+            setRecordType(data[0].recordTypeTitle);
           },
           onError: (error) => {
             console.log("error in getMappedRecordById", error);

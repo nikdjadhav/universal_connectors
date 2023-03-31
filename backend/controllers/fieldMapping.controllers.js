@@ -10,6 +10,7 @@ const addMappedRecord = async (req, res) => {
         userId: req.body.userId,
         integrationId: req.body.integrationId,
         source: req.body.recordType,
+        recordTypeTitle: req.body.recordTypeTitle,
         destination: req.body.url,
         creationDate: new Date(),
         modificationDate: undefined,

@@ -229,12 +229,12 @@ const getConfigurationById = async (req, res) => {
 };
 
 const getConfigurationByIntegrationId = async (req, res) => {
-  // console.log("requestd body", req.body);
+  console.log("requestd body", req.params.id);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {
         // id: req.body.id,
-        integrationId: req.body.integrationId,
+        integrationId: Number(req.params.id),
       },
       // include: {
       //   cofigData: {
