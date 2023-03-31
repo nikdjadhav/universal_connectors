@@ -11,20 +11,11 @@ const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
   const [integrationNames, setIntegrationNames] = useState([]);
 
-  // const getMappedRecords = useMutation({
-  //   mutationFn: tkFetch.post("http://localhost:4000/v1/getAllMappedRecords"),
-  // });
-
   const mappedFieldsDetails = useMutation({
     // mutationFn: tkFetch.post(
     //   " http://localhost:4000/v1/getMappedFieldsDetails"
     // ),
     mutationFn: tkFetch.post(`${API_BASE_URL}/getMappedFieldsDetails`),
-  });
-
-  const integrationById = useMutation({
-    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getIntegrationById`),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
   });
 
   useEffect(() => {
@@ -41,33 +32,6 @@ const FieldMappingTable = () => {
         console.log(error);
       },
     });
-    // console.log("mappedRecords", mappedRecords.length);
-    //     if(mappedRecords.length > 0){
-    //       mappedRecords.map((item) => {
-    //         console.log("item", item.integrationId);
-    //         integrationById.mutate({id: item.integrationId}, {
-    //          onSuccess: (data) => {
-    //             console.log("integrationById", data);
-    //             // setIntegrationNames((prev) => [...prev, data[0]]);
-    //             setIntegrationNames((prev) => [
-    //               ...prev,
-    //               { integrationName: data[0].integrationName },
-    //             ]);
-    //           },
-    //           onError: (error) => {
-    //             console.log(error);
-    //           }
-    //         })
-    //       })
-    //       // integrationById.mutate({id: mappedRecords.integrationId}, {
-    //       //   onSuccess: (data) => {
-    //       //     console.log("integrationById", data);
-    //       //     setIntegrationNames(data[0]);
-    //       //   }, onError: (error) => {
-    //       //     console.log(error);
-    //       //   }
-    //       // })
-    //     }
   }, []);
 
   console.log("mappedRecords", mappedRecords);
@@ -87,7 +51,7 @@ const FieldMappingTable = () => {
     },
     {
       Header: "Record Type",
-      accessor: "recordType",
+      accessor: "source",
     },
     {
       Header: "Creation Date",
@@ -191,15 +155,15 @@ const FieldMappingTable = () => {
           <h4>No Data Found</h4>
         </div>
       ) : (
-      <TkTableContainer
-        columns={columnHead}
-        data={mappedRecords || []}
-        // isSearch={true}
-        // isFilters={true}
-        // defaultPageSize={10}
-        // customPageSize={true}
-      />
-       )} 
+        <TkTableContainer
+          columns={columnHead}
+          data={mappedRecords || []}
+          // isSearch={true}
+          // isFilters={true}
+          // defaultPageSize={10}
+          // customPageSize={true}
+        />
+      )}
     </>
   );
 };
