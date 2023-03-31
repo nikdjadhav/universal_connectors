@@ -22,6 +22,7 @@ import tkFetch from "@/utils/fetch";
 import { FormErrorBox } from "@/globalComponents/ErrorText";
 import Link from "next/link";
 import { Spinner } from "reactstrap";
+import { formatDate } from "@/utils/date";
 
 const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
@@ -187,18 +188,14 @@ const DashBoard = () => {
       Header: "Creation Date",
       accessor: "creationDate",
       Cell: (props) => {
-        // console.log("props==>",props.row.original);
-        const dateTime = props.row.original?.creationDate;
-        const date = dateTime.split("T")[0];
-        const time = dateTime.split("T")[1];
-        // console.log("date==>", time);
+        const date = formatDate(props.row.original?.creationDate);
 
         return (
           <>
             {/* {dates.map((d) => { */}
             <Tooltip
               color="invert"
-              content={`${date} ${time}`}
+              content={`${date}`}
               placement="bottom"
             >
               <div>{date}</div>
@@ -212,13 +209,12 @@ const DashBoard = () => {
       Header: "Modified Date",
       accessor: "modificationDate",
       Cell: (props) => {
-        const dateTime = props.row.original?.modificationDate;
-        const date = dateTime.split("T")[0];
-        const time = dateTime.split("T")[1];
+        const date = formatDate(props.row.original?.modificationDate);
+
         return (
           <Tooltip
             color="invert"
-            content={`${date} ${time}`}
+            content={`${date}`}
             placement="bottom"
           >
             <div>{date}</div>

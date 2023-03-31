@@ -52,12 +52,15 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
 
   // *** resle API
   const getResletOptions = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/getOptions`),
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/getOptions`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getOptions`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getOptions`),
   });
   const getConfigurationDetails = useMutation({
+    // mutationFn: tkFetch.post(
+    //   "http://localhost:4000/v1/getConfigurationByIntegrationId"
+    // ),
     mutationFn: tkFetch.post(
-      "http://localhost:4000/v1/getConfigurationByIntegrationId"
+      `${API_BASE_URL}/getConfigurationByIntegrationId`
     ),
   });
 

@@ -64,10 +64,10 @@ const FieldMap = () => {
   });
 
   const getConfigurationDetails = useMutation({
-    mutationFn: tkFetch.post(
-      "http://localhost:4000/v1/getConfigurationByIntegrationId"
-    ),
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationByIntegrationId`),
+    // mutationFn: tkFetch.post(
+    //   "http://localhost:4000/v1/getConfigurationByIntegrationId"
+    // ),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationByIntegrationId`),
   });
 
   useEffect(() => {
