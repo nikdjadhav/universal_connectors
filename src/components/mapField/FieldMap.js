@@ -52,8 +52,8 @@ const FieldMap = () => {
   const [userId, setUserId] = useState(null);
 
   const addMappedRecord = useMutation({
-    mutationFn: tkFetch.post("http://localhost:4000/v1/addMappedRecord"),
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/addMappedRecord`),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addMappedRecord"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addMappedRecord`),
   });
 
   const apiResults = useQueries({
@@ -61,24 +61,28 @@ const FieldMap = () => {
       {
         queryKey: ["integrations", integrationId],
         queryFn: tkFetch.get(
-          `http://localhost:4000/v1/getConfigurationByIntegrationId/${integrationId}`
+          // `http://localhost:4000/v1/getConfigurationByIntegrationId/${integrationId}`
+          `${API_BASE_URL}/getConfigurationByIntegrationId/${integrationId}`
         ),
         enabled: !!integrationId,
       },
       {
         queryKey: ["configData", configurationData],
-        queryFn: tkFetch.get(
-          // `http://localhost:4000/v1/getRecordTypes/${configurationData}`
-          `http://localhost:4000/v1/getRecordTypes`,
-          { params: configurationData }
-        ),
+        // queryFn: tkFetch.get(`http://localhost:4000/v1/getRecordTypes`, {
+        //   params: configurationData,
+        // }),
+        queryFn: tkFetch.get(`${API_BASE_URL}/getRecordTypes`, {
+          params: configurationData,
+        }),
         enabled: !!configurationData,
       },
       {
         queryKey: ["integrationData", userId],
-        // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations`),
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getIntegrations/${userId}`
+        // ),
         queryFn: tkFetch.get(
-          `http://localhost:4000/v1/getIntegrations/${userId}`
+          `${API_BASE_URL}/getIntegrations/${userId}`
         ),
         enabled: !!userId,
       },

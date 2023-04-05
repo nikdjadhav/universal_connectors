@@ -45,31 +45,43 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     queries: [
       {
         queryKey: ["getMappedRecordById", mappedRecordId],
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getMappedRecordById/${mappedRecordId}`
+        // ),
         queryFn: tkFetch.get(
-          `http://localhost:4000/v1/getMappedRecordById/${mappedRecordId}`
+          `${API_BASE_URL}/getMappedRecordById/${mappedRecordId}`
         ),
         enabled: !!mappedRecordId,
       },
       {
         queryKey: ["config", integrationId],
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getConfigurationByIntegrationId/${integrationId}`
+        // ),
         queryFn: tkFetch.get(
-          `http://localhost:4000/v1/getConfigurationByIntegrationId/${integrationId}`
+          `${API_BASE_URL}/getConfigurationByIntegrationId/${integrationId}`
         ),
         enabled: !!integrationId,
       },
       {
         queryKey: ["configDetails", configurationData],
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getRecordTypes`,
+        //   { params: configurationData }
+        // ),
         queryFn: tkFetch.get(
-          // `http://localhost:4000/v1/getRecordTypes/${configurationData}`
-          `http://localhost:4000/v1/getRecordTypes`,
+          `${API_BASE_URL}/getRecordTypes`,
           { params: configurationData }
         ),
         enabled: !!configurationData,
       },
       {
         queryKey: ["getFields", mappedRecordId],
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getFields/${mappedRecordId}`
+        // ),
         queryFn: tkFetch.get(
-          `http://localhost:4000/v1/getFields/${mappedRecordId}`
+          `${API_BASE_URL}/getRecordTypes/getFields/${mappedRecordId}`
         ),
         enabled: !!mappedRecordId,
       },
@@ -103,13 +115,13 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   } = getFields;
 
   const addFields = useMutation({
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
-    mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
   });
 
   const deleteFields = useMutation({
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/deleteField`),
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/deleteField`),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/deleteField`),
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/deleteField`),
   });
 
   // console.log("^^^^^^^^^^^^^^^", configData);

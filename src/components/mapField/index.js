@@ -21,7 +21,8 @@ const FieldMappingTable = () => {
   }, [])
 
   const deleteMappedRecord = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/DeleteMappedRecordByID`)
+    // mutationFn: tkFetch.post(`http://localhost:4000/v1/DeleteMappedRecordByID`)
+    mutationFn: tkFetch.post(`${API_BASE_URL}/DeleteMappedRecordByID`)
   })
 
   const apiResult = useQueries({
@@ -29,7 +30,9 @@ const FieldMappingTable = () => {
       {
         queryKey: ["mappedFieldsDetails", userId],
         queryFn: tkFetch.get(
-          `http://localhost:4000/v1/getMappedFieldsDetails/${(userId)}`
+          // `http://localhost:4000/v1/getMappedFieldsDetails/${(userId)}`
+          `${API_BASE_URL}/getMappedFieldsDetails/${(userId)}`
+
         ),
         enabled: !!userId,
       },
@@ -50,13 +53,14 @@ const FieldMappingTable = () => {
       setMappedRecordData(mappedFieldsData[0]);
     }
   }, [mappedFieldsData]);
-  // console.log("mappedRecordData**********", mappedRecordData);
+  console.log("mappedRecordData**********", mappedRecordData);
 
   const columnHead = [
     {
       Header: "Integration Name",
       accessor: "integrationName",
       Cell: (props) => {
+        // console.log("props", props)
         return <a>{props.row.original?.integration.integrationName}</a>;
       },
     },
