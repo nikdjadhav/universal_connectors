@@ -2,7 +2,7 @@ const prisma = require("../lib/prisma");
 const response = require("../lib/response");
 
 const addMappedRecord = async (req, res) => {
-    console.log("AddMappedRecord", req.body);
+  console.log("AddMappedRecord", req.body);
 
   try {
     const recordMapping = await prisma.mappedRecords.create({
@@ -95,15 +95,25 @@ const getMappedRecordById = async (req, res) => {
   try {
     const recordMapping = await prisma.mappedRecords.findMany({
       where: {
-        id: Number(req.params.id)
+        id: Number(req.params.id),
       },
-      include: {
+      // include: {
+      select: {
+        id: true,
+        userId: true,
+        integrationId: true,
+        source: true,
+        recordTypeTitle: true,
+        destination: true,
+        creationDate: true,
+        modificationDate: true,
         integration: {
           select: {
             integrationName: true,
           },
         },
       },
+      // },
     });
 
     if (recordMapping) {
@@ -142,7 +152,7 @@ const DeleteMappedRecordByID = async (req, res) => {
     const recordMapping = await prisma.mappedRecords.delete({
       where: {
         id: req.body.id,
-      }
+      },
     });
 
     if (recordMapping) {
@@ -165,7 +175,7 @@ const DeleteMappedRecordByID = async (req, res) => {
     console.log("error", error);
     return;
   }
-}
+};
 
 const getMappedFieldsDetails = async (req, res) => {
   // console.log("getMappedFieldsDetails", req.params.id);
@@ -182,7 +192,15 @@ const getMappedFieldsDetails = async (req, res) => {
       where: {
         userId: Number(req.params.id),
       },
-      include: {
+      select: {
+        id: true,
+        userId: true,
+        integrationId: true,
+        source: true,
+        recordTypeTitle: true,
+        destination: true,
+        creationDate: true,
+        modificationDate: true,
         integration: {
           select: {
             integrationName: true,
@@ -289,7 +307,7 @@ const getMappedFieldsDetails = async (req, res) => {
 const addFields = async (req, res) => {
   // console.log("addFields", req.body);
   try {
-   const fields = await prisma.fields.deleteMany({
+    const fields = await prisma.fields.deleteMany({
       // where : {
       //   mappedRecordId: {
       //     in: req.body.map((field) => field.mappedRecordId),
@@ -358,60 +376,58 @@ const addFields = async (req, res) => {
   }
 };
 
-  
+// ***
+// const fields = await prisma.fields.upsert({
+//   create: req.body.map((field) => ({
+//     data: {
+//       userId: field.userId,
+//       mappedRecordId: field.mappedRecordId,
+//       sourceField: field.sourceField,
+//       destinationField: field.destinationField,
+//       sourceFieldValue: field.sourceFieldValue,
+//       destinationFieldValue: field.destinationFieldValue,
+//     },
+//   })),
+//   update: req.body.map((field) => ({
+//     where: {
+//       id: field.id,
+//       // destinationFieldValue: req.body.destinationFieldValue,
+//     },
+//     data: {
+//       userId: field.userId,
+//       mappedRecordId: field.mappedRecordId,
+//       sourceField: field.sourceField,
+//       destinationField: field.destinationField,
+//       sourceFieldValue: field.sourceFieldValue,
+//       destinationFieldValue: field.destinationFieldValue,
+//     },
+//   })),
 
-    // ***
-    // const fields = await prisma.fields.upsert({
-    //   create: req.body.map((field) => ({
-    //     data: {
-    //       userId: field.userId,
-    //       mappedRecordId: field.mappedRecordId,
-    //       sourceField: field.sourceField,
-    //       destinationField: field.destinationField,
-    //       sourceFieldValue: field.sourceFieldValue,
-    //       destinationFieldValue: field.destinationFieldValue,
-    //     },
-    //   })),
-    //   update: req.body.map((field) => ({
-    //     where: {
-    //       id: field.id,
-    //       // destinationFieldValue: req.body.destinationFieldValue,
-    //     },
-    //     data: {
-    //       userId: field.userId,
-    //       mappedRecordId: field.mappedRecordId, 
-    //       sourceField: field.sourceField,
-    //       destinationField: field.destinationField,
-    //       sourceFieldValue: field.sourceFieldValue,
-    //       destinationFieldValue: field.destinationFieldValue,
-    //     },
-    //   })),
+// ***
+// where: {
+//   id: req.body.id,
+//   // destinationFieldValue: req.body.destinationFieldValue,
+// },
+// update: {
+//   userId: req.body.userId,
+//   mappedRecordId: req.body.mappedRecordId,
+//   sourceField: req.body.sourceField,
+//   destinationField: req.body.destinationField,
+//   sourceFieldValue: req.body.sourceFieldValue,
+//   destinationFieldValue: req.body.destinationFieldValue,
+// },
+// create: {
+//   userId: req.body.userId,
+//   mappedRecordId: req.body.mappedRecordId,
+//   sourceField: req.body.sourceField,
+//   destinationField: req.body.destinationField,
+//   sourceFieldValue: req.body.sourceFieldValue,
+//   destinationFieldValue: req.body.destinationFieldValue,
+// },
 
-      // ***
-      // where: {
-      //   id: req.body.id,
-      //   // destinationFieldValue: req.body.destinationFieldValue,
-      // },
-      // update: {
-      //   userId: req.body.userId,
-      //   mappedRecordId: req.body.mappedRecordId,
-      //   sourceField: req.body.sourceField,
-      //   destinationField: req.body.destinationField,
-      //   sourceFieldValue: req.body.sourceFieldValue,
-      //   destinationFieldValue: req.body.destinationFieldValue,
-      // },
-      // create: {
-      //   userId: req.body.userId,
-      //   mappedRecordId: req.body.mappedRecordId,
-      //   sourceField: req.body.sourceField,
-      //   destinationField: req.body.destinationField,
-      //   sourceFieldValue: req.body.sourceFieldValue,
-      //   destinationFieldValue: req.body.destinationFieldValue,
-      // },
+// });
 
-    // });
-
-    // ***
+// ***
 //     if (fields) {
 //       response({
 //         res,
@@ -455,7 +471,7 @@ const addFields = async (req, res) => {
 //         // }
 //       },
 //       create: {
-//       data: 
+//       data:
 //       [
 //         {
 //           userId: req.body.userId,
@@ -497,7 +513,7 @@ const addFields = async (req, res) => {
 //       // where: {
 //       //   userId:! req.body.userId,
 //       // },
-      
+
 //     });
 
 //     if (primaryFields) {
@@ -568,11 +584,11 @@ const getFields = async (req, res) => {
     console.log("error", error);
     return;
   }
-}
+};
 
 const deleteField = async (req, res) => {
   // console.log("deleteField", req.body);
-  try{
+  try {
     const field = await prisma.fields.delete({
       where: {
         id: req.body.id,
@@ -606,7 +622,7 @@ const deleteField = async (req, res) => {
     console.log("error", error);
     return;
   }
-}
+};
 
 module.exports = {
   addMappedRecord,
@@ -617,5 +633,5 @@ module.exports = {
   addFields,
   // addPrimaryFields,
   getFields,
-  deleteField
+  deleteField,
 };

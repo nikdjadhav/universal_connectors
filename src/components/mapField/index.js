@@ -21,8 +21,8 @@ const FieldMappingTable = () => {
   }, [])
 
   const deleteMappedRecord = useMutation({
-    // mutationFn: tkFetch.post(`http://localhost:4000/v1/DeleteMappedRecordByID`)
-    mutationFn: tkFetch.post(`${API_BASE_URL}/DeleteMappedRecordByID`)
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/DeleteMappedRecordByID`)
+    // mutationFn: tkFetch.post(`${API_BASE_URL}/DeleteMappedRecordByID`)
   })
 
   const apiResult = useQueries({

@@ -81,7 +81,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
         //   `http://localhost:4000/v1/getFields/${mappedRecordId}`
         // ),
         queryFn: tkFetch.get(
-          `${API_BASE_URL}/getRecordTypes/getFields/${mappedRecordId}`
+          `${API_BASE_URL}/getFields/${mappedRecordId}`
         ),
         enabled: !!mappedRecordId,
       },

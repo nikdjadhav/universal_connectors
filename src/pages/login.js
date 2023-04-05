@@ -110,6 +110,7 @@ const Login = () => {
   });
 
   // const notify = () => toast("Wow so easy!");
+  console.log(`${API_BASE_URL}/login`)
 
   const user = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/login"),
