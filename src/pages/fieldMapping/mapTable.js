@@ -11,15 +11,20 @@ import { json } from "react-router-dom";
 const MapTable = () => {
   // const [recordType, setRecorsType] = useState();
   const [parsedData, setParsedData] = useState(null);
+  const [recordType, setRecordType] = useState(null);
   // get data from router
   // mappedrecordid = 1
   const router = useRouter();
-  console.log("router", router);
+  // console.log("router", router);
   const { mappedRecordId } = router.query;
-  console.log("mappedRecordId", mappedRecordId);
+  // console.log("mappedRecordId", mappedRecordId);
 
   let pageTitle = "";
 
+  const pull_data = (data) => {
+    // console.log("data=====>", data);
+    setRecordType(data);
+  };
 
   return (
     <>
@@ -32,7 +37,7 @@ const MapTable = () => {
           parentTitle="Record /Field Mapping"
           parentLink="/fieldMapping"
           // pageTitle="Map content"
-          pageTitle={pageTitle}
+          pageTitle={recordType}
         />
 
         {/* <TkRow className="justify-content-cente">
@@ -49,13 +54,14 @@ const MapTable = () => {
         <TkContainer>
           {/* <MapTableComponent data={parsedData} /> */}
           {mappedRecordId ? (
-            <MapTableComponent 
-            mappedRecordId={JSON.parse(mappedRecordId)}
-            mappedRecordType={router.query.mappedRecordType}
-            // mappedRecordId={4}
-            // data={JSON.parse(recordType)} 
+            <MapTableComponent
+              mappedRecordId={JSON.parse(mappedRecordId)}
+              mappedRecordType={router.query.mappedRecordType}
+              recordTypeTitle={pull_data}
+              // mappedRecordId={4}
+              // data={JSON.parse(recordType)}
             />
-          ): null}
+          ) : null}
         </TkContainer>
       </div>
     </>

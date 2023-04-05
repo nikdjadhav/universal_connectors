@@ -15,178 +15,194 @@ import Address from "./Address";
 import classnames from "classnames";
 import TkLabel from "@/globalComponents/TkLabel";
 import { useRouter } from "next/router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
+import { useFieldArray } from "react-hook-form";
 
-const MapTableComponent = ({ mappedRecordId, ...other }) => {
+const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   // const [control, setControl] = useState(null);
   const [recordType, setRecordType] = useState(null);
   const [integrationName, setIntegrationName] = useState(null);
   const [url, setUrl] = useState(null);
   const [resletOptions, setResletOptions] = useState([]);
-  const [mappedRecordData, setMappedRecordData] = useState([]);
+  // const [mappedRecordData, setMappedRecordData] = useState([]);
   const [selectedOption, setSelectedOption] = useState();
-  const [restletData, setRestletData] = useState({});
+  // const [restletData, setRestletData] = useState({});
   // const router = useRouter();
 
   const { register, handleSubmit, setValue, control, watch } = useForm();
   const [netsuiteValues, setNetsuiteValues] = useState([]);
   const [rows, setRows] = useState([]);
+  const [integrationId, setIntegrationId] = useState(null);
+  const [mappedRecordDetails, setMappedRecordDetails] = useState([]);
+  const [configurationData, setConfigurationData] = useState(null);
 
-  const getMappedRecordById = useMutation({
-    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getMappedRecordById`),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getMappedRecordById`),
+  // console.log("mappedRecordId", mappedRecordId);
+  const apiResults = useQueries({
+    queries: [
+      {
+        queryKey: ["getMappedRecordById", mappedRecordId],
+        queryFn: tkFetch.get(
+          `http://localhost:4000/v1/getMappedRecordById/${mappedRecordId}`
+        ),
+        enabled: !!mappedRecordId,
+      },
+      {
+        queryKey: ["config", integrationId],
+        queryFn: tkFetch.get(
+          `http://localhost:4000/v1/getConfigurationByIntegrationId/${integrationId}`
+        ),
+        enabled: !!integrationId,
+      },
+      {
+        queryKey: ["configDetails", configurationData],
+        queryFn: tkFetch.get(
+          // `http://localhost:4000/v1/getRecordTypes/${configurationData}`
+          `http://localhost:4000/v1/getRecordTypes`,
+          { params: configurationData }
+        ),
+        enabled: !!configurationData,
+      },
+      {
+        queryKey: ["getFields", mappedRecordId],
+        queryFn: tkFetch.get(
+          `http://localhost:4000/v1/getFields/${mappedRecordId}`
+        ),
+        enabled: !!mappedRecordId,
+      },
+    ],
   });
 
-  const getMappedFieldsDetails = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getFields"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getFields`),
-  });
+  const [mappedRecord, config, restletData, getFields] = apiResults;
+  const {
+    data: mappedRecordData,
+    isLoading: mappedRecordLoading,
+    isError: mappedRecordError,
+    error: mappedRecordErrorData,
+  } = mappedRecord;
+  const {
+    data: configData,
+    isLoading: configLoading,
+    isError: configError,
+    error: configErrorData,
+  } = config;
+  const {
+    data: restletOptions,
+    isLoading: restletLoading,
+    isError: restletError,
+    error: restletErrorData,
+  } = restletData;
+  const {
+    data: fieldsData,
+    isLoading: fieldsLoading,
+    isError: fieldsError,
+    error: fieldsErrorData,
+  } = getFields;
 
   const addFields = useMutation({
-    mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
+    // mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
+    mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
   });
 
-  // *** resle API
-  const getResletOptions = useMutation({
-    // mutationFn: tkFetch.post(`http://localhost:4000/v1/getOptions`),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getRecordTypes`),
-  });
-  const getConfigurationDetails = useMutation({
-    // mutationFn: tkFetch.post(
-    //   "http://localhost:4000/v1/getConfigurationByIntegrationId"
-    // ),
-    mutationFn: tkFetch.post(
-      `${API_BASE_URL}/getConfigurationByIntegrationId`
-    ),
-  });
-
+  // console.log("^^^^^^^^^^^^^^^", configData);
+  // console.log("restletOptions**********", restletOptions);
   useEffect(() => {
-    if (mappedRecordId) {
-      getMappedRecordById.mutate(
-        { mappedRecordId: mappedRecordId },
-        {
-          onSuccess: (data) => {
-            setMappedRecordData(data[0]);
-            setRecordType(data[0].recordTypeTitle);
-          },
-          onError: (error) => {
-            console.log("error in getMappedRecordById", error);
-          },
+    if (configData) {
+      // console.log("available")
+      configData.map((item) => {
+        // console.log("item", item)
+        if (item.systemName === "NetSuite™") {
+          setConfigurationData({
+            account: item.accountId,
+            consumerKey: item.consumerKey,
+            consumerSecret: item.consumerSecretKey,
+            tokenId: item.accessToken,
+            tokenSecret: item.accessSecretToken,
+            scriptDeploymentId: "1",
+            scriptId: "1529",
+            resttype: "ListOfRecordField",
+            recordtype: mappedRecordDetails.source,
+          });
         }
-      );
+      });
     }
-  }, [mappedRecordId]);
 
-  // *** get mapped fields details
-  useEffect(() => {
-    if (mappedRecordId) {
-      getMappedFieldsDetails.mutate(
-        { mappedRecordId: mappedRecordId },
-        {
-          onSuccess: (data) => {
-            setRows(data);
-          },
-          onError: (error) => {
-            console.log("error in get mapped fields", error);
-          },
-        }
-      );
-    }
-  }, [mappedRecordId]);
-
-  useEffect(() => {
-    if (recordType) {
-      console.log("available", recordType);
-      getConfigurationDetails.mutate(
-        { integrationId: mappedRecordData.integrationId },
-        {
-          onSuccess: (data) => {
-            data.map((item) => {
-              if (item.systemName === "NetSuite™") {
-                const restletData = {
-                  account: item.accountId,
-                  consumerKey: item.consumerKey,
-                  consumerSecret: item.consumerSecretKey,
-                  tokenId: item.accessToken,
-                  tokenSecret: item.accessSecretToken,
-                  scriptDeploymentId: "1",
-                  scriptId: "1529",
-                  resttype: "ListOfRecordField",
-                  recordtype: recordType,
-                };
-
-                // *** get reslet options
-                getResletOptions.mutate(restletData, {
-                  onSuccess: (data) => {
-                    // *** loop to object
-                    if (data.length > 0) {
-                      // ***set body values in netsuiteValues
-                      const entries = Object.entries(data[0]?.body[0]);
-                      entries.map(([key, value], index) => {
-                        // console.log("value", value);
-                        setNetsuiteValues((netsuiteValues) => [
-                          ...netsuiteValues,
-                          { label: value, value: key },
-                        ]);
-                      });
-
-                      // ***set lines values in netsuiteValues
-                      data[0]?.lines.map((item) => {
-                        const lineEntries = Object.entries(item);
-                        lineEntries.map(([key, value], index) => {
-                          //  console.log("value", value);
-                          const valueEntries = Object.entries(value);
-                          valueEntries.map(([key1, value1], index) => {
-                            // console.log("value1", value1);
-                            const value1Entries = Object.entries(value1);
-                            value1Entries.map(([key2, value2], index) => {
-                              // console.log("value2", value2);
-                              setNetsuiteValues((netsuiteValues) => [
-                                ...netsuiteValues,
-                                { label: value2, value: key2 },
-                              ]);
-                            });
-                          });
-                        });
-                      });
-                    }
-                  },
-                  onError: (error) => {
-                    console.log("error in getResletOptions", error);
-                  },
-                });
-              }
+    if (restletOptions) {
+      const entries = Object.entries(restletOptions[0]?.body[0]);
+      entries.map(([key, value], index) => {
+        // console.log("value", value);
+        setNetsuiteValues((netsuiteValues) => [
+          ...netsuiteValues,
+          { label: value, value: key },
+        ]);
+      });
+      // ***set lines values in netsuiteValues
+      restletOptions[0]?.lines.map((item) => {
+        const lineEntries = Object.entries(item);
+        lineEntries.map(([key, value], index) => {
+          //  console.log("value", value);
+          const valueEntries = Object.entries(value);
+          valueEntries.map(([key1, value1], index) => {
+            // console.log("value1", value1);
+            const value1Entries = Object.entries(value1);
+            value1Entries.map(([key2, value2], index) => {
+              // console.log("value2", value2);
+              setNetsuiteValues((netsuiteValues) => [
+                ...netsuiteValues,
+                { label: value2, value: key2 },
+              ]);
             });
-          },
-          onError: (error) => {
-            console.log("error in getConfigurationDetails", error);
-          },
-        }
-      );
+          });
+        });
+      });
     }
-  }, [recordType]);
+  }, [configData, mappedRecordDetails.source, restletOptions]);
+  // console.log("integration id==>", integrationId);
+  // console.log("configurationData==>", configurationData);
+
+  useEffect(() => {
+    if (fieldsData) {
+      // console.log("fieldsData", fieldsData)
+      fieldsData.map((field, index) => {
+        setValue(
+          `destinationFieldValue[${index}]`,
+          field.destinationFieldValue || field.googleSheets
+        );
+        setValue(`sourceFieldValue[${index}]`, {
+          value: field.sourceFieldValue,
+          label: field.sourceFieldValue,
+        });
+      });
+      setRows(fieldsData);
+    }
+    if (mappedRecordData) {
+      setMappedRecordDetails(mappedRecordData[0]);
+      // console.log("mappedRecordData", mappedRecordData);
+      setIntegrationId(mappedRecordData[0].integrationId);
+      recordTypeTitle(mappedRecordData[0].recordTypeTitle);
+      // setRecordType(mappedRecordData[0].recordTypeTitle);
+    }
+  }, [fieldsData, mappedRecordData, recordTypeTitle, setValue]);
 
   // console.log("netsuiteValues**********", netsuiteValues);
 
-  if (rows.length > 0) {
-    rows.map((row, index) => {
-      setValue(
-        `googleSheets[${index}]`,
-        row.destinationFieldValue || row.googleSheets
-      );
-      setValue(
-        `netSuite[${index}]`,
-        {
-          value: row.sourceFieldValue,
-          label: row.sourceFieldValue,
-        } || { value: row.netSuite, label: row.netSuite }
-      );
-    });
-  }
+  // if (rows.length > 0) {
+  //   rows.map((row, index) => {
+  //     setValue(
+  //       `googleSheets[${index}]`,
+  //       row.destinationFieldValue || row.googleSheets
+  //     );
+  //     setValue(
+  //       `netSuite[${index}]`,
+  //       {
+  //         value: row.sourceFieldValue,
+  //         label: row.sourceFieldValue,
+  //       } || { value: row.netSuite, label: row.netSuite }
+  //     );
+  //   });
+  // }
 
   const handleChange = (index, e) => {
     const addedRow = [...rows];
@@ -194,10 +210,10 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
       addedRow[index].sourceFieldValue = e.label;
       setRows(addedRow);
     } else {
-      setTimeout(() => {
-        addedRow[index].destinationFieldValue = e.target.value;
-        setRows(addedRow);
-      }, 2000);
+      // setTimeout(() => {
+      addedRow[index].destinationFieldValue = e.target.value;
+      setRows(addedRow);
+      // }, 2000);
     }
   };
 
@@ -207,33 +223,38 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
     [
       {
         Header: "Google Sheets™ Columns",
-        accessor: "googleSheets",
+        accessor: "destinationFieldValue",
         Cell: ({ row }) => {
           return (
             <TkInput
               type="text"
-              name={`googleSheets[${row.index}]`}
-              {...register(`googleSheets[${row.index}]`)}
+              // name={`googleSheets[${row.index}]`}
+              {...register(`destinationFieldValue[${row.index}]`)}
               disabled={row.original.destinationFieldValue ? true : false}
-              onChange={(e) => handleChange(row.index, e)}
+              // defaultValue={row && row.original.destinationFieldValue}
+              // value={row.original.destinationFieldValue}
+              // onChange={(e) => handleChange(row.index, e)}
             />
           );
         },
       },
       {
         Header: "NetSuite™ Fields",
-        accessor: "netSuite",
+        accessor: "sourceFieldValue",
         Cell: ({ row }) => {
+          // console.log("props", row)
           return (
             <Controller
               control={control}
-              name={`netSuite[${row.index}]`}
+              name={`sourceFieldValue[${row.index}]`}
               render={({ field }) => (
                 <TkSelect
                   {...field}
                   options={netsuiteValues}
                   maxMenuHeight="100px"
-                  onChange={(e) => handleChange(row.index, e)}
+                  isSerchable={true}
+                  // defaultValue={row && row.original.sourceFieldValue}
+                  // onChange={(e) => handleChange(row.index, e)}
                 />
               )}
             />
@@ -258,29 +279,36 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
     ];
   // [control, netsuiteValues, register]
   // );
-
+  const { append } = useFieldArray({
+    control,
+    name: "googleSheets",
+  });
   const handleAddRow = () => {
-    setRows([...rows, { googleSheets: "", netSuite: "" }]);
+    setRows([...rows, { googleSheets: "", netSuite: null }]);
+    // append({ googleSheets: "", netSuite: null });
   };
 
   // *** to get formatted values from table
   const [tableRecords, setTableRecords] = useState([]);
 
   const onSubmit = (values) => {
+    // console.log("values", values);
     const userId = sessionStorage.getItem("userId");
-    const tableRecord = values.googleSheets.map((googleSheets, index) => {
-      return {
-        userId: JSON.parse(userId),
-        mappedRecordId: mappedRecordId,
-        sourceField: "NetSuite™",
-        destinationField: "Google Sheets™",
-        destinationFieldValue: googleSheets,
-        sourceFieldValue: values.netSuite[index]?.label,
-      };
-    });
+    const tableRecord = values.destinationFieldValue.map(
+      (destinationFieldValue, index) => {
+        return {
+          userId: JSON.parse(userId),
+          mappedRecordId: mappedRecordId,
+          sourceField: "NetSuite™",
+          destinationField: "Google Sheets™",
+          destinationFieldValue: destinationFieldValue,
+          sourceFieldValue: values.sourceFieldValue[index]?.label,
+        };
+      }
+    );
 
     setTableRecords(tableRecord);
-
+    // console.log("tableRecord", tableRecord);
     addFields.mutate(tableRecord, {
       onSuccess: (data) => {
         TkToastInfo("Added Successfully", { hideProgressBar: true });
@@ -338,6 +366,7 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
   //     toggle();
   //   }
   // };
+  // console.log("rows", rows);
 
   return (
     <>
@@ -345,7 +374,8 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
         <TkCol>
           <TkLabel>
             <span className="fw-bold">
-              Integration Name: {mappedRecordData.integration?.integrationName}
+              Integration Name:{" "}
+              {mappedRecordDetails.integration?.integrationName}
             </span>
             &nbsp;&nbsp;
           </TkLabel>
@@ -353,7 +383,7 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
         <TkCol>
           <TkLabel>
             <span className="fw-bold">
-              Google Sheets™ Url: {mappedRecordData.destination}
+              Google Sheets™ Url: {mappedRecordDetails.destination}
             </span>
             &nbsp;&nbsp;
           </TkLabel>
@@ -361,7 +391,7 @@ const MapTableComponent = ({ mappedRecordId, ...other }) => {
       </TkRow>
       <hr />
       <form onSubmit={handleSubmit(onSubmit)}>
-        {rows.length === 0 ? (
+        {fieldsLoading ? (
           <div>
             {/* no data found */}
             <div className="text-center py-4">

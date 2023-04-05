@@ -18,7 +18,7 @@ import DropdownModal from "./DropdownModal";
 import TkForm from "@/globalComponents/TkForm";
 import { Controller, useForm } from "react-hook-form";
 import TkInput from "@/globalComponents/TkInput";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
@@ -36,18 +36,24 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   const [twoWaySync, setTwoWaySync] = useState(false);
   const [syncWay, setSyncWay] = useState();
   const [integrationData, setIntegrationData] = useState();
+  const [userId, setUserId] = useState(null);
 
-  const integration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
 
+  // const integration = useMutation({
+  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+
+  // });
+  const{data:integrations, isError, isLoading, error} = useQuery({
+    queryKey: ["integrations", userId],
+    queryFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+    enabled: !!userId,
   });
 
-  const [id, setId] = useState(null);
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     // console.log("userID", userID);
-    setId({
+    setUserId({
       userId: JSON.parse(userID),
     });
     // const id = {
@@ -56,19 +62,18 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   }, []);
 
   useEffect(() => {
-    if (id) {
-      // console.log("id", id);
-      integration.mutate(id, {
-        onSuccess: (data) => {
-          // console.log("data", data);
-          setIntegrationData(data);
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
+    if (userId) {
+      setIntegrationData(integrations)
+      // integration.mutate(userId, {
+      //   onSuccess: (data) => {
+      //     setIntegrationData(data);
+      //   },
+      //   onError: (error) => {
+      //     console.log("error", error);
+      //   },
+      // });
     }
-  }, [id]);
+  }, [integrations, userId]);
   // console.log("integrationData", integrationData);
 
   const toggleComponet = (value) => {
@@ -117,8 +122,10 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   return (
     <>
       <TkRow>
-        {integrationData ? (
-          integrationData.map((item) => {
+        {isLoading ?  (
+          <div>loading...</div>
+        ) : (
+          integrations.map((item) => {
             // console.log("item", item.sourceName);
 
             return (
@@ -151,9 +158,7 @@ const IntegrationCard = ({ modal, toggleModal }) => {
               </TkCol>
             );
           })
-        ) : (
-          <div>loading</div>
-        )}
+        ) }
       </TkRow>
       {/* *** radio button modal *** */}
       <TkModal

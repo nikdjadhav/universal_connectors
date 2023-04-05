@@ -19,43 +19,57 @@ import {
   destinationName,
   sourceName,
 } from "@/utils/Constants";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 
-const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
+const ModalButton = ({ modal, toggle, syncWay, configData, integrationID:intId }) => {
   // console.log("3 model", configData)
-  // console.log('in modal==>', other);
+  // console.log('in modal==>', intId);
 
   const [NSCTitle, setNSCTitle] = useState("NetSuite™");
   const [GSCTitle, setGSCTitle] = useState("Google Sheets™");
   const [integrationID, setIntegrationID] = useState();
 
-  const integration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-  });
+  // const integration = useMutation({
+  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+  // });
+
+  const {data: integration, isError, isLoading, error} = useQuery({
+    queryKey: ["getIntegrationById", intId],
+    // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${intId}`),
+    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${intId}`),
+
+    enabled: !!intId,
+  })
+  // console.log("index==>",integration);
   useEffect(() => {
-    if (other.integrationID) {
-      // console.log("in modal==>", other.integrationID);
+    if (intId) {
+      // console.log("in modal==>", intId);
 
       const id = {
-        id: JSON.parse(other.integrationID),
+        id: JSON.parse(intId),
       };
 
-      integration.mutate(id, {
-        onSuccess: (data) => {
-          // console.log("data", data);
-          setNSCTitle(data[0]?.sourceName);
-          setGSCTitle(data[0]?.destinationName);
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
-    }
-  }, [other.integrationID]);
+      if(integration?.length){
+        setNSCTitle(integration[0]?.sourceName);
+        setGSCTitle(integration[0]?.destinationName);
+      }
 
-  // console.log("other==>", other.integrationID);
+      // integration.mutate(id, {
+      //   onSuccess: (data) => {
+      //     // console.log("data", data);
+      //     setNSCTitle(data[0]?.sourceName);
+      //     setGSCTitle(data[0]?.destinationName);
+      //   },
+      //   onError: (error) => {
+      //     console.log("error", error);
+      //   },
+      // });
+    }
+  }, [integration, intId]);
+
+  // console.log("other==>", intId);
 
   // useEffect(() => {
   //   if (other) {
@@ -211,7 +225,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
                 syncWay={syncWay}
                 configData={configData}
                 toggle={toggle}
-                integrationID={other.integrationID}
+                integrationID={intId}
                 getIntegrationID={getIntegrationID}
               />
             </TabPane>
@@ -219,7 +233,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
             <TabPane tabId={tabs.NetsuiteConfiguration}>
               <NetsuiteComponent
                 onClickHandeler={onClickHandeler}
-                integrationID={other.integrationID || integrationID}
+                integrationID={intId || integrationID}
                 title={NSCTitle}
               />
             </TabPane>
@@ -227,7 +241,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, ...other }) => {
             <TabPane tabId={tabs.GoogleSheetConfiguration}>
               <GoogleSheetComponent
                 onClickHandeler={onClickHandeler}
-                integrationID={other.integrationID || integrationID}
+                integrationID={intId || integrationID}
                 title={GSCTitle}
               />
             </TabPane>

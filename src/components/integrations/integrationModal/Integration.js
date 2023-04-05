@@ -13,7 +13,7 @@ import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorText from "@/globalComponents/ErrorText";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 
 const schema = Yup.object({
@@ -43,65 +43,83 @@ const Integration = ({
 
   const [integrationsData, setIntegrationsData] = useState();
   const [integrationID, setIntegrationID] = useState();
-
-
-  const integration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-
-  });
-  // console.log("int==>",other);
-
-  useEffect(() => {
-    if (other.integrationID) {
-      const id = {
-        id: JSON.parse(other.integrationID),
-      };
-      integration.mutate(id, {
-        onSuccess: (data) => {
-          // console.log("data",  sourceName);
-          setIntegrationsData(data);
-          setIntegrationID(data[0]?.id);
-          setValue("integrationName", data[0]?.integrationName);
-          setValue("sourceName", { label: data[0]?.sourceName });
-          setValue("destinationName", { label: data[0]?.destinationName });
-
-          if (data[0]?.syncWay === "twoWaySync") {
-            setFirstTitle("System One");
-            setSecondTitle("System Two");
-          } else {
-            setFirstTitle("Source");
-            setSecondTitle("Destination");
-          }
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
-    }
-  }, []);
-
-  // console.log('integration',configData.source.label,configData.destination.label);
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
 
-  useEffect(() => {
-    if (syncWay === "twoWaySync") {
-      setFirstTitle("System One");
-      setSecondTitle("System Two");
-    } else {
-      setFirstTitle("Source");
-      setSecondTitle("Destination");
-    }
+  // console.log("other==>",other.integrationID);
+  const {data: integration, isError, isLoading, error} = useQuery({
+    queryKey: ["getIntegrationId", other.integrationID],
+    // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById${other.integrationID}`),
+    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${other.integrationID}`),
+    enabled: !!other.integrationID,
+  })
+  // console.log("int==>",integration);
 
-    if (configData) {
-      setValue("sourceName", { label: configData.source });
-      setValue("destinationName", { label: configData.destination });
-      // setValue("integrationName", configData.integrationName)
-      // setValue("sourceName", { label: configData.source.label } || { label: configData.source });
-      // setValue("destinationName", { label: configData.destination.label } || { label: configData.destination });
+  useEffect(() => {
+    if (other.integrationID) {
+      // const id = {
+      //   id: JSON.parse(other.integrationID),
+      // };
+      if(integration?.length){
+        // console.log("^^^^^^^^^^^^^^", integration[0]?.syncWay);
+        setIntegrationsData(integration[0]);
+        setIntegrationID(integration[0]?.id);
+        setValue("integrationName", integration[0]?.integrationName);
+        setValue("sourceName", { label: integration[0]?.sourceName });
+        setValue("destinationName", { label: integration[0]?.destinationName });
+
+        if (integration[0]?.syncWay === "twoWaySync") {
+          setFirstTitle("System One");
+          setSecondTitle("System Two");
+        } else {
+          setFirstTitle("Source");
+          setSecondTitle("Destination");
+        }
+      }
+      // integration.mutate(id, {
+      //   onSuccess: (data) => {
+      //     // console.log("data",  sourceName);
+      //     setIntegrationsData(data);
+      //     setIntegrationID(data[0]?.id);
+      //     setValue("integrationName", data[0]?.integrationName);
+      //     setValue("sourceName", { label: data[0]?.sourceName });
+      //     setValue("destinationName", { label: data[0]?.destinationName });
+
+      //     if (data[0]?.syncWay === "twoWaySync") {
+      //       setFirstTitle("System One");
+      //       setSecondTitle("System Two");
+      //     } else {
+      //       setFirstTitle("Source");
+      //       setSecondTitle("Destination");
+      //     }
+      //   },
+      //   onError: (error) => {
+      //     console.log("error", error);
+      //   },
+      // });
     }
-  }, [configData, setValue, syncWay]);
+  }, [integration, other.integrationID, setValue]);
+
+  // console.log('integration',configData.source.label,configData.destination.label);
+
+// **************************************
+  // useEffect(() => {
+  //   if (syncWay === "twoWaySync") {
+  //     setFirstTitle("System One");
+  //     setSecondTitle("System Two");
+  //   } else {
+  //     setFirstTitle("Source");
+  //     setSecondTitle("Destination");
+  //   }
+
+  //   if (configData) {
+  //     setValue("sourceName", { label: configData.source });
+  //     setValue("destinationName", { label: configData.destination });
+  //     // setValue("integrationName", configData.integrationName)
+  //     // setValue("sourceName", { label: configData.source.label } || { label: configData.source });
+  //     // setValue("destinationName", { label: configData.destination.label } || { label: configData.destination });
+  //   }
+  // }, [configData, setValue, syncWay]);
 
   const addIntegration = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
@@ -182,8 +200,8 @@ const Integration = ({
                         options={sourceName}
                         // defaultValue={sourceName[0]}
                         maxMenuHeight="130px"
-                        disabled={true}
-                        // disabled={integrationsData ? true : false}
+                        // disabled={true}
+                        disabled={integrationsData ? true : false}
                       />
                     </>
                   )}
@@ -204,8 +222,8 @@ const Integration = ({
                         options={destinationName}
                         // defaultValue={destinationName[0]}
                         maxMenuHeight="130px"
-                        disabled={true}
-                        // disabled={integrationsData ? true : false}
+                        // disabled={true}
+                        disabled={integrationsData ? true : false}
                       />
                     </>
                   )}

@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import ModalButton from "../integrations/integrationModal";
 import TopBar from "../topBar";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { FormErrorBox } from "@/globalComponents/ErrorText";
 import Link from "next/link";
@@ -28,19 +28,31 @@ const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
   const [integrationID, setIntegrationID] = useState();
   const [syncWay, setSyncWay] = useState();
-  const integration = useMutation({
-    // queryKey: "integrations",
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+  const [userId, setUserId] = useState(null);
 
-    // enabled:  !!userID
+  // const integration = useMutation({
+  //   // queryKey: "integrations",
+  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+
+  //   // enabled:  !!userID
+  // });
+
+  const {
+    data: integrations,
+    isError,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["integrations", userId],
+    queryFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+    enabled: !!userId,
   });
 
-  const [id, setId] = useState(null);
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     // console.log("userID", userID);
-    setId({
+    setUserId({
       userId: JSON.parse(userID),
     });
     // const id = {
@@ -49,18 +61,19 @@ const DashBoard = () => {
   }, []);
 
   useEffect(() => {
-    if (id) {
-      integration.mutate(id, {
-        onSuccess: (data) => {
-          // console.log("data", data);
-          setIntegrationData(data);
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
+    if (userId) {
+      setIntegrationData(integrations);
+      // integration.mutate(userId, {
+      //   onSuccess: (data) => {
+      //     // console.log("data", data);
+      //     setIntegrationData(data);
+      //   },
+      //   onError: (error) => {
+      //     console.log("error", error);
+      //   },
+      // });
     }
-  }, [id]);
+  }, [integrations, userId]);
   // console.log("integrationData", integrationData);
 
   const router = useRouter();
@@ -145,7 +158,7 @@ const DashBoard = () => {
   }, [modal]);
 
   const onClickOpenModal = (id) => {
-    // console.log("onClickOpenModal", row);
+    // console.log("onClickOpenModal", id);
     toggle();
     setIntegrationID(id);
     // setRecordId(row?.id);
@@ -291,6 +304,7 @@ const DashBoard = () => {
       Header: "Action",
       accessor: "action",
       Cell: (props) => {
+        // console.log("props.row.original?.id", props.row.original);
         return (
           <>
             {/* <i className="ri-delete-bin-5-line "></i> */}

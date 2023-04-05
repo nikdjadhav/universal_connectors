@@ -23,13 +23,13 @@ const Details = () => {
   const [integrationData, setIntegrationData] = useState();
   const [integrationID, setIntegrationID] = useState();
   // const { integrationId } = router.query;
-  console.log("router.query", router.query.integrationId);
+  // console.log("router.query", router.query.integrationId);
   useEffect(() => {
     if (router.query.integrationId) {
       setIntegrationID(JSON.parse(router.query.integrationId));
     }
   }, []);
-  console.log("integration id", integrationID);
+  // console.log("integration id", integrationID);
 
   // const integration = useQuery({
   //   queryKey: ["integration", integrationId],
@@ -42,26 +42,34 @@ const Details = () => {
   //   }
   // })
 
-  const integration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-  });
+  // const integration = useMutation({
+  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
+  // });
+  const {data: integration, isError, isLoading, error} = useQuery({
+    queryKey: ["getIntegration", integrationID],
+    // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById${integrationID}`),
+    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${integrationID}`),
+    enabled: !!integrationID,
+  })
+
   useEffect(() => {
     if (integrationID) {
-      const id = {
-        id: integrationID,
-      };
-      integration.mutate(id, {
-        onSuccess: (data) => {
-          console.log("data", data);
-          setIntegrationData(data);
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
+      // const id = {
+      //   id: integrationID,
+      // };
+      setIntegrationData(integration)
+      // integration.mutate(id, {
+      //   onSuccess: (data) => {
+      //     console.log("data", data);
+      //     setIntegrationData(data);
+      //   },
+      //   onError: (error) => {
+      //     console.log("error", error);
+      //   },
+      // });
     }
-  }, [integrationID]);
+  }, [integration, integrationID]);
 
   const [modal, setModal] = useState(false);
 
@@ -77,7 +85,7 @@ const Details = () => {
     // console.log("id", id);
     toggle();
   };
-  console.log("integration data==>", integrationData);
+  // console.log("integration data==>", integrationData);
 
   // const router = useRouter();
 

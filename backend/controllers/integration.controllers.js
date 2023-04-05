@@ -55,11 +55,11 @@ const createIntegration = async (req, res) => {
 
 // get integration using id
 const getIntegrationById = async (req, res) => {
-  // console.log("requestd body", req.body);
+  console.log("getIntegrationById requestd body", req.params.id);
   try {
     const integration = await prisma.integrations.findUnique({
       where: {
-        id: req.body.id,
+        id: Number(req.params.id),
       },
     });
 
@@ -95,11 +95,11 @@ const getIntegrationById = async (req, res) => {
 
 const getIntegrations = async (req, res) => {
   // console.log("requestd body");
-  // console.log('requestd body',req.body);
+  // console.log('requestd body',req.params.id);
   try {
     const integrations = await prisma.integrations.findMany({
       where: {
-        userId: req.body.userId,
+        userId: Number(req.params.id),
       },
     });
     // console.log('integrations',integrations);
@@ -182,12 +182,12 @@ const addConfigurations = async (req, res) => {
 };
 
 const getConfigurationById = async (req, res) => {
-  // console.log("requestd body", req.body);
+  console.log("requestd body", req.params.id);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {
         // id: req.body.id,
-        integrationId: req.body.integrationId,
+        integrationId: Number(req.params.id),
       },
       include: {
         integration: {
@@ -229,7 +229,7 @@ const getConfigurationById = async (req, res) => {
 };
 
 const getConfigurationByIntegrationId = async (req, res) => {
-  console.log("requestd body", req.params.id);
+  // console.log("requestd body", req.params.id);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {
@@ -238,17 +238,17 @@ const getConfigurationByIntegrationId = async (req, res) => {
       },
       // include: {
       //   cofigData: {
-          select: {
-            id: true,
-            systemName: true,
-            url: true,
-            accountId: true,
-            consumerKey: true,
-            consumerSecretKey: true,
-            accessToken: true,
-            accessSecretToken: true,
-            authenticationType: true,
-          },
+      select: {
+        id: true,
+        systemName: true,
+        url: true,
+        accountId: true,
+        consumerKey: true,
+        consumerSecretKey: true,
+        accessToken: true,
+        accessSecretToken: true,
+        authenticationType: true,
+      },
       //   },
       // },
     });

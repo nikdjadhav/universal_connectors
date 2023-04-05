@@ -2,7 +2,7 @@ const prisma = require("../lib/prisma");
 const response = require("../lib/response");
 
 const addMappedRecord = async (req, res) => {
-  //   console.log("AddMappedRecord", req.body);
+    console.log("AddMappedRecord", req.body);
 
   try {
     const recordMapping = await prisma.mappedRecords.create({
@@ -95,7 +95,7 @@ const getMappedRecordById = async (req, res) => {
   try {
     const recordMapping = await prisma.mappedRecords.findMany({
       where: {
-        id: req.body.mappedRecordId,
+        id: Number(req.params.id)
       },
       include: {
         integration: {
@@ -137,7 +137,9 @@ const getMappedRecordById = async (req, res) => {
 };
 
 const getMappedFieldsDetails = async (req, res) => {
-  // console.log("getAllMappedRecords", req.body);
+  // console.log("getMappedFieldsDetails", req.params.id);
+  // const id = Number(req.params.id);
+  // console.log(id)
 
   try {
     const recordMapping = await prisma.mappedRecords.findMany({
@@ -147,7 +149,7 @@ const getMappedFieldsDetails = async (req, res) => {
       // },
       // get all mapped records details from mappedRecords table using userId and get integration details (integrationName,sourceName,destinationName) using integrationId from mappedRecords table
       where: {
-        userId: req.body.userId,
+        userId: Number(req.params.id),
       },
       include: {
         integration: {
@@ -502,7 +504,7 @@ const getFields = async (req, res) => {
   try {
     const fields = await prisma.fields.findMany({
       where: {
-        mappedRecordId: req.body.mappedRecordId,
+        mappedRecordId: Number(req.params.id),
       },
     });
 
@@ -539,7 +541,7 @@ const getFields = async (req, res) => {
 
 module.exports = {
   addMappedRecord,
-  getAllMappedRecords,
+  // getAllMappedRecords,
   getMappedRecordById,
   getMappedFieldsDetails,
   addFields,

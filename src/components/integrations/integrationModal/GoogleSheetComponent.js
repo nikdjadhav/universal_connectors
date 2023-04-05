@@ -8,7 +8,7 @@ import TkSelect from "@/globalComponents/TkSelect";
 import { API_BASE_URL, netsuiteRecordTypes } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -37,10 +37,17 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   });
   // console.log("other", other);
 
-  const getConfigurationById = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
+  // const getConfigurationById = useMutation({
+  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
+  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
+  // });
+  const {data: configurationsData, isError, isLoading, error} = useQuery({
+    queryKey: ["configurations", other.integrationID],
+    // queryFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
+    queryFn: tkFetch.get(`http://localhost:4000/v1/getConfigurationById/${other.integrationID}`),
+    enabled: !!other.integrationID,
   });
+  // console.log("configurationsData^^^^^^^^^^",other.integrationID, "^^", configurationsData);
 
   // const integration = useMutation({
   //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
@@ -50,28 +57,41 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   useEffect(() => {
     if (other.integrationID) {
       setIntegrationID(JSON.parse(other.integrationID));
+
+      if(configurationsData?.length){
+        configurationsData.map((item) => {
+          // console.log("GS item", item, "and", other.title)
+          if (item.systemName === other.title) {
+            // console.log("item GS", item);
+            setIntegrationsData(item);
+            setValue("integrationName", item.integration.integrationName);
+            setValue("googleSheetUrl", item.url);
+          }
+        });
+      }
     }
 
-    if (other.integrationID) {
-      getConfigurationById.mutate(
-        { integrationId: JSON.parse(other.integrationID) },
-        {
-          onSuccess: (data) => {
-            // console.log("getConfigurationById GS", data);
-            data.map((item) => {
-              if (item.systemName === other.title) {
-                // console.log("item GS", item);
-                setIntegrationsData(item);
-                setValue("integrationName", item.integration.integrationName);
-                setValue("googleSheetUrl", item.url);
-              }
-            });
-          },
-          onError: (error) => {
-            console.log("error", error);
-          },
-        }
-      );
+    // if (other.integrationID) {
+      
+      // getConfigurationById.mutate(
+      //   { integrationId: JSON.parse(other.integrationID) },
+      //   {
+      //     onSuccess: (data) => {
+      //       // console.log("getConfigurationById GS", data);
+      //       data.map((item) => {
+      //         if (item.systemName === other.title) {
+      //           // console.log("item GS", item);
+      //           setIntegrationsData(item);
+      //           setValue("integrationName", item.integration.integrationName);
+      //           setValue("googleSheetUrl", item.url);
+      //         }
+      //       });
+      //     },
+      //     onError: (error) => {
+      //       console.log("error", error);
+      //     },
+      //   }
+      // );
 
       // integration.mutate(
       //   {
@@ -87,8 +107,8 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
       //     },
       //   }
       // );
-    }
-  }, [other.integrationID]);
+    // }
+  }, [configurationsData, other.integrationID, other.title, setValue]);
 
   const onSubmit = (data) => {
     // console.log("data", data);
