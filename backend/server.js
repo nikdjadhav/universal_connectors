@@ -47,11 +47,13 @@ v1Router.get(
   integrationController.getIntegrationById
 );
 v1Router.post("/deleteIntegration", integrationController.deleteIntegration);
+v1Router.put("/updateIntegration/:id", integrationController.updateIntegration);
 v1Router.post("/addConfigurations", integrationController.addConfigurations);
 v1Router.get(
   "/getConfigurationById/:id",
   integrationController.getConfigurationById
 );
+v1Router.put("/updateConfiguration/:id", integrationController.updateConfiguration);
 v1Router.get(
   "/getConfigurationByIntegrationId/:id",
   integrationController.getConfigurationByIntegrationId
@@ -71,7 +73,10 @@ v1Router.get(
   "/getMappedRecordById/:id",
   fieldMappingController.getMappedRecordById
 );
-v1Router.post("/DeleteMappedRecordByID", fieldMappingController.DeleteMappedRecordByID);
+v1Router.post(
+  "/DeleteMappedRecordByID",
+  fieldMappingController.DeleteMappedRecordByID
+);
 v1Router.get(
   "/getMappedFieldsDetails/:id",
   fieldMappingController.getMappedFieldsDetails

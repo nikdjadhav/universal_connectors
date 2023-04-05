@@ -5,6 +5,7 @@ import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
+import { TkToastError } from "@/globalComponents/TkToastContainer";
 import { API_BASE_URL, netsuiteRecordTypes } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -31,9 +32,15 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   });
   const [integrationID, setIntegrationID] = useState();
   const [integrationsData, setIntegrationsData] = useState();
+
   const addConfigurations = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
+  });
+
+  const updateConfiguration = useMutation({
+    mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
+    // mutationFn: tkFetch.post(`${API_BASE_URL}/updateConfiguration`),
   });
   // console.log("other", other);
 
@@ -112,24 +119,72 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
 
   const onSubmit = (data) => {
     // console.log("data", data);
-    const userId = sessionStorage.getItem("userId");
-    const configurData = {
-      userId: JSON.parse(userId),
-      integrationId: integrationID,
-      systemName: other.title,
-      url: data.googleSheetUrl,
-    };
-    // console.log("configurData", configurData);
-    addConfigurations.mutate(configurData, {
-      onSuccess: (data) => {
-        // console.log("data", data);
-      },
-      onError: (error) => {
-        console.log("error", error);
-      },
-    });
+    if (configurationsData?.length) {
+      configurationsData.map((item) => {
+        if (item.systemName === other.title) {
+          console.log("updated", item.systemName, "for", item.id);
+          const updatedData = {
+            id: item.id,
+            systemName: other.title,
+            url: data.googleSheetUrl,
+            authenticationType: "abc",
+          };
+          console.log("updatedData", updatedData)
+          updateConfiguration.mutate(updatedData, {
+            onSuccess: (data) => {
+              console.log("Updated Successfully", data);
+              // TkToastInfo("Updated Successfully", { hideProgressBar: true });
+            },
+            onError: (error) => {
+              console.log("error", error);
+              TkToastError("Error: Record not updated");
+            },
+          });
+        }
+      });
+    } else {
+      console.log("added");
+      const userId = sessionStorage.getItem("userId");
+
+      const configurData = {
+        userId: JSON.parse(userId),
+        integrationId: integrationID,
+        systemName: other.title,
+        url: data.googleSheetUrl,
+        authenticationType: "xyz",
+      };
+      // console.log("configurData", configurData);
+
+      addConfigurations.mutate(configurData, {
+        onSuccess: (data) => {
+          // console.log("addConfigurations data", data);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
 
     onClickHandeler();
+    // // console.log("data", data);
+    // const userId = sessionStorage.getItem("userId");
+    // const configurData = {
+    //   userId: JSON.parse(userId),
+    //   integrationId: integrationID,
+    //   systemName: other.title,
+    //   url: data.googleSheetUrl,
+    // };
+    // // console.log("configurData", configurData);
+    // addConfigurations.mutate(configurData, {
+    //   onSuccess: (data) => {
+    //     // console.log("data", data);
+    //   },
+    //   onError: (error) => {
+    //     console.log("error", error);
+    //   },
+    // });
+
+    // onClickHandeler();
   };
 
   return (

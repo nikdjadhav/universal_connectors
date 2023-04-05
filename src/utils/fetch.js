@@ -176,7 +176,29 @@ const tkFetch = {
         });
   },
 
-  putWithId(url, options) {
+  // putWithId(url, options) {
+  //   return async (body) => {
+  //     if (!body.id) {
+  //       throw new Error("Id is required, for put with ID function");
+  //     }
+  //     try {
+  //       const res = await axios.put(url + `/${body.id}`, body, options);
+  //       if (!res.data.success) {
+  //         throw new Error(res.data.message);
+  //       }
+  //       return res.data.data;
+  //     } catch (err) {
+  //       // status code is not between 200 and 300 , then axiois throws an error, we catch it and throw our message that we have returned from the server
+  //       const resData = err.response?.data;
+  //       if (resData && resData.message) {
+  //         throw new Error(resData.message);
+  //       } else {
+  //         throw new Error("Something went wrong on our side. Please try again later.");
+  //       }
+  //     }
+  //   };
+  // },
+  putWithIdInUrl(url, options) {
     return async (body) => {
       if (!body.id) {
         throw new Error("Id is required, for put with ID function");

@@ -4,6 +4,7 @@ import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
+import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -47,14 +48,22 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
   });
 
-  // const getConfigurationById = useMutation({
-  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
-  // });
-  const {data: configurationsData, isError, isLoading, error} = useQuery({
+  const updateConfiguration = useMutation({
+    mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
+    // mutationFn: tkFetch.post(`${API_BASE_URL}/updateConfiguration`),
+  });
+
+  const {
+    data: configurationsData,
+    isError,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["configurationsData", other.integrationID],
     // queryFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
-    queryFn: tkFetch.get(`http://localhost:4000/v1/getConfigurationById/${other.integrationID}`),
+    queryFn: tkFetch.get(
+      `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
+    ),
     enabled: !!other.integrationID,
   });
 
@@ -69,7 +78,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
 
   useEffect(() => {
     if (other.integrationID) {
-      if(configurationsData?.length){
+      if (configurationsData?.length) {
         configurationsData.map((item) => {
           if (item.systemName === other.title) {
             // console.log("other.title", other.title);
@@ -132,31 +141,61 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   }, [other.integrationID]);
 
   const onSubmit = (data) => {
-    // console.log("Set up new connection data", data);
-    const userId = sessionStorage.getItem("userId");
+    if (configurationsData?.length) {
+      configurationsData.map((item) => {
+        if (item.systemName === other.title) {
+          console.log("updated", item.systemName, "for", item.id);
+          const updatedData = {
+            id: item.id,
+            systemName: other.title,
+            // url: data.url,
+            accountId: data.accountID,
+            consumerKey: data.consumerKey,
+            consumerSecretKey: data.consumerSecretKey,
+            accessToken: data.accessToken,
+            accessSecretToken: data.accessSecretToken,
+            authenticationType: "abc",
+          };
+          console.log("updatedData", updatedData)
+          updateConfiguration.mutate(updatedData, {
+            onSuccess: (data) => {
+              console.log("Updated Successfully", data);
+              // TkToastInfo("Updated Successfully", { hideProgressBar: true });
+            },
+            onError: (error) => {
+              console.log("error", error);
+              TkToastError("Error: Record not updated");
+            },
+          });
+        }
+      });
+    } else {
+      console.log("added");
+      const userId = sessionStorage.getItem("userId");
 
-    const configurData = {
-      userId: JSON.parse(userId),
-      integrationId: integrationID,
-      systemName: other.title,
-      // url: data.url,
-      accountId: data.accountID,
-      consumerKey: data.consumerKey,
-      consumerSecretKey: data.consumerSecretKey,
-      accessToken: data.accessToken,
-      accessSecretToken: data.accessSecretToken,
-      authenticationType: "xyz",
-    };
-    // console.log("configurData", configurData);
+      const configurData = {
+        userId: JSON.parse(userId),
+        integrationId: integrationID,
+        systemName: other.title,
+        // url: data.url,
+        accountId: data.accountID,
+        consumerKey: data.consumerKey,
+        consumerSecretKey: data.consumerSecretKey,
+        accessToken: data.accessToken,
+        accessSecretToken: data.accessSecretToken,
+        authenticationType: "xyz",
+      };
+      // console.log("configurData", configurData);
 
-    addConfigurations.mutate(configurData, {
-      onSuccess: (data) => {
-        // console.log("addConfigurations data", data);
-      },
-      onError: (error) => {
-        console.log("error", error);
-      },
-    });
+      addConfigurations.mutate(configurData, {
+        onSuccess: (data) => {
+          // console.log("addConfigurations data", data);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
 
     onClickHandeler();
   };

@@ -15,6 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorText from "@/globalComponents/ErrorText";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
+import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 
 const schema = Yup.object({
   integrationName: Yup.string().required("Integration name is required."),
@@ -46,13 +47,29 @@ const Integration = ({
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
 
+  const addIntegration = useMutation({
+    // mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addIntegration`),
+  });
+
+  const updateIntegration = useMutation({
+    mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateIntegration"),
+  });
+
   // console.log("other==>",other.integrationID);
-  const {data: integration, isError, isLoading, error} = useQuery({
+  const {
+    data: integration,
+    isError,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["getIntegrationId", other.integrationID],
     // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById${other.integrationID}`),
-    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${other.integrationID}`),
+    queryFn: tkFetch.get(
+      `http://localhost:4000/v1/getIntegrationById/${other.integrationID}`
+    ),
     enabled: !!other.integrationID,
-  })
+  });
   // console.log("int==>",integration);
 
   useEffect(() => {
@@ -60,7 +77,7 @@ const Integration = ({
       // const id = {
       //   id: JSON.parse(other.integrationID),
       // };
-      if(integration?.length){
+      if (integration?.length) {
         // console.log("^^^^^^^^^^^^^^", integration[0]?.syncWay);
         setIntegrationsData(integration[0]);
         setIntegrationID(integration[0]?.id);
@@ -102,7 +119,7 @@ const Integration = ({
 
   // console.log('integration',configData.source.label,configData.destination.label);
 
-// **************************************
+  // **************************************
   // useEffect(() => {
   //   if (syncWay === "twoWaySync") {
   //     setFirstTitle("System One");
@@ -121,34 +138,50 @@ const Integration = ({
   //   }
   // }, [configData, setValue, syncWay]);
 
-  const addIntegration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/addIntegration`),
-  });
-
   const onSubmit = (data) => {
-    // console.log("integration nav submitted data", data);
-    const userId = sessionStorage.getItem("userId");
-    const integrationData = {
-      userId: JSON.parse(userId),
-      integrationName: data.integrationName,
-      sourceName: data.sourceName.label,
-      destinationName: data.destinationName.label,
-      syncWay: syncWay,
-    };
-    addIntegration.mutate(integrationData, {
-      onSuccess: (data) => {
-        // console.log("ittegration added==>", data);
-        setIntegrationID(data[0]?.id);
-        // using other.getIntegrationID callback send data[0]?.id to parent component
-        other.getIntegrationID(data[0]?.id);
-      },
-      onError: (error) => {
-        console.log("error", error);
-      },
-    });
+    console.log(other.integrationID, "integration nav submitted data", data);
+    if (other.integrationID) {
+      const updatedData = {
+        id: other.integrationID,
+        integrationName: data.integrationName,
+        sourceName: data.sourceName.label,
+        destinationName: data.destinationName.label,
+      };
+      console.log("update");
+      updateIntegration.mutate(updatedData, {
+        onSuccess: (data) => {
+          console.log("Updated Successfully", data);
+          // TkToastInfo("Updated Successfully", { hideProgressBar: true });
+        },
+        onError: (error) => {
+          // console.log("error", error);
+          TkToastError("Error: Record not updated");
+        },
+      });
+    } else {
+      console.log("add");
+      const userId = sessionStorage.getItem("userId");
+      const integrationData = {
+        userId: JSON.parse(userId),
+        integrationName: data.integrationName,
+        sourceName: data.sourceName.label,
+        destinationName: data.destinationName.label,
+        syncWay: syncWay,
+      };
+      addIntegration.mutate(integrationData, {
+        onSuccess: (data) => {
+          // console.log("ittegration added==>", data);
+          setIntegrationID(data[0]?.id);
+          // using other.getIntegrationID callback send data[0]?.id to parent component
+          other.getIntegrationID(data[0]?.id);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
 
-    // console.log("integration nav submitted data", integrationData);
+    // // console.log("integration nav submitted data", integrationData);
     onClickHandeler();
   };
 

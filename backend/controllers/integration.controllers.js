@@ -55,7 +55,7 @@ const createIntegration = async (req, res) => {
 
 // get integration using id
 const getIntegrationById = async (req, res) => {
-  console.log("getIntegrationById requestd body", req.params.id);
+  // console.log("getIntegrationById requestd body", req.params.id);
   try {
     const integration = await prisma.integrations.findUnique({
       where: {
@@ -134,14 +134,13 @@ const getIntegrations = async (req, res) => {
 };
 
 const deleteIntegration = async (req, res) => {
-  console.log("requestd body", req.body);
+  // console.log("requestd body", req.body);
   // try {
   //   const integration = await prisma.integrations.delete({
   //     where: {
   //       id: req.body.id,
   //     },
   //   });
-
   //   if (integration) {
   //     response({
   //       res,
@@ -170,6 +169,56 @@ const deleteIntegration = async (req, res) => {
   //   console.log("error", error);
   //   return;
   // }
+};
+
+const updateIntegration = async (req, res) => {
+  // console.log("requested body", req.body);
+
+  try {
+    const integration = await prisma.integrations.update({
+      where: {
+        id: req.body.id,
+      },
+      data: {
+        integrationName: req.body.integrationName,
+        sourceName: req.body.sourceName,
+        destinationName: req.body.destinationName,
+        modificationDate: new Date(),
+        // schedule: req.body.schedule,
+        // fieldMapping: req.body.fieldMapping,
+        // status: req.body.status,
+        // syncWay: req.body.syncWay,
+      },
+    });
+
+    if (integration) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [integration],
+        message: "Integration updated successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Integration not updated",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in updating integration",
+    });
+    console.log("error", error);
+    return;
+  }
 };
 
 const addConfigurations = async (req, res) => {
@@ -221,7 +270,7 @@ const addConfigurations = async (req, res) => {
 };
 
 const getConfigurationById = async (req, res) => {
-  console.log("requestd body", req.params.id);
+  // console.log("requestd body", req.params.id);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {
@@ -264,6 +313,58 @@ const getConfigurationById = async (req, res) => {
     });
     console.log("error", error);
     // return;
+  }
+};
+
+const updateConfiguration = async (req, res) => {
+  // console.log("updateConfiguration", req.params);
+  // console.log("updateConfiguration", req.body);
+
+  try {
+    const configuration = await prisma.configurations.update({
+      where: {
+        id: req.body.id,
+      },
+      data: {
+        // systemName: req.body.systemName,
+        url: req.body.url,
+        accountId: req.body.accountId,
+        consumerKey: req.body.consumerKey,
+        consumerSecretKey: req.body.consumerSecretKey,
+        accessToken: req.body.accessToken,
+        accessSecretToken: req.body.accessSecretToken,
+        authenticationType: req.body.authenticationType,
+        modificationDate: new Date(),
+      },
+    });
+
+    if (configuration) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [configuration],
+        message: "Configuration updated successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Configuration not updated",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in updating configuration",
+    });
+    console.log("error", error);
+    return;
   }
 };
 
@@ -327,7 +428,9 @@ module.exports = {
   getIntegrations,
   getIntegrationById,
   deleteIntegration,
+  updateIntegration,
   addConfigurations,
   getConfigurationById,
+  updateConfiguration,
   getConfigurationByIntegrationId,
 };
