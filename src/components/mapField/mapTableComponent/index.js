@@ -38,6 +38,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   const [integrationId, setIntegrationId] = useState(null);
   const [mappedRecordDetails, setMappedRecordDetails] = useState([]);
   const [configurationData, setConfigurationData] = useState(null);
+  const [fieldId, setFieldId] = useState(null);
 
   // console.log("mappedRecordId", mappedRecordId);
   const apiResults = useQueries({
@@ -104,6 +105,11 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   const addFields = useMutation({
     // mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
     mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
+  });
+
+  const deleteFields = useMutation({
+    // mutationFn: tkFetch.post(`${API_BASE_URL}/deleteField`),
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/deleteField`),
   });
 
   // console.log("^^^^^^^^^^^^^^^", configData);
@@ -264,13 +270,13 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
       {
         Header: "Action",
         accessor: "action",
-        Cell: (prop) => {
+        Cell: (props) => {
           // if (
           //   prop.row.original.googleSheets !== "Add" &&
           //   prop.row.original.googleSheets !== "Update" &&
           //   prop.row.original.googleSheets !== "Delete"
           // ) {
-          return <i className="ri-delete-bin-5-line pe-auto px-3" />;
+          return <i className="ri-delete-bin-5-line pe-auto px-3" onClick={() => onClickDelete(props.row.original?.id)} />;
           // } else {
           //   return null;
           // }
@@ -319,6 +325,20 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
       },
     });
   };
+
+  const onClickDelete = (fieldId) => {
+    console.log("fieldId", fieldId);
+    setFieldId(fieldId);
+    deleteFields.mutate({id: fieldId}, {
+      onSuccess: (data) => {
+        TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+      },
+      onError: (error) => {
+        console.log("error", error);
+        TkToastError("Error for delete fields");
+      },
+    });
+  }
 
   const onClickCancel = () => {
     history.back();

@@ -133,6 +133,45 @@ const getIntegrations = async (req, res) => {
   }
 };
 
+const deleteIntegration = async (req, res) => {
+  console.log("requestd body", req.body);
+  // try {
+  //   const integration = await prisma.integrations.delete({
+  //     where: {
+  //       id: req.body.id,
+  //     },
+  //   });
+
+  //   if (integration) {
+  //     response({
+  //       res,
+  //       success: true,
+  //       status_code: 200,
+  //       data: [integration],
+  //       message: "Integration deleted successfully",
+  //     });
+  //     return;
+  //   } else {
+  //     response({
+  //       res,
+  //       success: false,
+  //       status_code: 400,
+  //       message: "Integration not deleted",
+  //     });
+  //     return;
+  //   }
+  // } catch (error) {
+  //   response({
+  //     res,
+  //     success: false,
+  //     status_code: 400,
+  //     message: "Error in deleting integration",
+  //   });
+  //   console.log("error", error);
+  //   return;
+  // }
+};
+
 const addConfigurations = async (req, res) => {
   // console.log("addConfigurations", req.body);
   try {
@@ -287,6 +326,7 @@ module.exports = {
   createIntegration,
   getIntegrations,
   getIntegrationById,
+  deleteIntegration,
   addConfigurations,
   getConfigurationById,
   getConfigurationByIntegrationId,

@@ -136,6 +136,37 @@ const getMappedRecordById = async (req, res) => {
   }
 };
 
+const DeleteMappedRecordByID = async (req, res) => {
+  console.log("DeleteMappedRecordByID", req.body.id);
+  try {
+    const recordMapping = await prisma.mappedRecords.delete({
+      where: {
+        id: req.body.id,
+      }
+    });
+
+    if (recordMapping) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [recordMapping],
+        message: "Mapped record deleted successfully",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in deleting Mapped record",
+    });
+    console.log("error", error);
+    return;
+  }
+}
+
 const getMappedFieldsDetails = async (req, res) => {
   // console.log("getMappedFieldsDetails", req.params.id);
   // const id = Number(req.params.id);
@@ -539,12 +570,52 @@ const getFields = async (req, res) => {
   }
 }
 
+const deleteField = async (req, res) => {
+  // console.log("deleteField", req.body);
+  try{
+    const field = await prisma.fields.delete({
+      where: {
+        id: req.body.id,
+      },
+    });
+    if (field) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: field,
+        message: "Field deleted successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Field not deleted",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in deleting field",
+    });
+    console.log("error", error);
+    return;
+  }
+}
+
 module.exports = {
   addMappedRecord,
   // getAllMappedRecords,
   getMappedRecordById,
+  DeleteMappedRecordByID,
   getMappedFieldsDetails,
   addFields,
   // addPrimaryFields,
-  getFields
+  getFields,
+  deleteField
 };

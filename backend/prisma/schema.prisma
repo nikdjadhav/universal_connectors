@@ -89,7 +89,7 @@ model Fields {
   userId                Int
   user                  Users         @relation(fields: [userId], references: [id])
   mappedRecordId        Int
-  mappedRecord          MappedRecords @relation(fields: [mappedRecordId], references: [id])
+  mappedRecord          MappedRecords @relation(fields: [mappedRecordId], references: [id], onDelete: Cascade)
   // FieldType             String
   sourceField           String
   destinationField      String

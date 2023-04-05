@@ -51,6 +51,10 @@ const DashBoard = () => {
     enabled: !!userId,
   });
 
+  // const deleteIntegration = useMutation({
+  //   mutationFn: tkFetch.post(`http://localhost:4000/v1/deleteIntegration`),
+  // });
+
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     // console.log("userID", userID);

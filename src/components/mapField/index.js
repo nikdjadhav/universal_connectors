@@ -7,6 +7,7 @@ import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { formatDate, formatTime } from "@/utils/date";
+import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 
 const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
@@ -18,6 +19,10 @@ const FieldMappingTable = () => {
     const id = sessionStorage.getItem("userId");
     setUserId(JSON.parse(id));
   }, [])
+
+  const deleteMappedRecord = useMutation({
+    mutationFn: tkFetch.post(`http://localhost:4000/v1/DeleteMappedRecordByID`)
+  })
 
   const apiResult = useQueries({
     queries: [
@@ -118,7 +123,7 @@ const FieldMappingTable = () => {
       Cell: (props) => {
         return (
           <>
-            <i className="ri-delete-bin-5-line px-2" />
+            <i className="ri-delete-bin-5-line px-2" onClick={()=>onClickDelete(props.row.original.id)} />
             <Link
               href={{
                 pathname: "/fieldMapping/mapTable",
@@ -142,6 +147,17 @@ const FieldMappingTable = () => {
   const onClickView = (row) => {
     // console.log("row", row);
   };
+
+  const onClickDelete = (mappedRecordId) => {
+    deleteMappedRecord.mutate({id: mappedRecordId}, {
+      onSuccess: (data) => {
+        // console.log("data", data);
+        TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+      }, onError: (error) => {
+        TkToastError("Error for delete record");
+      }
+    })
+  }
 
   return (
     <>

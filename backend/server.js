@@ -46,6 +46,7 @@ v1Router.get(
   "/getIntegrationById/:id",
   integrationController.getIntegrationById
 );
+v1Router.post("/deleteIntegration", integrationController.deleteIntegration);
 v1Router.post("/addConfigurations", integrationController.addConfigurations);
 v1Router.get(
   "/getConfigurationById/:id",
@@ -70,6 +71,7 @@ v1Router.get(
   "/getMappedRecordById/:id",
   fieldMappingController.getMappedRecordById
 );
+v1Router.post("/DeleteMappedRecordByID", fieldMappingController.DeleteMappedRecordByID);
 v1Router.get(
   "/getMappedFieldsDetails/:id",
   fieldMappingController.getMappedFieldsDetails
@@ -78,6 +80,7 @@ v1Router.get(
 v1Router.post("/addFields", fieldMappingController.addFields);
 // v1Router.post("/addPrimaryFields", fieldMappingController.addPrimaryFields);
 v1Router.get("/getFields/:id", fieldMappingController.getFields);
+v1Router.post("/deleteField", fieldMappingController.deleteField);
 
 app.listen(port, () => {
   console.log("Server is running on port " + port);
