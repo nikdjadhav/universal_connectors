@@ -49,8 +49,8 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   });
 
   const updateConfiguration = useMutation({
-    mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/updateConfiguration`),
+    // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/updateConfiguration`),
   });
 
   const {
@@ -60,10 +60,10 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     error,
   } = useQuery({
     queryKey: ["configurationsData", other.integrationID],
-    // queryFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
-    queryFn: tkFetch.get(
-      `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
-    ),
+    queryFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
+    // queryFn: tkFetch.get(
+    //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
+    // ),
     enabled: !!other.integrationID,
   });
 

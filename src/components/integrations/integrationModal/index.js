@@ -37,8 +37,8 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID:intId }
 
   const {data: integration, isError, isLoading, error} = useQuery({
     queryKey: ["getIntegrationById", intId],
-    // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${intId}`),
-    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${intId}`),
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${intId}`),
+    // queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${intId}`),
 
     enabled: !!intId,
   })

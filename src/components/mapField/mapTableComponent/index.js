@@ -15,7 +15,7 @@ import Address from "./Address";
 import classnames from "classnames";
 import TkLabel from "@/globalComponents/TkLabel";
 import { useRouter } from "next/router";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
@@ -344,6 +344,9 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     deleteFields.mutate({id: fieldId}, {
       onSuccess: (data) => {
         TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+        // QueryClient.invalidateQueries({
+        //   queryKey: ["getFields"],
+        // });
       },
       onError: (error) => {
         console.log("error", error);

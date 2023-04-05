@@ -50,8 +50,8 @@ const IntegrationCard = ({ modal, toggleModal }) => {
     error,
   } = useQuery({
     queryKey: ["integrations", userId],
-    // queryFn: tkFetch.post(`${API_BASE_URL}/getIntegrations/${userId}`),
-    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrations/${userId}`),
+    queryFn: tkFetch.post(`${API_BASE_URL}/getIntegrations/${userId}`),
+    // queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrations/${userId}`),
     enabled: !!userId,
   });
 

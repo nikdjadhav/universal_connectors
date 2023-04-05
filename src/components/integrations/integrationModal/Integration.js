@@ -53,7 +53,9 @@ const Integration = ({
   });
 
   const updateIntegration = useMutation({
-    mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateIntegration"),
+    // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateIntegration"),
+    mutationFn: tkFetch.post(`${API_BASE_URL}/updateIntegration`),
+
   });
 
   // console.log("other==>",other.integrationID);
@@ -64,10 +66,10 @@ const Integration = ({
     error,
   } = useQuery({
     queryKey: ["getIntegrationId", other.integrationID],
-    // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById${other.integrationID}`),
-    queryFn: tkFetch.get(
-      `http://localhost:4000/v1/getIntegrationById/${other.integrationID}`
-    ),
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById${other.integrationID}`),
+    // queryFn: tkFetch.get(
+    //   `http://localhost:4000/v1/getIntegrationById/${other.integrationID}`
+    // ),
     enabled: !!other.integrationID,
   });
   // console.log("int==>",integration);
