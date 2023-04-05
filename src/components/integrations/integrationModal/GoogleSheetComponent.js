@@ -50,7 +50,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   // });
   const {data: configurationsData, isError, isLoading, error} = useQuery({
     queryKey: ["configurations", other.integrationID],
-    queryFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
+    queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
     // queryFn: tkFetch.get(`http://localhost:4000/v1/getConfigurationById/${other.integrationID}`),
     enabled: !!other.integrationID,
   });

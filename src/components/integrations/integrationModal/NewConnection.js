@@ -60,7 +60,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     error,
   } = useQuery({
     queryKey: ["configurationsData", other.integrationID],
-    queryFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
+    queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
     // queryFn: tkFetch.get(
     //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
     // ),

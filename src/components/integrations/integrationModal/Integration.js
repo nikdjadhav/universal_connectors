@@ -54,7 +54,7 @@ const Integration = ({
 
   const updateIntegration = useMutation({
     // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateIntegration"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/updateIntegration`),
+    mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateIntegration`),
 
   });
 
