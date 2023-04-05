@@ -38,32 +38,37 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   const [integrationData, setIntegrationData] = useState();
   const [userId, setUserId] = useState(null);
 
-
   // const integration = useMutation({
   //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
   //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
 
   // });
-  const{data:integrations, isError, isLoading, error} = useQuery({
+  const {
+    data: integrations,
+    isError,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["integrations", userId],
-    queryFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+    // queryFn: tkFetch.post(`${API_BASE_URL}/getIntegrations/${userId}`),
+    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrations/${userId}`),
     enabled: !!userId,
   });
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     // console.log("userID", userID);
-    setUserId({
-      userId: JSON.parse(userID),
-    });
+    setUserId(JSON.parse(userID));
     // const id = {
     //   "userId": JSON.parse(userID)
     // }
   }, []);
 
+  // console.log("userId", userId);
+
   useEffect(() => {
     if (userId) {
-      setIntegrationData(integrations)
+      setIntegrationData(integrations);
       // integration.mutate(userId, {
       //   onSuccess: (data) => {
       //     setIntegrationData(data);
@@ -122,16 +127,22 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   return (
     <>
       <TkRow>
-        {isLoading ?  (
+        {isLoading ? (
           <div>loading...</div>
-        ) : (
+        ) : integrations.length ? (
           integrations.map((item) => {
             // console.log("item", item.sourceName);
 
             return (
               <TkCol lg={3} key={item.id}>
-                <TkCard className="mt-4" style={{ width: "300px", boxShadow: "2px 2px 2px 2px gray" }}>
-                  <TkCardBody className="p-4" onClick={() => onClickCard(item.id)}>
+                <TkCard
+                  className="mt-4"
+                  style={{ width: "300px", boxShadow: "2px 2px 2px 2px gray" }}
+                >
+                  <TkCardBody
+                    className="p-4"
+                    onClick={() => onClickCard(item.id)}
+                  >
                     <div className="text-center">
                       <Image
                         src={"/images/logo-sm.png"}
@@ -158,7 +169,11 @@ const IntegrationCard = ({ modal, toggleModal }) => {
               </TkCol>
             );
           })
-        ) }
+        ) : (
+          <div className="text-center">
+            <h3>No Integration Found</h3>
+          </div>
+        )}
       </TkRow>
       {/* *** radio button modal *** */}
       <TkModal

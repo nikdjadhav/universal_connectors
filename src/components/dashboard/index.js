@@ -45,16 +45,16 @@ const DashBoard = () => {
     error,
   } = useQuery({
     queryKey: ["integrations", userId],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations`),
+    // queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
+    queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrations/${userId}`),
+
     enabled: !!userId,
   });
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     // console.log("userID", userID);
-    setUserId({
-      userId: JSON.parse(userID),
-    });
+    setUserId(JSON.parse(userID));
     // const id = {
     //   "userId": JSON.parse(userID)
     // }
