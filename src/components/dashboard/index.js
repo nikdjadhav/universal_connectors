@@ -45,7 +45,7 @@ const DashBoard = () => {
     error,
   } = useQuery({
     queryKey: ["integrations", userId],
-    queryFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations`),
     enabled: !!userId,
   });
 
