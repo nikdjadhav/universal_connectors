@@ -48,7 +48,7 @@ const Details = () => {
   // });
   const {data: integration, isError, isLoading, error} = useQuery({
     queryKey: ["getIntegration", integrationID],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById${integrationID}`),
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${integrationID}`),
     // queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${integrationID}`),
     enabled: !!integrationID,
   })

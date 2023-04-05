@@ -66,7 +66,7 @@ const Integration = ({
     error,
   } = useQuery({
     queryKey: ["getIntegrationId", other.integrationID],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById${other.integrationID}`),
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${other.integrationID}`),
     // queryFn: tkFetch.get(
     //   `http://localhost:4000/v1/getIntegrationById/${other.integrationID}`
     // ),
