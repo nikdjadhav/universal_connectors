@@ -30,14 +30,6 @@ const DashBoard = () => {
   const [syncWay, setSyncWay] = useState();
   const [userId, setUserId] = useState(null);
 
-  // const integration = useMutation({
-  //   // queryKey: "integrations",
-  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
-
-  //   // enabled:  !!userID
-  // });
-
   const {
     data: integrations,
     isError,
@@ -46,39 +38,21 @@ const DashBoard = () => {
   } = useQuery({
     queryKey: ["integrations", userId],
     queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
-    // queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrations/${userId}`),
 
     enabled: !!userId,
   });
-
-  // const deleteIntegration = useMutation({
-  //   mutationFn: tkFetch.post(`http://localhost:4000/v1/deleteIntegration`),
-  // });
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     // console.log("userID", userID);
     setUserId(JSON.parse(userID));
-    // const id = {
-    //   "userId": JSON.parse(userID)
-    // }
   }, []);
 
   useEffect(() => {
     if (userId) {
       setIntegrationData(integrations);
-      // integration.mutate(userId, {
-      //   onSuccess: (data) => {
-      //     // console.log("data", data);
-      //     setIntegrationData(data);
-      //   },
-      //   onError: (error) => {
-      //     console.log("error", error);
-      //   },
-      // });
     }
   }, [integrations, userId]);
-  // console.log("integrationData", integrationData);
 
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
@@ -90,15 +64,8 @@ const DashBoard = () => {
     {
       [filterFields.dashboard.startDate]: null,
       [filterFields.dashboard.endDate]: null,
-      // [filterFields.projects.status]: null,
     }
   );
-
-  // useEffect(() => {
-  //   if (data) {
-  //     setDashboardData(data);
-  //   }
-  // }, [data]);
 
   useEffect(() => {
     let doSearch = true;
@@ -165,28 +132,7 @@ const DashBoard = () => {
     // console.log("onClickOpenModal", id);
     toggle();
     setIntegrationID(id);
-    // setRecordId(row?.id);
-    // setConfigData({
-    //   integrationName: row?.integrationName,
-    //   destination: { label: row?.destinationName },
-    //   source: { label: row?.sourceName },
-    // });
-    // setSyncWay(row?.syncWay);
-    // setConfigData({
-    //   integrationName: row?.integrationName,
-    //   destination: row?.destinationName,
-    //   source: row?.sourceName,
-    // });
   };
-
-  // useEffect(() => {
-  //   // const loggedInUser = localStorage.getItem("loginCredentials");
-  //   const loggedInUser = sessionStorage.getItem("loginCredentials");
-  //   console.log("loggedIn User login Credentials", loggedInUser);
-  //   if (loggedInUser === null) {
-  //     router.push("/login");
-  //   }
-  // }, []);
 
   const columns = [
     {
@@ -281,29 +227,11 @@ const DashBoard = () => {
           );
         }
       },
-      // Cell:() => {
-      //   return <Dropdown data={booleanValues}/>
-      // }
     },
     {
       Header: "Status",
       accessor: "status",
     },
-    // {
-    //   Header: "Logs",
-    //   accessor: "logs",
-    //   Cell: () => {
-    //     return (
-    //       <Link href="/logs" className="text-primary">
-    //         View Logs
-    //       </Link>
-    //     );
-    //   },
-    // },
-    // {
-    //   Header: "Error",
-    //   accessor: "error",
-    // },
     {
       Header: "Action",
       accessor: "action",
@@ -327,35 +255,6 @@ const DashBoard = () => {
     },
   ];
 
-  // const data = [
-  //   {
-  //     integrationName: "NSGS",
-  //     sourceName: "NetSuite™",
-  //     destinationName: "Google Sheets™",
-  //     creationDate: "04 May-2021 02:00 PM",
-  //     modifiedDate: "16 Jan-2022 12:00 PM",
-  //     schedule: (
-  //       <>
-  //         <Link href="/schedule/event" className="">
-  //           <span className="px-1">No</span>
-  //           <i className="ri-add-fill px-2"></i>
-  //         </Link>
-  //       </>
-  //     ),
-  //     fieldMapping: (
-  //       <>
-  //         <Link href="/fieldMapping/mapTable" className="">
-  //           <span className="px-2">Yes</span>
-  //           <i className="ri-edit-2-fill px-2"></i>
-  //         </Link>
-  //       </>
-  //     ),
-  //     status: "Completed",
-  //     logs: "no error message",
-  //     error: 0,
-  //     action: "Action",
-  //   },
-  // ];
   return (
     <>
       <TopBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />

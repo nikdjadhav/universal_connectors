@@ -2,7 +2,7 @@ const prisma = require("../lib/prisma");
 const response = require("../lib/response");
 
 const addMappedRecord = async (req, res) => {
-  console.log("AddMappedRecord", req.body);
+  // console.log("AddMappedRecord", req.body);
 
   try {
     const recordMapping = await prisma.mappedRecords.create({
@@ -146,12 +146,13 @@ const getMappedRecordById = async (req, res) => {
   }
 };
 
-const DeleteMappedRecordByID = async (req, res) => {
-  console.log("DeleteMappedRecordByID", req.body.id);
+const deleteMappedRecordByID = async (req, res) => {
+  // console.log("DeleteMappedRecordByID", req.body.id);
   try {
     const recordMapping = await prisma.mappedRecords.delete({
       where: {
-        id: req.body.id,
+        // id: req.body.id,
+        id: Number(req.params.id),
       },
     });
 
@@ -342,7 +343,7 @@ const addFields = async (req, res) => {
           res,
           success: true,
           status_code: 200,
-          data: fields,
+          data: [fields],
           message: "Fields added successfully",
         });
         return;
@@ -588,10 +589,11 @@ const getFields = async (req, res) => {
 
 const deleteField = async (req, res) => {
   // console.log("deleteField", req.body);
+  // console.log("deleteField", req.params);
   try {
     const field = await prisma.fields.delete({
       where: {
-        id: req.body.id,
+        id: Number(req.params.id),
       },
     });
     if (field) {
@@ -599,7 +601,7 @@ const deleteField = async (req, res) => {
         res,
         success: true,
         status_code: 200,
-        data: field,
+        data: [field],
         message: "Field deleted successfully",
       });
       return;
@@ -628,7 +630,7 @@ module.exports = {
   addMappedRecord,
   // getAllMappedRecords,
   getMappedRecordById,
-  DeleteMappedRecordByID,
+  deleteMappedRecordByID,
   getMappedFieldsDetails,
   addFields,
   // addPrimaryFields,

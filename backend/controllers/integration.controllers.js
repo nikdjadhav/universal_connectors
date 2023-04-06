@@ -172,12 +172,13 @@ const deleteIntegration = async (req, res) => {
 };
 
 const updateIntegration = async (req, res) => {
-  // console.log("requested body", req.body);
+  // console.log("updateIntegration", req.params);
+  // console.log("updateIntegration", req.body);
 
   try {
     const integration = await prisma.integrations.update({
       where: {
-        id: req.body.id,
+        id: Number(req.params.id),
       },
       data: {
         integrationName: req.body.integrationName,
@@ -323,7 +324,7 @@ const updateConfiguration = async (req, res) => {
   try {
     const configuration = await prisma.configurations.update({
       where: {
-        id: req.body.id,
+        id: Number(req.params.id),
       },
       data: {
         // systemName: req.body.systemName,

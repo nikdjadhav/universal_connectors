@@ -13,7 +13,7 @@ import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorText from "@/globalComponents/ErrorText";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 
@@ -46,6 +46,8 @@ const Integration = ({
   const [integrationID, setIntegrationID] = useState();
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
+
+  const queryClient  = useQueryClient();
 
   const addIntegration = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
@@ -141,7 +143,7 @@ const Integration = ({
   // }, [configData, setValue, syncWay]);
 
   const onSubmit = (data) => {
-    console.log(other.integrationID, "integration nav submitted data", data);
+    // console.log(other.integrationID, "integration nav submitted data", data);
     if (other.integrationID) {
       const updatedData = {
         id: other.integrationID,
@@ -149,10 +151,13 @@ const Integration = ({
         sourceName: data.sourceName.label,
         destinationName: data.destinationName.label,
       };
-      console.log("update");
+      // console.log("update");
       updateIntegration.mutate(updatedData, {
         onSuccess: (data) => {
           console.log("Updated Successfully", data);
+          queryClient.invalidateQueries({
+            queryKey: ["integrations"],
+          })
           // TkToastInfo("Updated Successfully", { hideProgressBar: true });
         },
         onError: (error) => {
@@ -161,7 +166,7 @@ const Integration = ({
         },
       });
     } else {
-      console.log("add");
+      // console.log("add");
       const userId = sessionStorage.getItem("userId");
       const integrationData = {
         userId: JSON.parse(userId),
@@ -172,6 +177,9 @@ const Integration = ({
       };
       addIntegration.mutate(integrationData, {
         onSuccess: (data) => {
+          queryClient.invalidateQueries({
+            queryKey: ["integrations"],
+          })
           // console.log("ittegration added==>", data);
           setIntegrationID(data[0]?.id);
           // using other.getIntegrationID callback send data[0]?.id to parent component

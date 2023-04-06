@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { actions } from "react-table";
 import { Tooltip } from "@nextui-org/react";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { formatDate, formatTime } from "@/utils/date";
@@ -15,14 +15,16 @@ const FieldMappingTable = () => {
   const [mappedRecordData, setMappedRecordData] = useState([]);
   const [userId, setUserId] = useState();
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     const id = sessionStorage.getItem("userId");
     setUserId(JSON.parse(id));
   }, [])
 
   const deleteMappedRecord = useMutation({
-    mutationFn: tkFetch.post(`http://localhost:4000/v1/DeleteMappedRecordByID`)
-    // mutationFn: tkFetch.post(`${API_BASE_URL}/DeleteMappedRecordByID`)
+    // mutationFn: tkFetch.deleteWithIdInUrl(`http://localhost:4000/v1/deleteMappedRecordByID`)
+    mutationFn: tkFetch.deleteWithIdInUrl(`${API_BASE_URL}/deleteMappedRecordByID`)
   })
 
   const apiResult = useQueries({
@@ -53,7 +55,7 @@ const FieldMappingTable = () => {
       setMappedRecordData(mappedFieldsData[0]);
     }
   }, [mappedFieldsData]);
-  console.log("mappedRecordData**********", mappedRecordData);
+  // console.log("mappedRecordData**********", mappedRecordData);
 
   const columnHead = [
     {
@@ -157,6 +159,9 @@ const FieldMappingTable = () => {
       onSuccess: (data) => {
         // console.log("data", data);
         TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+        queryClient.invalidateQueries({
+          queryKey: ["mappedFieldsDetails"],
+        })
       }, onError: (error) => {
         TkToastError("Error for delete record");
       }

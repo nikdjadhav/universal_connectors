@@ -88,13 +88,13 @@ const tkFetch = {
         });
   },
 
-  deleteWithId(url, options) {
-    if (!id) {
-      throw new Error("Id is required, for delete with ID function");
-    }
-    return async (id) => {
+  deleteWithIdInUrl(url, options) {
+    return async (data) => {
+      if (!data.id) {
+        throw new Error("Id is required, for delete with ID function");
+      }
       try {
-        const res = await axios.delete(url + `/${id}`, options);
+        const res = await axios.delete(url + `/${data.id}`, options);
         if (!res.data.success) {
           throw new Error(res.data.message);
         }
@@ -110,6 +110,29 @@ const tkFetch = {
       }
     };
   },
+
+  // deleteWithId(url, options) {
+  //   if (!id) {
+  //     throw new Error("Id is required, for delete with ID function");
+  //   }
+  //   return async (id) => {
+  //     try {
+  //       const res = await axios.delete(url + `/${id}`, options);
+  //       if (!res.data.success) {
+  //         throw new Error(res.data.message);
+  //       }
+  //       return res.data.data;
+  //     } catch (err) {
+  //       // status code is not between 200 and 300 , then axiois throws an error, we catch it and throw our message that we have returned from the server
+  //       const resData = err.response?.data;
+  //       if (resData && resData.message) {
+  //         throw new Error(resData.message);
+  //       } else {
+  //         throw new Error("Something went wrong on our side. Please try again later.");
+  //       }
+  //     }
+  //   };
+  // },
 
   patch(url, options) {
     return (body) =>

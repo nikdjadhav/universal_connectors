@@ -73,9 +73,9 @@ v1Router.get(
   "/getMappedRecordById/:id",
   fieldMappingController.getMappedRecordById
 );
-v1Router.post(
-  "/DeleteMappedRecordByID",
-  fieldMappingController.DeleteMappedRecordByID
+v1Router.delete(
+  "/deleteMappedRecordByID/:id",
+  fieldMappingController.deleteMappedRecordByID
 );
 v1Router.get(
   "/getMappedFieldsDetails/:id",
@@ -85,7 +85,7 @@ v1Router.get(
 v1Router.post("/addFields", fieldMappingController.addFields);
 // v1Router.post("/addPrimaryFields", fieldMappingController.addPrimaryFields);
 v1Router.get("/getFields/:id", fieldMappingController.getFields);
-v1Router.post("/deleteField", fieldMappingController.deleteField);
+v1Router.delete("/deleteField/:id", fieldMappingController.deleteField);
 
 app.listen(port, () => {
   console.log("Server is running on port " + port);

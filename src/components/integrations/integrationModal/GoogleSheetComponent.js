@@ -9,7 +9,7 @@ import { TkToastError } from "@/globalComponents/TkToastContainer";
 import { API_BASE_URL, netsuiteRecordTypes } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -30,6 +30,9 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const queryClient  = useQueryClient();
+
   const [integrationID, setIntegrationID] = useState();
   const [integrationsData, setIntegrationsData] = useState();
 
@@ -40,7 +43,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
 
   const updateConfiguration = useMutation({
     // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/updateConfiguration`),
+    mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateConfiguration`),
   });
   // console.log("other", other);
 
@@ -122,17 +125,20 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
     if (configurationsData?.length) {
       configurationsData.map((item) => {
         if (item.systemName === other.title) {
-          console.log("updated", item.systemName, "for", item.id);
+          // console.log("updated", item.systemName, "for", item.id);
           const updatedData = {
             id: item.id,
             systemName: other.title,
             url: data.googleSheetUrl,
             authenticationType: "abc",
           };
-          console.log("updatedData", updatedData)
+          // console.log("updatedData", updatedData)
           updateConfiguration.mutate(updatedData, {
             onSuccess: (data) => {
-              console.log("Updated Successfully", data);
+              queryClient.invalidateQueries({
+                queryKey: ["integrations"],
+              })
+              // console.log("Updated Successfully", data);
               // TkToastInfo("Updated Successfully", { hideProgressBar: true });
             },
             onError: (error) => {
@@ -143,7 +149,7 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
         }
       });
     } else {
-      console.log("added");
+      // console.log("added");
       const userId = sessionStorage.getItem("userId");
 
       const configurData = {
@@ -157,6 +163,9 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
 
       addConfigurations.mutate(configurData, {
         onSuccess: (data) => {
+          queryClient.invalidateQueries({
+            queryKey: ["integrations"],
+          })
           // console.log("addConfigurations data", data);
         },
         onError: (error) => {

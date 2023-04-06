@@ -15,7 +15,7 @@ import Address from "./Address";
 import classnames from "classnames";
 import TkLabel from "@/globalComponents/TkLabel";
 import { useRouter } from "next/router";
-import { QueryClient, useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
@@ -31,6 +31,8 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   const [selectedOption, setSelectedOption] = useState();
   // const [restletData, setRestletData] = useState({});
   // const router = useRouter();
+  
+  const queryClient = useQueryClient();
 
   const { register, handleSubmit, setValue, control, watch } = useForm();
   const [netsuiteValues, setNetsuiteValues] = useState([]);
@@ -120,8 +122,8 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   });
 
   const deleteFields = useMutation({
-    mutationFn: tkFetch.post(`${API_BASE_URL}/deleteField`),
-    // mutationFn: tkFetch.post(`http://localhost:4000/v1/deleteField`),
+    mutationFn: tkFetch.deleteWithIdInUrl(`${API_BASE_URL}/deleteField`),
+    // mutationFn: tkFetch.deleteWithIdInUrl(`http://localhost:4000/v1/deleteField`),
   });
 
   // console.log("^^^^^^^^^^^^^^^", configData);
@@ -330,6 +332,9 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     addFields.mutate(tableRecord, {
       onSuccess: (data) => {
         TkToastInfo("Added Successfully", { hideProgressBar: true });
+        queryClient.invalidateQueries({
+          queryKey: ["getFields"],
+        });
       },
       onError: (error) => {
         console.log("error", error);
@@ -344,9 +349,9 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     deleteFields.mutate({id: fieldId}, {
       onSuccess: (data) => {
         TkToastInfo("Deleted Successfully", { hideProgressBar: true });
-        // QueryClient.invalidateQueries({
-        //   queryKey: ["getFields"],
-        // });
+        queryClient.invalidateQueries({
+          queryKey: ["getFields"],
+        });
       },
       onError: (error) => {
         console.log("error", error);

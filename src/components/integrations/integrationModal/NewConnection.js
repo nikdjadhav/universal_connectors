@@ -8,7 +8,7 @@ import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { resolve } from "styled-jsx/css";
@@ -40,6 +40,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const queryClient  = useQueryClient();
 
   const [integrationsData, setIntegrationsData] = useState();
 
@@ -50,7 +51,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
 
   const updateConfiguration = useMutation({
     // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/updateConfiguration`),
+    mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateConfiguration`),
   });
 
   const {
@@ -144,7 +145,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     if (configurationsData?.length) {
       configurationsData.map((item) => {
         if (item.systemName === other.title) {
-          console.log("updated", item.systemName, "for", item.id);
+          // console.log("updated", item.systemName, "for", item.id);
           const updatedData = {
             id: item.id,
             systemName: other.title,
@@ -156,10 +157,13 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
             accessSecretToken: data.accessSecretToken,
             authenticationType: "abc",
           };
-          console.log("updatedData", updatedData)
+          // console.log("updatedData", updatedData)
           updateConfiguration.mutate(updatedData, {
             onSuccess: (data) => {
-              console.log("Updated Successfully", data);
+              // console.log("Updated Successfully", data);
+              queryClient.invalidateQueries({
+                queryKey: ["integrations"],
+              })
               // TkToastInfo("Updated Successfully", { hideProgressBar: true });
             },
             onError: (error) => {
@@ -170,7 +174,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
         }
       });
     } else {
-      console.log("added");
+      // console.log("added");
       const userId = sessionStorage.getItem("userId");
 
       const configurData = {
@@ -189,6 +193,9 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
 
       addConfigurations.mutate(configurData, {
         onSuccess: (data) => {
+          queryClient.invalidateQueries({
+            queryKey: ["integrations"],
+          })
           // console.log("addConfigurations data", data);
         },
         onError: (error) => {

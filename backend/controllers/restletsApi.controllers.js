@@ -124,7 +124,7 @@ const getRecordTypes = async (req, res) => {
 };
 
 const getOptions = async (req, res) => {
-  console.log("req", req.body);
+  // console.log("req", req.body);
 
   try {
     const authentication = {
