@@ -41,6 +41,7 @@ const Integration = ({
   } = useForm({
     resolver: yupResolver(schema),
   });
+  // console.log("config data in integration", configData)
 
   const [integrationsData, setIntegrationsData] = useState();
   const [integrationID, setIntegrationID] = useState();
@@ -75,6 +76,20 @@ const Integration = ({
     enabled: !!other.integrationID,
   });
   // console.log("int==>",integration);
+
+  useEffect(() => {
+    if(configData && syncWay){
+      setValue("sourceName", { label: configData.source });
+      setValue("destinationName", { label: configData.destination });
+      if (syncWay === "twoWaySync") {
+        setFirstTitle("System One");
+        setSecondTitle("System Two");
+      }else {
+        setFirstTitle("Source");
+        setSecondTitle("Destination");
+      }
+    }
+  },[configData, setValue, syncWay])
 
   useEffect(() => {
     if (other.integrationID) {
@@ -154,7 +169,7 @@ const Integration = ({
       // console.log("update");
       updateIntegration.mutate(updatedData, {
         onSuccess: (data) => {
-          console.log("Updated Successfully", data);
+          // console.log("Updated Successfully", data);
           queryClient.invalidateQueries({
             queryKey: ["integrations"],
           })
@@ -244,7 +259,7 @@ const Integration = ({
                         // defaultValue={sourceName[0]}
                         maxMenuHeight="130px"
                         // disabled={true}
-                        disabled={integrationsData ? true : false}
+                        disabled={integrationsData || configData ? true : false}
                       />
                     </>
                   )}
@@ -266,7 +281,7 @@ const Integration = ({
                         // defaultValue={destinationName[0]}
                         maxMenuHeight="130px"
                         // disabled={true}
-                        disabled={integrationsData ? true : false}
+                        disabled={integrationsData || configData ? true : false}
                       />
                     </>
                   )}

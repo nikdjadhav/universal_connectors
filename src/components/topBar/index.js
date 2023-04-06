@@ -27,7 +27,7 @@ const TopBar = ({ onSearchChange, onDateChange }) => {
             <TkInput
               onChange={onSearchChange}
               placeholder="Search"
-              isSearchField={true}
+              // isSearchField={true}
             />
           </TkCol>
         </TkRow>

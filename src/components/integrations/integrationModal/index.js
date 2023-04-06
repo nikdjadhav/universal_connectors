@@ -109,7 +109,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID:intId }
   const getIntegrationID = (id) => {
     setIntegrationID(id);
   };
-  // console.log("integrationID########", typeof(integrationID));
+  // console.log("integrationID########",integrationID);
 
   const tabs = {
     Integration: 1,

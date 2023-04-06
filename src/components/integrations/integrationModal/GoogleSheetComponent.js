@@ -9,7 +9,7 @@ import { TkToastError } from "@/globalComponents/TkToastContainer";
 import { API_BASE_URL, netsuiteRecordTypes } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -51,12 +51,38 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
   //   mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
   // });
-  const {data: configurationsData, isError, isLoading, error} = useQuery({
-    queryKey: ["configurations", other.integrationID],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
-    // queryFn: tkFetch.get(`http://localhost:4000/v1/getConfigurationById/${other.integrationID}`),
-    enabled: !!other.integrationID,
+  // const {data: configurationsData, isError, isLoading, error} = useQuery({
+  //   queryKey: ["configurations", other.integrationID],
+  //   queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
+  //   // queryFn: tkFetch.get(`http://localhost:4000/v1/getConfigurationById/${other.integrationID}`),
+  //   enabled: !!other.integrationID,
+  // });
+  const apiResult = useQueries({
+    queries: [
+      {
+        queryKey: ["configurationsData", other.integrationID],
+        queryFn: tkFetch.get(
+          `${API_BASE_URL}/getConfigurationById/${other.integrationID}`
+        ),
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
+        // ),
+        enabled: !!other.integrationID,
+      },
+      {
+        queryKey: ["integrationName", other.integrationID],
+        queryFn: tkFetch.get(
+          `${API_BASE_URL}/getIntegrationById/${other.integrationID}`
+        ),
+        enabled: !!other.integrationID,
+      }
+    ],
   });
+
+  const [ config, integrations ] = apiResult;
+  const { data: configurationsData, isError: configError, isLoading: configLoading, error: configErrorData } = config;
+  const { data: integrationData, isError: integrationError, isLoading: integrationLoading, error: integrationErrorData } = integrations;
+
   // console.log("configurationsData^^^^^^^^^^",other.integrationID, "^^", configurationsData);
 
   // const integration = useMutation({
@@ -65,8 +91,8 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
   // });
 
   useEffect(() => {
-    if (other.integrationID) {
-      setIntegrationID(JSON.parse(other.integrationID));
+    // if (other.integrationID) {
+    //   setIntegrationID(JSON.parse(other.integrationID));
 
       if(configurationsData?.length){
         configurationsData.map((item) => {
@@ -79,7 +105,12 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
           }
         });
       }
-    }
+    //   else
+    // // }
+    // //  if(integrationData)
+    //  {
+    //   setValue("integrationName", integrationData.integrationName);
+    // }
 
     // if (other.integrationID) {
       
@@ -154,7 +185,8 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
 
       const configurData = {
         userId: JSON.parse(userId),
-        integrationId: integrationID,
+        // integrationId: integrationID,
+        integrationId: other.integrationID,
         systemName: other.title,
         url: data.googleSheetUrl,
         authenticationType: "xyz",

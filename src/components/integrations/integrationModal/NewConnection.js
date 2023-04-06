@@ -8,7 +8,7 @@ import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { resolve } from "styled-jsx/css";
@@ -40,7 +40,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const queryClient  = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [integrationsData, setIntegrationsData] = useState();
 
@@ -54,19 +54,45 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateConfiguration`),
   });
 
-  const {
-    data: configurationsData,
-    isError,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["configurationsData", other.integrationID],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
-    // queryFn: tkFetch.get(
-    //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
-    // ),
-    enabled: !!other.integrationID,
+  const apiResult = useQueries({
+    queries: [
+      {
+        queryKey: ["configurationsData", other.integrationID],
+        queryFn: tkFetch.get(
+          `${API_BASE_URL}/getConfigurationById/${other.integrationID}`
+        ),
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
+        // ),
+        enabled: !!other.integrationID,
+      },
+      {
+        queryKey: ["integrationName", other.integrationID],
+        queryFn: tkFetch.get(
+          `${API_BASE_URL}/getIntegrationById/${other.integrationID}`
+        ),
+        enabled: !!other.integrationID,
+      }
+    ],
   });
+
+  const [ config, integrations ] = apiResult;
+  const { data: configurationsData, isError: configError, isLoading: configLoading, error: configErrorData } = config;
+  const { data: integrationData, isError: integrationError, isLoading: integrationLoading, error: integrationErrorData } = integrations;
+
+  // const {
+  //   data: configurationsData,
+  //   isError,
+  //   isLoading,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["configurationsData", other.integrationID],
+  //   queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
+  //   // queryFn: tkFetch.get(
+  //   //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
+  //   // ),
+  //   enabled: !!other.integrationID,
+  // });
 
   // console.log("configurationsData^^^^", configurationsData);
 
@@ -76,62 +102,70 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
   // });
 
   // console.log("other in new connection", other);
+  // console.log("configurationsData", configurationsData);
+  // console.log("integrationData", integrationData);
+
 
   useEffect(() => {
-    if (other.integrationID) {
-      if (configurationsData?.length) {
-        configurationsData.map((item) => {
-          if (item.systemName === other.title) {
-            // console.log("other.title", other.title);
-            setIntegrationsData(item);
-            setValue("integrationName", item.integration.integrationName);
-            setValue("accountID", item.accountId);
-            setValue("consumerKey", item.consumerKey);
-            setValue("consumerSecretKey", item.consumerSecretKey);
-            setValue("accessToken", item.accessToken);
-            setValue("accessSecretToken", item.accessSecretToken);
-          }
-        });
-      }
-      // getConfigurationById.mutate(
-      //   { integrationId: JSON.parse(other.integrationID) },
-      //   {
-      //     onSuccess: (data) => {
-      //       // console.log("getConfigurationById NS", data);
-      //       data.map((item) => {
-      //         if (item.systemName === other.title) {
-      //           setIntegrationsData(item);
-      //           setValue("integrationName", item.integration.integrationName);
-      //           setValue("accountID", item.accountId);
-      //           setValue("consumerKey", item.consumerKey);
-      //           setValue("consumerSecretKey", item.consumerSecretKey);
-      //           setValue("accessToken", item.accessToken);
-      //           setValue("accessSecretToken", item.accessSecretToken);
-      //         }
-      //       });
-      //     },
-      //     onError: (error) => {
-      //       console.log("error", error);
-      //     },
-      //   }
-      // );
+    // if (other.integrationID) {
+    if (configurationsData?.length) {
+      configurationsData.map((item) => {
+        if (item.systemName === other.title) {
+          console.log("item", item);
+          setIntegrationsData(item);
+          setValue("integrationName", item.integration.integrationName);
+          setValue("accountID", item.accountId);
+          setValue("consumerKey", item.consumerKey);
+          setValue("consumerSecretKey", item.consumerSecretKey);
+          setValue("accessToken", item.accessToken);
+          setValue("accessSecretToken", item.accessSecretToken);
+        }
+      });
+    } 
+    // else
+    // // if(integrationData)
+    // {
+    //   setValue("integrationName", integrationData[0].integrationName);
+    // }
+    // getConfigurationById.mutate(
+    //   { integrationId: JSON.parse(other.integrationID) },
+    //   {
+    //     onSuccess: (data) => {
+    //       // console.log("getConfigurationById NS", data);
+    //       data.map((item) => {
+    //         if (item.systemName === other.title) {
+    //           setIntegrationsData(item);
+    //           setValue("integrationName", item.integration.integrationName);
+    //           setValue("accountID", item.accountId);
+    //           setValue("consumerKey", item.consumerKey);
+    //           setValue("consumerSecretKey", item.consumerSecretKey);
+    //           setValue("accessToken", item.accessToken);
+    //           setValue("accessSecretToken", item.accessSecretToken);
+    //         }
+    //       });
+    //     },
+    //     onError: (error) => {
+    //       console.log("error", error);
+    //     },
+    //   }
+    // );
 
-      // integration.mutate(
-      //   {
-      //     id: other.integrationID,
-      //   },
-      //   {
-      //     onSuccess: (data) => {
-      //       // console.log("integration data*&*&", data[0]);
-      //       setValue("integrationName", data[0].integrationName);
-      //     },
-      //     onError: (error) => {
-      //       console.log("error", error);
-      //     },
-      //   }
-      // );
-    }
-  }, [configurationsData, other.integrationID, other.title, setValue]);
+    // integration.mutate(
+    //   {
+    //     id: other.integrationID,
+    //   },
+    //   {
+    //     onSuccess: (data) => {
+    //       // console.log("integration data*&*&", data[0]);
+    //       setValue("integrationName", data[0].integrationName);
+    //     },
+    //     onError: (error) => {
+    //       console.log("error", error);
+    //     },
+    //   }
+    // );
+    // }
+  }, [configurationsData, integrationData, other.integrationID, other.title, setValue]);
 
   const [integrationID, setIntegrationID] = useState();
   // console.log("other", other);
@@ -163,7 +197,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
               // console.log("Updated Successfully", data);
               queryClient.invalidateQueries({
                 queryKey: ["integrations"],
-              })
+              });
               // TkToastInfo("Updated Successfully", { hideProgressBar: true });
             },
             onError: (error) => {
@@ -179,7 +213,8 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
 
       const configurData = {
         userId: JSON.parse(userId),
-        integrationId: integrationID,
+        // integrationId: integrationID,
+        integrationId: other.integrationID,
         systemName: other.title,
         // url: data.url,
         accountId: data.accountID,
@@ -195,7 +230,7 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
         onSuccess: (data) => {
           queryClient.invalidateQueries({
             queryKey: ["integrations"],
-          })
+          });
           // console.log("addConfigurations data", data);
         },
         onError: (error) => {
