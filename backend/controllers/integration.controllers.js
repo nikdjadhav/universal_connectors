@@ -271,7 +271,8 @@ const addConfigurations = async (req, res) => {
 };
 
 const getConfigurationById = async (req, res) => {
-  // console.log("requestd body", req.params.id);
+  // console.log("requestd body", req.params);
+  // console.log("query", req.query);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {

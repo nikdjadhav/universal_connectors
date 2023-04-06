@@ -20,6 +20,7 @@ import { Controller, useForm } from "react-hook-form";
 import TkInput from "@/globalComponents/TkInput";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
+import Link from "next/link";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
   const {
@@ -108,13 +109,13 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   const onClickCard = (id) => {
     // console.log("Clicked", id);
     // router.push("/integrations/details");
-    router.push(
-      {
-        pathname: "/integrations/details",
-        query: { integrationId: id },
-      },
-      "/integrations/details"
-    );
+    // router.push(
+    //   {
+    //     pathname: "/integrations/details",
+    //     query: { integrationId: id },
+    //   },
+    //   "/integrations/details"
+    // );
   };
 
   const onSubmit = (data) => {
@@ -141,29 +142,31 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                 >
                   <TkCardBody
                     className="p-4"
-                    onClick={() => onClickCard(item.id)}
+                    // onClick={() => onClickCard(item.id)}
                   >
-                    <div className="text-center">
-                      <Image
-                        src={"/images/logo-sm.png"}
-                        alt="NetSuite-img"
-                        width={30}
-                        height={30}
-                        className="w-auto"
-                      />
-                      {/* <h5 className="mt-3">NetSuite™ Google Sheets™</h5> */}
-                      <h5 className="mt-3">
-                        {item.sourceName} {item.destinationName}
-                      </h5>
-                      <Image
-                        src={"/images/img/line-graph.jpg"}
-                        alt="graph-img"
-                        width={120}
-                        height={120}
-                        className="w-auto"
-                        unoptimized={true}
-                      />
-                    </div>
+                    <Link  href={`/integrations/${item.id}`}>
+                      <div className="text-center">
+                        <Image
+                          src={"/images/logo-sm.png"}
+                          alt="NetSuite-img"
+                          width={30}
+                          height={30}
+                          className="w-auto"
+                        />
+                        {/* <h5 className="mt-3">NetSuite™ Google Sheets™</h5> */}
+                        <h5 className="mt-3">
+                          {item.sourceName} {item.destinationName}
+                        </h5>
+                        <Image
+                          src={"/images/img/line-graph.jpg"}
+                          alt="graph-img"
+                          width={120}
+                          height={120}
+                          className="w-auto"
+                          unoptimized={true}
+                        />
+                      </div>
+                    </Link>
                   </TkCardBody>
                 </TkCard>
               </TkCol>

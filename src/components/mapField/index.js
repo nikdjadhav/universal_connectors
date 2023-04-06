@@ -130,18 +130,10 @@ const FieldMappingTable = () => {
         return (
           <>
             <i className="ri-delete-bin-5-line px-2" onClick={()=>onClickDelete(props.row.original.id)} />
-            <Link
-              href={{
-                pathname: "/fieldMapping/mapTable",
-                query: {
-                  mappedRecordId: JSON.stringify(props.row.original.id),
-                },
-              }}
-              as="/fieldMapping/mapTable"
-            >
+            <Link href={`/fieldMapping/${props.row.original.id}`} >
               <i
                 className="ri-eye-fill"
-                onClick={() => onClickView(props.row.original.id)}
+                // onClick={() => onClickView(props.row.original.id)}
               />
             </Link>
           </>
@@ -150,9 +142,9 @@ const FieldMappingTable = () => {
     },
   ];
 
-  const onClickView = (row) => {
-    // console.log("row", row);
-  };
+  // const onClickView = (row) => {
+  //   // console.log("row", row);
+  // };
 
   const onClickDelete = (mappedRecordId) => {
     deleteMappedRecord.mutate({id: mappedRecordId}, {

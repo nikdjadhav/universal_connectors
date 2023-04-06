@@ -198,14 +198,15 @@ const FieldMap = () => {
     addMappedRecord.mutate(mapprdRecord, {
       onSuccess: (data) => {
         // console.log("data==", data);
-        router.push(
-          {
-            pathname: "/fieldMapping/mapTable",
-            query: { mappedRecordId: JSON.stringify(data[0].id) },
-            // query: { mappedRecordId: JSON.stringify(4) }
-          },
-          "/fieldMapping/mapTable"
-        );
+        router.push(`/fieldMapping/${data[0].id}`)
+        // router.push(
+        //   {
+        //     pathname: "/fieldMapping/mapTable",
+        //     query: { mappedRecordId: JSON.stringify(data[0].id) },
+        //     // query: { mappedRecordId: JSON.stringify(4) }
+        //   },
+        //   "/fieldMapping/mapTable"
+        // );
       },
       onError: (error) => {
         console.log("error==", error);

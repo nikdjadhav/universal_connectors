@@ -31,6 +31,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   const [selectedOption, setSelectedOption] = useState();
   // const [restletData, setRestletData] = useState({});
   // const router = useRouter();
+  console.log("mappedRecordId^^^^^^^^^^^",mappedRecordId)
   
   const queryClient = useQueryClient();
 
@@ -318,7 +319,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
       (destinationFieldValue, index) => {
         return {
           userId: JSON.parse(userId),
-          mappedRecordId: mappedRecordId,
+          mappedRecordId: JSON.parse(mappedRecordId),
           sourceField: "NetSuite™",
           destinationField: "Google Sheets™",
           destinationFieldValue: destinationFieldValue,

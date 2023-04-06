@@ -9,20 +9,15 @@ import React, { useEffect, useState } from "react";
 import { json } from "react-router-dom";
 
 const MapTable = () => {
-  // const [recordType, setRecorsType] = useState();
+  const router = useRouter();
+  const  {rId}  = router.query;
+  console.log("rId", rId);
+
   const [parsedData, setParsedData] = useState(null);
   const [recordType, setRecordType] = useState(null);
-  // get data from router
-  // mappedrecordid = 1
-  const router = useRouter();
-  // console.log("router", router);
   const { mappedRecordId } = router.query;
-  // console.log("mappedRecordId", mappedRecordId);
-
-  let pageTitle = "";
 
   const pull_data = (data) => {
-    // console.log("data=====>", data);
     setRecordType(data);
   };
 
@@ -36,32 +31,17 @@ const MapTable = () => {
         <BreadCrumb
           parentTitle="Record /Field Mapping"
           parentLink="/fieldMapping"
-          // pageTitle="Map content"
           pageTitle={recordType}
         />
 
-        {/* <TkRow className="justify-content-cente">
-          <TkCol lg={5}>
-          <h5>Field Mapping</h5>
-          </TkCol>
-          <TkCol lg={1} className="offset-6">
-            <TkButton className="btn-primary">
-              Add
-            </TkButton>
-          </TkCol>
-        </TkRow> */}
-
         <TkContainer>
-          {/* <MapTableComponent data={parsedData} /> */}
-          {mappedRecordId ? (
+          {/* {mappedRecordId ? ( */}
             <MapTableComponent
-              mappedRecordId={JSON.parse(mappedRecordId)}
-              mappedRecordType={router.query.mappedRecordType}
+              mappedRecordId={rId}
+              // mappedRecordType={router.query.mappedRecordType}
               recordTypeTitle={pull_data}
-              // mappedRecordId={4}
-              // data={JSON.parse(recordType)}
             />
-          ) : null}
+          {/* ) : null} */}
         </TkContainer>
       </div>
     </>
