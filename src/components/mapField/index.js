@@ -3,11 +3,18 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { actions } from "react-table";
 import { Tooltip } from "@nextui-org/react";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { formatDate, formatTime } from "@/utils/date";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
+import TkLoader from "@/globalComponents/TkLoader";
+import TkNoData from "@/globalComponents/TkNoData";
 
 const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
@@ -20,12 +27,14 @@ const FieldMappingTable = () => {
   useEffect(() => {
     const id = sessionStorage.getItem("userId");
     setUserId(JSON.parse(id));
-  }, [])
+  }, []);
 
   const deleteMappedRecord = useMutation({
     // mutationFn: tkFetch.deleteWithIdInUrl(`http://localhost:4000/v1/deleteMappedRecordByID`)
-    mutationFn: tkFetch.deleteWithIdInUrl(`${API_BASE_URL}/deleteMappedRecordByID`)
-  })
+    mutationFn: tkFetch.deleteWithIdInUrl(
+      `${API_BASE_URL}/deleteMappedRecordByID`
+    ),
+  });
 
   const apiResult = useQueries({
     queries: [
@@ -33,8 +42,7 @@ const FieldMappingTable = () => {
         queryKey: ["mappedFieldsDetails", userId],
         queryFn: tkFetch.get(
           // `http://localhost:4000/v1/getMappedFieldsDetails/${(userId)}`
-          `${API_BASE_URL}/getMappedFieldsDetails/${(userId)}`
-
+          `${API_BASE_URL}/getMappedFieldsDetails/${userId}`
         ),
         enabled: !!userId,
       },
@@ -129,8 +137,11 @@ const FieldMappingTable = () => {
       Cell: (props) => {
         return (
           <>
-            <i className="ri-delete-bin-5-line px-2" onClick={()=>onClickDelete(props.row.original.id)} />
-            <Link href={`/fieldMapping/${props.row.original.id}`} >
+            <i
+              className="ri-delete-bin-5-line px-2"
+              onClick={() => onClickDelete(props.row.original.id)}
+            />
+            <Link href={`/fieldMapping/${props.row.original.id}`}>
               <i
                 className="ri-eye-fill"
                 // onClick={() => onClickView(props.row.original.id)}
@@ -147,26 +158,28 @@ const FieldMappingTable = () => {
   // };
 
   const onClickDelete = (mappedRecordId) => {
-    deleteMappedRecord.mutate({id: mappedRecordId}, {
-      onSuccess: (data) => {
-        // console.log("data", data);
-        TkToastInfo("Deleted Successfully", { hideProgressBar: true });
-        queryClient.invalidateQueries({
-          queryKey: ["mappedFieldsDetails"],
-        })
-      }, onError: (error) => {
-        TkToastError("Error for delete record");
+    deleteMappedRecord.mutate(
+      { id: mappedRecordId },
+      {
+        onSuccess: (data) => {
+          // console.log("data", data);
+          TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+          queryClient.invalidateQueries({
+            queryKey: ["mappedFieldsDetails"],
+          });
+        },
+        onError: (error) => {
+          TkToastError("Error for delete record");
+        },
       }
-    })
-  }
+    );
+  };
 
   return (
     <>
       {mappedFieldsLoading ? (
-        <div className="text-center">
-          <h4>Loading...</h4>
-        </div>
-      ) : (
+        <TkLoader />
+      ) : mappedRecordData.length > 0 ? (
         <TkTableContainer
           columns={columnHead}
           data={mappedRecordData || []}
@@ -175,6 +188,8 @@ const FieldMappingTable = () => {
           // defaultPageSize={10}
           // customPageSize={true}
         />
+      ) : (
+        <TkNoData />
       )}
     </>
   );

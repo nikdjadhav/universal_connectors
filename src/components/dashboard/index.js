@@ -21,6 +21,8 @@ import tkFetch from "@/utils/fetch";
 import Link from "next/link";
 import { formatDate, formatTime } from "@/utils/date";
 import { Spinner } from "reactstrap";
+import TkLoader from "@/globalComponents/TkLoader";
+import TkNoData from "@/globalComponents/TkNoData";
 
 const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
@@ -42,7 +44,7 @@ const DashBoard = () => {
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
-    if(userID){
+    if (userID) {
       setUserId(JSON.parse(userID));
     }
   }, []);
@@ -252,26 +254,15 @@ const DashBoard = () => {
     <>
       <TopBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />
       {isLoading ? (
-        <div
-          className="d-flex justify-content-center "
-          style={{ height: "100vh" }}
-        >
-          <Spinner />
-        </div>
-      ) : (
-        // {integrationData ? (
+        <TkLoader />
+      ) : integrationData.length > 0 ? (
         <TkTableContainer
           columns={columns}
           data={integrationData || []}
           tooltip="tooltip"
         />
-        // ) : (
-        // <div
-        //   className="d-flex justify-content-center "
-        //   style={{ height: "100vh" }}
-        // >
-        //   <h4 className="text-center">No Data Found</h4>
-        // </div>
+      ) : (
+        <TkNoData />
       )}
 
       <ModalButton

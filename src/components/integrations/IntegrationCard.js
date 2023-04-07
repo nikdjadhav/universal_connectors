@@ -22,6 +22,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
 import { Spinner } from "reactstrap";
+import TkLoader from "@/globalComponents/TkLoader";
+import TkNoData from "@/globalComponents/TkNoData";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
   const {
@@ -130,15 +132,8 @@ const IntegrationCard = ({ modal, toggleModal }) => {
     <>
       <TkRow>
         {isLoading ? (
-          <div
-            className="d-flex justify-content-center "
-            style={{ height: "100vh" }}
-          >
-            <Spinner />
-          </div>
-        ) : 
-        // integrations.length ?
-         (
+          <TkLoader />
+        ) : integrations.length > 0 ? (
           integrations.map((item) => {
             // console.log("item", item.sourceName);
 
@@ -180,13 +175,9 @@ const IntegrationCard = ({ modal, toggleModal }) => {
               </TkCol>
             );
           })
-        ) 
-        // : (
-        //   <div className="text-center">
-        //     <h3>No Integration Found</h3>
-        //   </div>
-        // )
-        }
+        ) : (
+          <TkNoData />
+        )}
       </TkRow>
       {/* *** radio button modal *** */}
       <TkModal
