@@ -24,6 +24,7 @@ import Link from "next/link";
 import { Spinner } from "reactstrap";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
+import TkContainer from "../TkContainer";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
   const {
@@ -176,7 +177,9 @@ const IntegrationCard = ({ modal, toggleModal }) => {
             );
           })
         ) : (
-          <TkNoData />
+          <TkContainer>
+            <TkNoData />
+          </TkContainer>
         )}
       </TkRow>
       {/* *** radio button modal *** */}
