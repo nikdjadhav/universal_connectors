@@ -8,8 +8,9 @@ import ModalButton from "./integrationModal";
 import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
+import { Spinner } from "reactstrap";
 
-const IntegrationDetails = ({id}) => {
+const IntegrationDetails = ({ id }) => {
   const [integrationData, setIntegrationData] = useState();
   const [integrationID, setIntegrationID] = useState();
 
@@ -74,31 +75,44 @@ const IntegrationDetails = ({id}) => {
                 />
               </TkCol>
               <TkCol lg={6} sm={6}>
-                <h5>
-                  {/* NetSuite™ to Google Sheets™ Two Way Integration for Smooth,
-                    Effortless & Swift Data Sync. */}
-                  {/* {integrationData.sourceName} to {integrationData.destinationName} */}
-                  {integrationData && integrationData[0]?.sourceName} to{" "}
-                  {integrationData && integrationData[0]?.destinationName}
-                  Two Way Integration for Smooth, Effortless & Swift Data Sync.
-                </h5>
-                <p>
-                  So, you’re seeking to Data Sync from NetSuite™ to Google
-                  Sheets™ or vice versa. Luckily, NSGS evolved an add-on that
-                  permits you to automate the system of going from NetSuite™ to
-                  Google Sheets™ and vice versa. Even more, you could get began
-                  out unfastened with a restrained trial. Import NetSuite™
-                  records right into Google Sheets™ and vice versa in real-time.
-                </p>
-                <TkButton className="btn-success" onClick={onSubmit}>
-                  Procced
-                </TkButton>
-                {/* <ModalButton
-                    modal={modal}
-                    setModal={setModal}
-                    toggle={toggle}
+                {isLoading ? (
+                  <div
+                    className="d-flex justify-content-center "
+                    style={{ height: "100vh" }}
                   >
-                  </ModalButton> */}
+                    <Spinner />
+                  </div>
+                ) : (
+                  <>
+                    <h5>
+                      {/* NetSuite™ to Google Sheets™ Two Way Integration for Smooth,
+  Effortless & Swift Data Sync. */}
+                      {/* {integrationData.sourceName} to {integrationData.destinationName} */}
+                      {integrationData && integrationData[0]?.sourceName} to{" "}
+                      {integrationData && integrationData[0]?.destinationName}
+                      Two Way Integration for Smooth, Effortless & Swift Data
+                      Sync.
+                    </h5>
+                    <p>
+                      So, you’re seeking to Data Sync from NetSuite™ to Google
+                      Sheets™ or vice versa. Luckily, NSGS evolved an add-on
+                      that permits you to automate the system of going from
+                      NetSuite™ to Google Sheets™ and vice versa. Even more, you
+                      could get began out unfastened with a restrained trial.
+                      Import NetSuite™ records right into Google Sheets™ and
+                      vice versa in real-time.
+                    </p>
+                    <TkButton className="btn-success" onClick={onSubmit}>
+                      Procced
+                    </TkButton>
+                    {/* <ModalButton
+  modal={modal}
+  setModal={setModal}
+  toggle={toggle}
+>
+</ModalButton> */}
+                  </>
+                )}
               </TkCol>
             </TkRow>
           </TkCardBody>

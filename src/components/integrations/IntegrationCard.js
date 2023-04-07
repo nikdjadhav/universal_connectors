@@ -21,6 +21,7 @@ import TkInput from "@/globalComponents/TkInput";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
+import { Spinner } from "reactstrap";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
   const {
@@ -129,8 +130,15 @@ const IntegrationCard = ({ modal, toggleModal }) => {
     <>
       <TkRow>
         {isLoading ? (
-          <div>loading...</div>
-        ) : integrations.length ? (
+          <div
+            className="d-flex justify-content-center "
+            style={{ height: "100vh" }}
+          >
+            <Spinner />
+          </div>
+        ) : 
+        // integrations.length ?
+         (
           integrations.map((item) => {
             // console.log("item", item.sourceName);
 
@@ -144,7 +152,7 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                     className="p-4"
                     // onClick={() => onClickCard(item.id)}
                   >
-                    <Link  href={`/integrations/${item.id}`}>
+                    <Link href={`/integrations/${item.id}`}>
                       <div className="text-center">
                         <Image
                           src={"/images/logo-sm.png"}
@@ -172,11 +180,13 @@ const IntegrationCard = ({ modal, toggleModal }) => {
               </TkCol>
             );
           })
-        ) : (
-          <div className="text-center">
-            <h3>No Integration Found</h3>
-          </div>
-        )}
+        ) 
+        // : (
+        //   <div className="text-center">
+        //     <h3>No Integration Found</h3>
+        //   </div>
+        // )
+        }
       </TkRow>
       {/* *** radio button modal *** */}
       <TkModal

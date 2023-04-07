@@ -20,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
 import { formatDate, formatTime } from "@/utils/date";
+import { Spinner } from "reactstrap";
 
 const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
@@ -41,7 +42,9 @@ const DashBoard = () => {
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
-    setUserId(JSON.parse(userID));
+    if(userID){
+      setUserId(JSON.parse(userID));
+    }
   }, []);
 
   useEffect(() => {
@@ -90,7 +93,7 @@ const DashBoard = () => {
     if (isSearchonUI(integrationData)) {
       const newData = searchAndFilterData(
         integrationData,
-        // data 
+        // data
         searchText,
         serachFields.dashboard,
         filters
@@ -107,7 +110,6 @@ const DashBoard = () => {
   }, [filters, integrationData, integrations, searchText]);
   // const searchonUI = isSearchonUI(data);
   const searchonUI = isSearchonUI(integrationData);
-
 
   const [modal, setModal] = useState(false);
 
@@ -249,19 +251,27 @@ const DashBoard = () => {
   return (
     <>
       <TopBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />
-      {integrationData ? (
+      {isLoading ? (
+        <div
+          className="d-flex justify-content-center "
+          style={{ height: "100vh" }}
+        >
+          <Spinner />
+        </div>
+      ) : (
+        // {integrationData ? (
         <TkTableContainer
           columns={columns}
           data={integrationData || []}
           tooltip="tooltip"
         />
-      ) : (
-        <div
-          className="d-flex justify-content-center "
-          style={{ height: "100vh" }}
-        >
-          <h4 className="text-center">No Data Found</h4>
-        </div>
+        // ) : (
+        // <div
+        //   className="d-flex justify-content-center "
+        //   style={{ height: "100vh" }}
+        // >
+        //   <h4 className="text-center">No Data Found</h4>
+        // </div>
       )}
 
       <ModalButton

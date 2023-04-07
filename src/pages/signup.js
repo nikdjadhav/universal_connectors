@@ -122,6 +122,7 @@ const Register = () => {
       onSuccess: (data) => {
         console.log("user creat ed", data);
         const user = {
+          userId: data[0].userId,
           firstName: data[0].firstName,
           lastName: data[0].lastName,
           email: data[0].email,
@@ -131,6 +132,7 @@ const Register = () => {
         };
         console.log("user", user);
         // localStorage.setItem("loginCredentials", JSON.stringify(user));
+        sessionStorage.setItem("userId", JSON.stringify(user.userId));
         sessionStorage.setItem("loginCredentials", user.token);
         router.push("/dashboard");
       },

@@ -99,7 +99,7 @@ const createUser = async (req, res) => {
 // };
 
 const getUser = async (req, res) => {
-  const reqBody = req.body;
+  const reqBody = req.params;
   // console.log("reqBody==>", reqBody);
   try {
     const decodedToken = jwt.verify(
@@ -123,6 +123,7 @@ const getUser = async (req, res) => {
         status_code: 200,
         data: [
           {
+            userId: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
@@ -154,7 +155,9 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const user = req.body;
-  // console.log("user==>", user);
+  // console.log("email==>", req.params);
+  // console.log("body==>", req.body);
+
   try {
     //  update user if user is exist
     const updatedUser = await prisma.users.update({

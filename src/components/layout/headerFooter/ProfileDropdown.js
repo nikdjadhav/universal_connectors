@@ -58,6 +58,7 @@ const ProfileDropdown = () => {
     // await signOut({ callbackUrl: "/login" });
     // localStorage.removeItem("loginCredentials");
     sessionStorage.removeItem("loginCredentials");
+    sessionStorage.removeItem("userId");
     router.push("/login");
   };
   return (
