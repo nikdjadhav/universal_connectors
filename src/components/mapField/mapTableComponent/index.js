@@ -15,11 +15,18 @@ import Address from "./Address";
 import classnames from "classnames";
 import TkLabel from "@/globalComponents/TkLabel";
 import { useRouter } from "next/router";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import { useFieldArray } from "react-hook-form";
+import TkLoader from "@/globalComponents/TkLoader";
+import TkNoData from "@/globalComponents/TkNoData";
 
 const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   // const [control, setControl] = useState(null);
@@ -31,8 +38,8 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   const [selectedOption, setSelectedOption] = useState();
   // const [restletData, setRestletData] = useState({});
   // const router = useRouter();
-  console.log("mappedRecordId^^^^^^^^^^^",mappedRecordId)
-  
+  // console.log("mappedRecordId^^^^^^^^^^^",mappedRecordId)
+
   const queryClient = useQueryClient();
 
   const { register, handleSubmit, setValue, control, watch } = useForm();
@@ -72,10 +79,9 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
         //   `http://localhost:4000/v1/getRecordTypes`,
         //   { params: configurationData }
         // ),
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getRecordTypes`,
-          { params: configurationData }
-        ),
+        queryFn: tkFetch.get(`${API_BASE_URL}/getRecordTypes`, {
+          params: configurationData,
+        }),
         enabled: !!configurationData,
       },
       {
@@ -83,9 +89,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
         // queryFn: tkFetch.get(
         //   `http://localhost:4000/v1/getFields/${mappedRecordId}`
         // ),
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getFields/${mappedRecordId}`
-        ),
+        queryFn: tkFetch.get(`${API_BASE_URL}/getFields/${mappedRecordId}`),
         enabled: !!mappedRecordId,
       },
     ],
@@ -127,7 +131,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     // mutationFn: tkFetch.deleteWithIdInUrl(`http://localhost:4000/v1/deleteField`),
   });
 
-  // console.log("^^^^^^^^^^^^^^^", configData);
+  console.log("^^^^^^^^^^^^^^^", mappedRecordData);
   // console.log("restletOptions**********", restletOptions);
   useEffect(() => {
     if (configData) {
@@ -151,33 +155,38 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     }
 
     if (restletOptions) {
-      const entries = Object.entries(restletOptions[0]?.body[0]);
-      entries.map(([key, value], index) => {
-        // console.log("value", value);
-        setNetsuiteValues((netsuiteValues) => [
-          ...netsuiteValues,
-          { label: value, value: key },
-        ]);
-      });
-      // ***set lines values in netsuiteValues
-      restletOptions[0]?.lines.map((item) => {
-        const lineEntries = Object.entries(item);
-        lineEntries.map(([key, value], index) => {
-          //  console.log("value", value);
-          const valueEntries = Object.entries(value);
-          valueEntries.map(([key1, value1], index) => {
-            // console.log("value1", value1);
-            const value1Entries = Object.entries(value1);
-            value1Entries.map(([key2, value2], index) => {
-              // console.log("value2", value2);
-              setNetsuiteValues((netsuiteValues) => [
-                ...netsuiteValues,
-                { label: value2, value: key2 },
-              ]);
+      if (
+        restletOptions[0].body.length > 0 ||
+        restletOptions[0].lines.length > 0
+      ) {
+        const entries = Object.entries(restletOptions[0]?.body[0]);
+        entries.map(([key, value], index) => {
+          // console.log("value", value);
+          setNetsuiteValues((netsuiteValues) => [
+            ...netsuiteValues,
+            { label: value, value: key },
+          ]);
+        });
+        // ***set lines values in netsuiteValues
+        restletOptions[0]?.lines.map((item) => {
+          const lineEntries = Object.entries(item);
+          lineEntries.map(([key, value], index) => {
+            //  console.log("value", value);
+            const valueEntries = Object.entries(value);
+            valueEntries.map(([key1, value1], index) => {
+              // console.log("value1", value1);
+              const value1Entries = Object.entries(value1);
+              value1Entries.map(([key2, value2], index) => {
+                // console.log("value2", value2);
+                setNetsuiteValues((netsuiteValues) => [
+                  ...netsuiteValues,
+                  { label: value2, value: key2 },
+                ]);
+              });
             });
           });
         });
-      });
+      }
     }
   }, [configData, mappedRecordDetails.source, restletOptions]);
   // console.log("integration id==>", integrationId);
@@ -291,7 +300,12 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
           //   prop.row.original.googleSheets !== "Update" &&
           //   prop.row.original.googleSheets !== "Delete"
           // ) {
-          return <i className="ri-delete-bin-5-line pe-auto px-3" onClick={() => onClickDelete(props.row.original?.id)} />;
+          return (
+            <i
+              className="ri-delete-bin-5-line pe-auto px-3"
+              onClick={() => onClickDelete(props.row.original?.id)}
+            />
+          );
           // } else {
           //   return null;
           // }
@@ -329,7 +343,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     );
 
     setTableRecords(tableRecord);
-    // console.log("tableRecord", tableRecord);
+    console.log("tableRecord", tableRecord);
     addFields.mutate(tableRecord, {
       onSuccess: (data) => {
         TkToastInfo("Added Successfully", { hideProgressBar: true });
@@ -347,19 +361,22 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   const onClickDelete = (fieldId) => {
     console.log("fieldId", fieldId);
     setFieldId(fieldId);
-    deleteFields.mutate({id: fieldId}, {
-      onSuccess: (data) => {
-        TkToastInfo("Deleted Successfully", { hideProgressBar: true });
-        queryClient.invalidateQueries({
-          queryKey: ["getFields"],
-        });
-      },
-      onError: (error) => {
-        console.log("error", error);
-        TkToastError("Error for delete fields");
-      },
-    });
-  }
+    deleteFields.mutate(
+      { id: fieldId },
+      {
+        onSuccess: (data) => {
+          TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+          queryClient.invalidateQueries({
+            queryKey: ["getFields"],
+          });
+        },
+        onError: (error) => {
+          console.log("error", error);
+          TkToastError("Error for delete fields");
+        },
+      }
+    );
+  };
 
   const onClickCancel = () => {
     history.back();
@@ -433,13 +450,8 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
       <hr />
       <form onSubmit={handleSubmit(onSubmit)}>
         {fieldsLoading ? (
-          <div>
-            {/* no data found */}
-            <div className="text-center py-4">
-              <h4>Loadding...</h4>
-            </div>
-          </div>
-        ) : (
+          <TkLoader />
+        ) : integrationId ? (
           <>
             <TkTableContainer
               columns={columns}
@@ -448,6 +460,8 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
               thClass="text-dark"
             />
           </>
+        ) : (
+          <TkNoData />
         )}
         {/* <TkTableContainer
           columns={columns}
