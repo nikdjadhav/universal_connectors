@@ -34,7 +34,7 @@ app.use("/v1", v1Router);
 
 // *** user routes ***
 v1Router.post("/", userController.createUser);
-v1Router.post("/login", userController.userLogin);
+v1Router.get("/login", userController.userLogin);
 v1Router.post("/verifyToken", userController.verifyToken);
 v1Router.post("/getUser", userController.getUser);
 v1Router.post("/updateUser", userController.updateUser);

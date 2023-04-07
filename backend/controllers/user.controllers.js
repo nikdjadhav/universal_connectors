@@ -156,7 +156,7 @@ const updateUser = async (req, res) => {
   const user = req.body;
   // console.log("user==>", user);
   try {
-  //  update user if user is exist
+    //  update user if user is exist
     const updatedUser = await prisma.users.update({
       where: {
         email: user.email,
@@ -183,17 +183,16 @@ const updateUser = async (req, res) => {
           },
         ],
         message: "user updated successfully",
-      })
-    }else{
+      });
+    } else {
       response({
         res,
         success: false,
         status_code: 400,
         data: [],
         message: "user not updated",
-      })
+      });
     }
-
   } catch (error) {
     response({
       res,
@@ -201,48 +200,64 @@ const updateUser = async (req, res) => {
       status_code: 400,
       data: [],
       message: "user not updated",
-    })
+    });
   }
-}
+};
 
 // *** route to check if the user is logged in or not ***
 // *** to fetch a single user from the database ***
 
 // *** using jwt token ***
 const userLogin = async (req, res) => {
-  // console.log(req.body);
-  const logedinUser = await prisma.users.findUnique({
-    where: {
-      loginUser: {
-        email: req.body.email,
-        password: req.body.password,
-      },
-    },
-  });
-  // console.log(logedinUser);
-  if (logedinUser) {
-    const token = jwt.sign(
-      { email: req.body.email, password: req.body.password },
-      process.env.ACCESS_TOKEN_SECRET
-    );
-    response({
-      res,
-      success: true,
-      status_code: 200,
-      data: [
-        {
-          // success: true,
-          userId: logedinUser.id,
-          firstName: logedinUser.firstName,
-          lastName: logedinUser.lastName,
-          email: logedinUser.email,
-          verrified: true,
-          token: token,
+  // console.log("req", req.query);
+  try {
+    const logedinUser = await prisma.users.findUnique({
+      where: {
+        loginUser: {
+          email: req.query.email,
+          password: req.query.password,
         },
-      ],
-      message: "User logged in successfully",
+      },
     });
-  } else {
+    // console.log(logedinUser);
+    if (logedinUser) {
+      const token = jwt.sign(
+        { email: req.query.email, password: req.query.password },
+        process.env.ACCESS_TOKEN_SECRET
+      );
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [
+          {
+            // success: true,
+            userId: logedinUser.id,
+            firstName: logedinUser.firstName,
+            lastName: logedinUser.lastName,
+            email: logedinUser.email,
+            verrified: true,
+            token: token,
+          },
+        ],
+        message: "User logged in successfully",
+      });
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        data: [
+          {
+            success: false,
+            verrified: false,
+            token: null,
+          },
+        ],
+        message: "User not found",
+      });
+    }
+  } catch (error) {
     response({
       res,
       success: false,

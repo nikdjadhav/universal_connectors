@@ -802,8 +802,9 @@ const serachFields =  {
 
 const filterFields = {
   dashboard: {
-    startDate: "startDate",
-    endDate: "endDate",
+    integrationName: "integrationName",
+    // creationDate: "creationDate",
+    // endDate: "endDate",
     sourceName: "sourceName",
     destinationName: "destinationName"
   }

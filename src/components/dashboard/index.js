@@ -1,7 +1,6 @@
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import {
   API_BASE_URL,
-  data,
   filterFields,
   minSearchLength,
   serachFields,
@@ -17,18 +16,16 @@ import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import ModalButton from "../integrations/integrationModal";
 import TopBar from "../topBar";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
-import { FormErrorBox } from "@/globalComponents/ErrorText";
 import Link from "next/link";
-import { Spinner } from "reactstrap";
 import { formatDate, formatTime } from "@/utils/date";
 
 const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
   const [integrationID, setIntegrationID] = useState();
-  const [syncWay, setSyncWay] = useState();
   const [userId, setUserId] = useState(null);
+  const [dashboardData, setDashboardData] = useState();
 
   const {
     data: integrations,
@@ -44,26 +41,27 @@ const DashBoard = () => {
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
-    // console.log("userID", userID);
     setUserId(JSON.parse(userID));
   }, []);
 
   useEffect(() => {
     if (userId) {
       setIntegrationData(integrations);
+      // setDashboardData(integrations);
     }
   }, [integrations, userId]);
+  // console.log("integrations=>", integrationData);
 
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
-  const [dashboardData, setDashboardData] = useState(data);
   const [urlParamsStr, setUrlParamsStr] = React.useState("");
 
   const [filters, updateFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      [filterFields.dashboard.startDate]: null,
-      [filterFields.dashboard.endDate]: null,
+      [filterFields.dashboard.integrationName]: null,
+      // [filterFields.dashboard.startDate]: null,
+      // [filterFields.dashboard.endDate]: null,
     }
   );
 
@@ -82,20 +80,23 @@ const DashBoard = () => {
     }
 
     if (!doSearch && !doFilter) {
-      // if data is undefined then set it to empty array
-      setDashboardData(data || []);
+      // setDashboardData(integrations || []);
+      setIntegrationData(integrations || []);
       setUrlParamsStr("");
       return;
     }
 
-    if (isSearchonUI(data)) {
+    // if (isSearchonUI(data)) {
+    if (isSearchonUI(integrationData)) {
       const newData = searchAndFilterData(
-        data,
+        integrationData,
+        // data 
         searchText,
         serachFields.dashboard,
         filters
       );
-      setDashboardData(newData);
+      // setDashboardData(newData);
+      setIntegrationData(newData);
     } else {
       const urlParamString = convertToURLParamsString({
         [searchParamName]: searchText,
@@ -103,19 +104,17 @@ const DashBoard = () => {
       });
       setUrlParamsStr(urlParamString);
     }
-  }, [filters, searchText]);
-  const searchonUI = isSearchonUI(data);
+  }, [filters, integrationData, integrations, searchText]);
+  // const searchonUI = isSearchonUI(data);
+  const searchonUI = isSearchonUI(integrationData);
+
 
   const [modal, setModal] = useState(false);
-  const [recordId, setRecordId] = useState(null);
-  const [configData, setConfigData] = useState(null);
 
   const updateSearchText = (e) => {
     if (e.target.value.length >= minSearchLength) {
-      // console.log("updateSearchText", e.target.value);
       setSearchText(e.target.value);
     } else {
-      // console.log("updateSearchText", e.target.value);
       setSearchText(""); // dont pass any search text to search filter if saerch text is less than minSearchLength (currently 3)(at time of wirting this comment)
     }
   };
@@ -129,7 +128,6 @@ const DashBoard = () => {
   }, [modal]);
 
   const onClickOpenModal = (id) => {
-    // console.log("onClickOpenModal", id);
     toggle();
     setIntegrationID(id);
   };
@@ -155,7 +153,6 @@ const DashBoard = () => {
         const time = formatTime(props.row.original?.creationDate);
         return (
           <>
-            {/* {dates.map((d) => { */}
             <Tooltip
               color="invert"
               content={`${date} ${time}`}
@@ -163,7 +160,6 @@ const DashBoard = () => {
             >
               <div>{date}</div>
             </Tooltip>
-            {/* })} */}
           </>
         );
       },
@@ -236,18 +232,13 @@ const DashBoard = () => {
       Header: "Action",
       accessor: "action",
       Cell: (props) => {
-        // console.log("props.row.original?.id", props.row.original);
         return (
           <>
-            {/* <i className="ri-delete-bin-5-line "></i> */}
-            {/* <Link onClick={onClickOpenModal}> */}
-            {/* <i className="ri-edit-2-fill mx-2" onClick={() => onClickOpenModal(props.row.original?.id)} /> */}
             <i
               className="ri-edit-2-fill mx-2"
               onClick={() => onClickOpenModal(props.row.original?.id)}
             />
 
-            {/* </Link> */}
             <i className="ri-eye-fill"></i>
           </>
         );
@@ -263,14 +254,12 @@ const DashBoard = () => {
           columns={columns}
           data={integrationData || []}
           tooltip="tooltip"
-          // Toolbar={<TableToolBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />}
         />
       ) : (
         <div
           className="d-flex justify-content-center "
           style={{ height: "100vh" }}
         >
-          {/* <Spinner /> */}
           <h4 className="text-center">No Data Found</h4>
         </div>
       )}
@@ -280,9 +269,6 @@ const DashBoard = () => {
         setModal={setModal}
         toggle={toggle}
         integrationID={integrationID}
-        // recordId={recordId}
-        // configData={configData}
-        // syncWay={syncWay}
       />
     </>
   );

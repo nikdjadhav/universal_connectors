@@ -112,7 +112,7 @@ const FieldMap = () => {
   // console.log("integrationsData", integrationsData);
 
   useEffect(() => {
-    if (configData) {
+    // if (configData) {
       if (configData) {
         configData.map((item) => {
           // console.log("==item==>", item);
@@ -148,7 +148,7 @@ const FieldMap = () => {
       } else {
         setRecords([]);
       }
-    }
+    // }
   }, [configData, restletError, restletRecordTypes, setValue]);
   // console.log("configig data", configurationData);
 

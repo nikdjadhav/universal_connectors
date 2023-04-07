@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { getSession, signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
@@ -29,7 +29,7 @@ import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
 import TkForm from "@/globalComponents/TkForm";
 // import { ToastContainer, toast, Slide } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { AuthContext } from "@/utils/Contexts";
 import useGlobalStore from "@/utils/globalStore";
@@ -38,9 +38,9 @@ import useGlobalStore from "@/utils/globalStore";
 // *** using firebase ***
 import { app } from "../firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-const auth =  getAuth(app);
-const googleProvider = new  GoogleAuthProvider();
-
+import { Spinner } from "reactstrap";
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
 const schema = Yup.object({
   email: Yup.string()
@@ -69,6 +69,7 @@ const schema = Yup.object({
 
 const Login = () => {
   const router = useRouter();
+  const [loginUserDetails, setLoginUserDetails] = useState(null);
 
   useEffect(() => {
     const token = sessionStorage.getItem("loginCredentials");
@@ -79,27 +80,18 @@ const Login = () => {
     }
   }, [router]);
 
-  // // if()
+  const { data, isError, isLoading, error } = useQuery({
+    queryKey: ["user", loginUserDetails],
+    queryFn: tkFetch.get(`${API_BASE_URL}/login`, {
+      params: loginUserDetails,
+    }),
+    enabled: !!loginUserDetails,
+  });
 
-  // const [isUserAuthenticated, sessionData] = useGlobalStore((state) => [
-  //   state.isUserAuthenticated,
-  //   state.userSessionData,
-  // ]);
-
-  // if(sessionData){
-  //   console.log("authenticated.....");
-  // }else{
-  //   console.log("not-authenticated....");
-  // }
-
-  // *** get data from backend ***
-  const queryClient = useQueryClient();
-  // const { data, isLoading, isError, error } = useQuery({
-  //   queryKey: ["u"],
-  //   queryFn: tkFetch.get("http://localhost:4000/v1/users"),
-  //   // fetch("http://localhost:4000/v1/users")
-  // });
-  // console.log("Registered users", data);
+  console.log("loggedInUser", data);
+  console.log("isError", isError);
+  console.log("isLoading", isLoading);
+  console.log("error", error);
 
   const {
     register,
@@ -109,115 +101,20 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
-  // const notify = () => toast("Wow so easy!");
-  console.log(`${API_BASE_URL}/login`)
-
-  const user = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/login"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/login`)
-  });
-
   const onSubmit = async (userData) => {
-    const apiData = {
+    setLoginUserDetails({
       email: userData.email,
       password: userData.password,
-    };
-    // console.log("apiData", apiData);
-    user.mutate(apiData, {
-      onSuccess: (data) => {
-        // TkToastSuccess("User Updated Successfully");
-        console.log("success", data);
-        const user = {
-          userId: data[0].userId,
-          firstName: data[0].firstName,
-          lastName: data[0].lastName,
-          email: data[0].email,
-          password: data[0].password,
-          token: data[0].token,
-        };
-        console.log("user==>", user);
-        // localStorage.setItem("loginCredentials", JSON.stringify(user.token));
-        sessionStorage.setItem("loginCredentials", user.token);
-        sessionStorage.setItem("userId", JSON.stringify(user.userId));
-        router.push("/dashboard");
-      },
-      onError: (error) => {
-        console.log("error==>", error);
-        TkToastError("Invalid Credentials");
-        //TODO: report error to error reporting service
-      },
     });
-
-    // console.log("Registered users", data);
-    // if (data.success) {
-    //   const user = {
-    //     email: userData.data.email,
-    //     password: userData.data.password,
-    //   }
-    //   console.log("user", user);
-    //   localStorage.setItem("loginCredentials", JSON.stringify(user));
-    //   // localStorage.setItem("email", userData.data.email);
-    //   // localStorage.setItem("password", userData.data.password);
-    //   router.push("/dashboard");
-    // }else{
-    //   TkToastError("Invalid Credentials");
-    // }
-
-    // const loggedInUser = await fetch("http://localhost:4000/login", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // }).then(async (res) => {
-    //   // const data = await res.json();
-    //   if (res.error) {
-    //     // TkToastError(data.message, { autoClose: 5000 });
-    //     console.log("error", res.error);
-    //   }
-    //   else {
-    //     const userData = await res.json();
-    //     if (userData.success) {
-    //       console.log('user login success', userData.data);
-    //       const user = {
-    //         email: userData.data.email,
-    //         password: userData.data.password,
-    //       }
-    //       console.log("user", user);
-    //       // localStorage.setItem("loginCredentials", JSON.stringify(user));
-    //       localStorage.setItem("email", userData.data.email);
-    //       localStorage.setItem("password", userData.data.password);
-    //       router.push("/dashboard");
-    //     } else {
-    //       console.log("api response test", userData);
-    //       // alert("Invalid Credentials");
-    //       TkToastError("Invalid Credentials");
-    //     }
-    //   }
-    // }).catch((err) => {
-    //   TkToastError("Some Error occured, Please try again later");
-    //   console.log("err", err);
-    // });
-
-    // //implement auth logic here
-    // signIn("credentials", {
-    //   email: data.email,
-    //   password: data.password,
-    //   redirect: false,
-    // })
-    //   .then((res) => {
-    //     if (res.error) {
-    //       TkToastError(res.error, { autoClose: 5000 });
-    //     } else {
-    //       // console.log("res", res.status);
-    //       router.push("/dashboard");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     TkToastError("Some Error occured, Please try again later", { autoClose: 5000 });
-    //     console.log("err", err);
-    //   });
   };
+  if (data) {
+    console.log("user logged in successfully");
+    sessionStorage.setItem("loginCredentials", data[0].token);
+    sessionStorage.setItem("userId", JSON.stringify(data[0].userId));
+    router.push("/dashboard");
+  } else if (isError) {
+    TkToastError("Invalid Credentials");
+  }
 
   const googleLoginHabdler = async () => {
     await signIn("google", { callbackUrl: "/dashboard" }); // it redirects use to dashboard after signIn
@@ -225,48 +122,19 @@ const Login = () => {
 
   // *** using firebase ***
   const googleLogin = () => {
-    console.log('google login'); 
+    console.log("google login");
     signInWithPopup(auth, googleProvider);
     const user = app.auth;
-    if(user){
+    if (user) {
       console.log("d", user);
     }
-  }
-
-  // const { status } = useSession({
-  //   required: true,
-  //   onUnauthenticated() {
-  //     // dont remove this function though it has empty body, because else page will be refreshed with an error
-  //     // console.log("unauthenticated");
-  //   },
-  // });
-  // if (status === "authenticated") {
-  //   router.push("/dashboard");
-  // }
-
-  // ***
-  //   // const sessionData = useContext(AuthContext);
-  //   const [isUserAuthenticated, sessionData] = useGlobalStore((state) => [
-  //     state.isUserAuthenticated,
-  //     state.userSessionData,
-  //   ]);
-
-  // console.log('sessionData',sessionData)
-  // console.log('isUserAuthenticated',isUserAuthenticated)
-
-  //   useEffect(() => {
-  //     if(sessionData !== null){
-  //       router.push("/dashboard");
-  //       // console.log("sessionData==>",sessionData)
-  //     }else{
-  //       router.push("/login");
-  //       // console.log("sessionData==>",sessionData)
-  //     }
-  //   },[])
-  //
+  };
 
   return (
     <>
+      {/* {isLoading && (
+        <div className="d-flex align-item-center justify-content-center">
+          <Spinner /> */}
       <TkPageHead>
         <title>{`Login - ${process.env.NEXT_PUBLIC_APP_NAME}`}</title>
       </TkPageHead>
@@ -370,7 +238,7 @@ const Login = () => {
                         </div>
                         <div>
                           <GoogleLoginBtn
-                          onClick={googleLogin}
+                            onClick={googleLogin}
                             // onClick={googleLoginHabdler}
                             btnText={"Login with Google"}
                           />
@@ -396,6 +264,8 @@ const Login = () => {
           </TkContainer>
         </div>
       </ParticlesAuth>
+      {/* </div>
+      )} */}
     </>
   );
 };
@@ -403,5 +273,3 @@ const Login = () => {
 export default Login;
 
 // Login.noLayout = true;
-
-
