@@ -1,15 +1,20 @@
-import TkButton from "@/globalComponents/TkButton";
 import TkRadioButton from "@/globalComponents/TkRadioButton";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import React, { useState } from "react";
 import ExistConnection from "./ExistConnection";
 import NewConnection from "./NewConnection";
 
-const NetsuiteComponent = ({ onClickHandeler, ...other }) => {
+const NetsuiteComponent = ({
+  onClickHandeler,
+  toggle,
+  integrationDetails,
+  integrationID,
+  title,
+  getIntegrationId,
+}) => {
   const [showComponent, setShowComponent] = useState("one");
   const [newTab, setNewTab] = useState(true);
   const [existTab, setExistTab] = useState(false);
-  // console.log("nc==>", other);
 
   const toggleComponet = (value) => {
     // console.log(value);
@@ -18,19 +23,8 @@ const NetsuiteComponent = ({ onClickHandeler, ...other }) => {
     setExistTab(value === "two" ? true : false);
   };
 
-  // const onClickNew = () => {
-  //   console.log("new");
-  //   // return <NewConnection />;
-  // };
-
-  // const onClickExist = () => {
-  //   console.log("exist");
-  // };
-
   return (
     <>
-      {/* <h5 className="text-center">NetSuite™ Configuration</h5> */}
-
       <TkRow>
         <TkCol lg={6}>
           <TkRadioButton
@@ -56,31 +50,15 @@ const NetsuiteComponent = ({ onClickHandeler, ...other }) => {
         {showComponent === "one" ? (
           <NewConnection
             onClickHandeler={onClickHandeler}
-            integrationID={other.integrationID}
-            title={other.title}
+            integrationID={integrationID}
+            title={title}
+            integrationDetails={integrationDetails}
+            toggle={toggle}
+            getIntegrationId={getIntegrationId}
           />
         ) : (
-          <ExistConnection
-            onClickHandeler={onClickHandeler}
-            // integrationID={other.integrationID}
-          />
+          <ExistConnection onClickHandeler={onClickHandeler} />
         )}
-
-        {/* <TkCol lg={12}>
-          <TkButton type="submit" className="btn btn-success">
-            Authorize
-          </TkButton>
-        </TkCol> */}
-
-        {/* <TkCol lg={12}>
-          <TkButton
-            type="button"
-            className="btn-success float-end"
-            onClick={onClickHandeler}
-          >
-            Next Step
-          </TkButton> */}
-        {/* </TkCol> */}
       </TkRow>
     </>
   );

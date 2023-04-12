@@ -54,7 +54,7 @@ const DashBoard = () => {
       setIntegrationData(integrations);
       // setDashboardData(integrations);
     }
-  }, [integrations, userId]);
+  }, [userId]);
   // console.log("integrations=>", integrationData);
 
   const router = useRouter();
@@ -239,11 +239,11 @@ const DashBoard = () => {
         return (
           <>
             <i
-              className="ri-edit-2-fill mx-2"
+              className="ri-edit-2-fill mx-2 pointer-event"
               onClick={() => onClickOpenModal(props.row.original?.id)}
             />
 
-            <i className="ri-eye-fill"></i>
+            {/* <i className="ri-eye-fill" /> */}
           </>
         );
       },
@@ -260,6 +260,7 @@ const DashBoard = () => {
           columns={columns}
           data={integrationData || []}
           tooltip="tooltip"
+          showPagination={true}
         />
       ) : (
         <TkNoData />

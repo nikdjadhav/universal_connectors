@@ -61,6 +61,8 @@ v1Router.get(
 
 // *** reslet routes ***
 v1Router.get("/getRecordTypes", resletController.getRecordTypes);
+v1Router.post("/restletAuthentication", resletController.authentication);
+
 v1Router.post("/getOptions", resletController.getOptions);
 
 // *** field mapping routes ***

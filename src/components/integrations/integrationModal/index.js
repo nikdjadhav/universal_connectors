@@ -1,7 +1,4 @@
-import TkButton from "@/globalComponents/TkButton";
-import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
-import TkDate from "@/globalComponents/TkDate";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TkModal, {
   TkModalBody,
   TkModalHeader,
@@ -11,114 +8,67 @@ import classnames from "classnames";
 import Integration from "./Integration";
 import NetsuiteComponent from "./NetsuiteComponent";
 import GoogleSheetComponent from "./GoogleSheetComponent";
-import Verified from "./Verified";
-import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import {
-  API_BASE_URL,
-  data,
-  destinationName,
-  sourceName,
-} from "@/utils/Constants";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { API_BASE_URL } from "@/utils/Constants";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 
-const ModalButton = ({ modal, toggle, syncWay, configData, integrationID:intId }) => {
-  // console.log("3 model", configData)
-  // console.log('in modal==>', intId);
-
+const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
   const [NSCTitle, setNSCTitle] = useState("NetSuite™");
   const [GSCTitle, setGSCTitle] = useState("Google Sheets™");
-  const [integrationID, setIntegrationID] = useState();
+  const [integrationData, setIntegrationData] = useState([]);
+  const [addedIntegrationsId, setAddedIntegrationId] = useState();
 
-  // const integration = useMutation({
-  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-  // });
-
-  const {data: integration, isError, isLoading, error} = useQuery({
-    queryKey: ["getIntegrationById", intId],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${intId}`),
-    // queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${intId}`),
-
-    enabled: !!intId,
-  })
-  // console.log("index==>",integration);
-  useEffect(() => {
-    if (intId) {
-      // console.log("in modal==>", intId);
-
-      const id = {
-        id: JSON.parse(intId),
-      };
-
-      if(integration?.length){
-        setNSCTitle(integration[0]?.sourceName);
-        setGSCTitle(integration[0]?.destinationName);
-      }
-
-      // integration.mutate(id, {
-      //   onSuccess: (data) => {
-      //     // console.log("data", data);
-      //     setNSCTitle(data[0]?.sourceName);
-      //     setGSCTitle(data[0]?.destinationName);
-      //   },
-      //   onError: (error) => {
-      //     console.log("error", error);
-      //   },
-      // });
-    }
-  }, [integration, intId]);
-
-  // console.log("other==>", intId);
-
-  // useEffect(() => {
-  //   if (other) {
-  //     console.log("in modal==>", other);
-  //     data.map((item) => {
-  //       if (item.id === other.recordId) {
-  //         setNSCTitle(item.sourceName);
-  //         setGSCTitle(item.destinationName);
-  //         console.log("in modal==>", item.sourceName);
-  //       }
-  //     });
-  //   }
-
-  // }, [other]);
-
-  // sourceName.map((item) => {
-  //   destinationName.map((item2) => {})
-  //   if(item.source.label === NSCTitle){
-  //     configData = {
-  //       source: item.source.label,
-  //       destination: item.destination.label,
-  //     }
-  //   }
-  // })
-  // console.log("configData", configData)
-
-  useEffect(() => {
-    if (configData) {
-      setNSCTitle(configData.source);
-      setGSCTitle(configData.destination);
-      // setNSCTitle(configData.source.label || configData.source);
-      // setGSCTitle(configData.destination.label || configData.destination);
-    }
-  }, [configData]);
-
-  // callback to get integrationID from child component
-  const getIntegrationID = (id) => {
-    setIntegrationID(id);
-  };
-  // console.log("integrationID########",integrationID);
+  const {
+    data: integration,
+    isLoading: integrationLoading,
+    error: integrationError,
+  } = useQuery({
+    queryKey: ["getIntegrationById", integrationID],
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${integrationID}`),
+    enabled: !!integrationID,
+  });
 
   const tabs = {
     Integration: 1,
     NetsuiteConfiguration: 2,
     GoogleSheetConfiguration: 3,
-    Verified: 4,
   };
 
   const [activeTab, setActiveTab] = useState(tabs.Integration);
+
+  // data from database
+  useEffect(() => {
+    if (integrationID) {
+      if (integration?.length) {
+        setNSCTitle(integration[0]?.sourceName);
+        setGSCTitle(integration[0]?.destinationName);
+      }
+    }
+  }, [integration, integrationID]);
+
+  // data from
+  useEffect(() => {
+    if (configData) {
+      setNSCTitle(configData.source);
+      setGSCTitle(configData.destination);
+    }
+  }, [configData]);
+
+  // callback to get integration details from child component
+  const getIntegrationDetails = (integrationData) => {
+    if (integrationData) {
+      setIntegrationData(integrationData);
+      onClickHandeler();
+    }
+  };
+
+  // callback to get integraion id from child component
+  const getIntegrationId = (integrationId) => {
+    if (integrationId) {
+      setAddedIntegrationId(integrationId);
+    }
+  };
+
   const toggleTab = (tab) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
@@ -133,19 +83,12 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID:intId }
       setActiveTab(tabs.GoogleSheetConfiguration);
     }
     if (activeTab === tabs.GoogleSheetConfiguration) {
-      setActiveTab(tabs.Verified);
-    }
-    if (activeTab === tabs.Verified) {
       toggle();
     }
   };
 
   return (
     <>
-      {/* <TkButton className={"btn-success"} onClick={toggle}>
-        {children}
-      </TkButton> */}
-
       {/* *** forms modal *** */}
       <TkModal
         isOpen={modal}
@@ -201,23 +144,10 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID:intId }
                 {GSCTitle} Configuration
               </NavLink>
             </NavItem>
-
-            <NavItem>
-              <NavLink
-                href="#"
-                className={classnames({ active: activeTab === tabs.Verified })}
-                onClick={() => {
-                  toggleTab(tabs.Verified);
-                }}
-              >
-                Verified
-              </NavLink>
-            </NavItem>
           </Nav>
         </div>
 
         <TkModalBody className="modal-body">
-          {/* <TkForm onSubmit={handleSubmit(onSubmit)}> */}
           <TabContent activeTab={activeTab}>
             <TabPane tabId={tabs.Integration}>
               <Integration
@@ -225,29 +155,30 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID:intId }
                 syncWay={syncWay}
                 configData={configData}
                 toggle={toggle}
-                integrationID={intId}
-                getIntegrationID={getIntegrationID}
+                integrationID={integrationID}
+                getIntegrationDetails={getIntegrationDetails}
               />
             </TabPane>
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>
               <NetsuiteComponent
                 onClickHandeler={onClickHandeler}
-                integrationID={intId || integrationID}
+                toggle={toggle}
+                integrationID={integrationID}
                 title={NSCTitle}
+                integrationDetails={integrationData}
+                getIntegrationId={getIntegrationId}
               />
             </TabPane>
 
             <TabPane tabId={tabs.GoogleSheetConfiguration}>
               <GoogleSheetComponent
                 onClickHandeler={onClickHandeler}
-                integrationID={intId || integrationID}
+                toggle={toggle}
+                integrationID={integrationID}
                 title={GSCTitle}
+                addedIntegrationsId={addedIntegrationsId}
               />
-            </TabPane>
-
-            <TabPane tabId={tabs.Verified}>
-              <Verified onClickHandeler={onClickHandeler} />
             </TabPane>
           </TabContent>
         </TkModalBody>

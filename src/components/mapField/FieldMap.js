@@ -26,7 +26,7 @@ const schema = Yup.object({
     .nullable()
     .required("Integration name is required."),
   recordType: Yup.object().required("Record type is required."),
-  googleSheetUrl: Yup.string().required("Google sheet url is required."),
+  googleSheetUrl: Yup.object().required("Google sheet url is required."),
 }).required();
 
 const FieldMap = () => {
@@ -45,7 +45,16 @@ const FieldMap = () => {
   const [integrationOptions, setIntegrationOptions] = useState([]);
   // const [recordTypes, setRecordTypes] = useState();
   const [records, setRecords] = useState([]);
-  const [googleSheetUrl, setGoogleSheetUrl] = useState([]);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState([
+    {
+      value: "https",
+      label: "https://..."
+    },
+    {
+      value: "http",
+      label: "http://..."
+    }
+  ]);
   const [integrationName, setIntegrationName] = useState();
   const [integrationId, setIntegrationId] = useState(null);
   const [configurationData, setConfigurationData] = useState(null);
@@ -81,9 +90,7 @@ const FieldMap = () => {
         // queryFn: tkFetch.get(
         //   `http://localhost:4000/v1/getIntegrations/${userId}`
         // ),
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getIntegrations/${userId}`
-        ),
+        queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
         enabled: !!userId,
       },
     ],
@@ -113,41 +120,42 @@ const FieldMap = () => {
 
   useEffect(() => {
     // if (configData) {
-      if (configData) {
-        configData.map((item) => {
+    if (configData) {
+      configData.map((item) => {
+        // console.log("==item==>", item);
+        if (item.systemName === "NetSuite™") {
           // console.log("==item==>", item);
-          if (item.systemName === "NetSuite™") {
-            // console.log("==item==>", item);
 
-            setConfigurationData({
-              account: item.accountId,
-              consumerKey: item.consumerKey,
-              consumerSecret: item.consumerSecretKey,
-              tokenId: item.accessToken,
-              tokenSecret: item.accessSecretToken,
-              scriptDeploymentId: "1",
-              scriptId: "1529",
-              resttype: "ListOfRecordType",
-            });
-            // console.log("configData", configData);
-            // console.log("restletOptions", restletRecordTypes);
-          } else {
-            setValue("googleSheetUrl", item.url);
-          }
-        });
-      }
-      if (restletRecordTypes) {
-        restletRecordTypes[0].list.map((item) => {
-          // console.log("item==", item);
-          setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
+          setConfigurationData({
+            accountId: item.accountId,
+            consumerKey: item.consumerKey,
+            consumerSecretKey: item.consumerSecretKey,
+            accessToken: item.accessToken,
+            accessSecretToken: item.accessSecretToken,
+            // scriptDeploymentId: "1",
+            // scriptId: "1529",
+            resttype: "ListOfRecordType",
+          });
+          // console.log("configData", configData);
+          // console.log("restletOptions", restletRecordTypes);
+        } 
+        // else {
+        //   setValue("googleSheetUrl", item.url);
+        // }
+      });
+    }
+    if (restletRecordTypes) {
+      restletRecordTypes[0].list.map((item) => {
+        // console.log("item==", item);
+        setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
 
-          // if(item.id === "customer"){
-          //   console.log("==item==", item);
-          // }
-        });
-      } else {
-        setRecords([]);
-      }
+        // if(item.id === "customer"){
+        //   console.log("==item==", item);
+        // }
+      });
+    } else {
+      setRecords([]);
+    }
     // }
   }, [configData, restletError, restletRecordTypes, setValue]);
   // console.log("configig data", configurationData);
@@ -192,13 +200,13 @@ const FieldMap = () => {
       integrationId: data.integrationName.value,
       recordType: data.recordType.value,
       recordTypeTitle: data.recordType.label,
-      url: data.googleSheetUrl,
+      url: data.googleSheetUrl.label,
     };
-    // console.log("mapprdRecord==>", mapprdRecord);
+    console.log("mapprdRecord==>", mapprdRecord);
     addMappedRecord.mutate(mapprdRecord, {
       onSuccess: (data) => {
         // console.log("data==", data);
-        router.push(`/fieldMapping/${data[0].id}`)
+        router.push(`/fieldMapping/${data[0].id}`);
         // router.push(
         //   {
         //     pathname: "/fieldMapping/mapTable",
@@ -277,7 +285,24 @@ const FieldMap = () => {
           </TkCol>
 
           <TkCol lg={4}>
-            <TkInput
+            <Controller
+              name="googleSheetUrl"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Google Sheets™ Url"
+                  id="googleSheetUrl"
+                  options={googleSheetUrl}
+                  maxMenuHeight="120px"
+                  requiredStarOnLabel={true}
+                />
+              )}
+            />
+            {errors.googleSheetUrl?.message ? (
+              <FormErrorText>{errors.googleSheetUrl?.message}</FormErrorText>
+            ) : null}
+            {/* <TkInput
               {...register("googleSheetUrl")}
               id="googleSheetUrl"
               type="text"
@@ -286,14 +311,10 @@ const FieldMap = () => {
               requiredStarOnLabel={true}
               invalid={errors.googleSheetUrl?.message ? true : false}
               // className={errors.integrationName?.message && "form-control is-invalid"}
-            />
-            {errors.googleSheetUrl?.message ? (
-              <FormErrorText>{errors.googleSheetUrl?.message}</FormErrorText>
-            ) : null}
+            /> */}
           </TkCol>
           {/* </TkRow> */}
 
-          {/* <TkRow className="mt-3 justify-content-center"> */}
           <TkCol lg={12} className="d-flex justify-content-center">
             <TkButton
               className="btn-success my-4"

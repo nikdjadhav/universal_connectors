@@ -1,13 +1,11 @@
 import TkButton from "@/globalComponents/TkButton";
-import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import React, { useEffect, useState } from "react";
-import { API_BASE_URL, genderOptions, sourceName } from "@/utils/Constants";
+import { API_BASE_URL, sourceName } from "@/utils/Constants";
 import { destinationName } from "@/utils/Constants";
-import Select from "react-select";
 import TkLabel from "@/globalComponents/TkLabel";
 import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
@@ -15,7 +13,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorText from "@/globalComponents/ErrorText";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
-import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
+import { TkToastError } from "@/globalComponents/TkToastContainer";
+import useFullPageLoader from "@/globalComponents/useFullPageLoader";
 
 const schema = Yup.object({
   integrationName: Yup.string().required("Integration name is required."),
@@ -30,7 +29,8 @@ const Integration = ({
   syncWay,
   configData,
   toggle,
-  ...other
+  getIntegrationDetails,
+  integrationID,
 }) => {
   const {
     control,
@@ -41,65 +41,47 @@ const Integration = ({
   } = useForm({
     resolver: yupResolver(schema),
   });
-  // console.log("config data in integration", configData)
 
   const [integrationsData, setIntegrationsData] = useState();
-  const [integrationID, setIntegrationID] = useState();
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
+  const [loader, showLoader, hideLoader] = useFullPageLoader();
 
-  const queryClient  = useQueryClient();
-
-  const addIntegration = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/addIntegration"),
-    mutationFn: tkFetch.post(`${API_BASE_URL}/addIntegration`),
-  });
+  const queryClient = useQueryClient();
 
   const updateIntegration = useMutation({
-    // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateIntegration"),
     mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateIntegration`),
-
   });
 
-  // console.log("other==>",other.integrationID);
   const {
     data: integration,
     isError,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["getIntegrationId", other.integrationID],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${other.integrationID}`),
-    // queryFn: tkFetch.get(
-    //   `http://localhost:4000/v1/getIntegrationById/${other.integrationID}`
-    // ),
-    enabled: !!other.integrationID,
+    queryKey: ["getIntegrationId", integrationID],
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${integrationID}`),
+    enabled: !!integrationID,
   });
-  // console.log("int==>",integration);
 
   useEffect(() => {
-    if(configData && syncWay){
+    if (configData && syncWay) {
       setValue("sourceName", { label: configData.source });
       setValue("destinationName", { label: configData.destination });
       if (syncWay === "twoWaySync") {
         setFirstTitle("System One");
         setSecondTitle("System Two");
-      }else {
+      } else {
         setFirstTitle("Source");
         setSecondTitle("Destination");
       }
     }
-  },[configData, setValue, syncWay])
+  }, [configData, setValue, syncWay]);
 
   useEffect(() => {
-    if (other.integrationID) {
-      // const id = {
-      //   id: JSON.parse(other.integrationID),
-      // };
+    if (integrationID) {
       if (integration?.length) {
-        // console.log("^^^^^^^^^^^^^^", integration[0]?.syncWay);
         setIntegrationsData(integration[0]);
-        setIntegrationID(integration[0]?.id);
         setValue("integrationName", integration[0]?.integrationName);
         setValue("sourceName", { label: integration[0]?.sourceName });
         setValue("destinationName", { label: integration[0]?.destinationName });
@@ -112,77 +94,38 @@ const Integration = ({
           setSecondTitle("Destination");
         }
       }
-      // integration.mutate(id, {
-      //   onSuccess: (data) => {
-      //     // console.log("data",  sourceName);
-      //     setIntegrationsData(data);
-      //     setIntegrationID(data[0]?.id);
-      //     setValue("integrationName", data[0]?.integrationName);
-      //     setValue("sourceName", { label: data[0]?.sourceName });
-      //     setValue("destinationName", { label: data[0]?.destinationName });
-
-      //     if (data[0]?.syncWay === "twoWaySync") {
-      //       setFirstTitle("System One");
-      //       setSecondTitle("System Two");
-      //     } else {
-      //       setFirstTitle("Source");
-      //       setSecondTitle("Destination");
-      //     }
-      //   },
-      //   onError: (error) => {
-      //     console.log("error", error);
-      //   },
-      // });
     }
-  }, [integration, other.integrationID, setValue]);
-
-  // console.log('integration',configData.source.label,configData.destination.label);
-
-  // **************************************
-  // useEffect(() => {
-  //   if (syncWay === "twoWaySync") {
-  //     setFirstTitle("System One");
-  //     setSecondTitle("System Two");
-  //   } else {
-  //     setFirstTitle("Source");
-  //     setSecondTitle("Destination");
-  //   }
-
-  //   if (configData) {
-  //     setValue("sourceName", { label: configData.source });
-  //     setValue("destinationName", { label: configData.destination });
-  //     // setValue("integrationName", configData.integrationName)
-  //     // setValue("sourceName", { label: configData.source.label } || { label: configData.source });
-  //     // setValue("destinationName", { label: configData.destination.label } || { label: configData.destination });
-  //   }
-  // }, [configData, setValue, syncWay]);
+  }, [integration, integrationID, setValue]);
 
   const onSubmit = (data) => {
-    // console.log(other.integrationID, "integration nav submitted data", data);
-    if (other.integrationID) {
-      const updatedData = {
-        id: other.integrationID,
+    showLoader();
+    const userId = sessionStorage.getItem("userId");
+
+    // to update existing integration
+    if (integrationID) {
+      console.log("updated integration data");
+      const updatedIntegration = {
+        id: integrationID,
         integrationName: data.integrationName,
         sourceName: data.sourceName.label,
         destinationName: data.destinationName.label,
       };
-      // console.log("update");
-      updateIntegration.mutate(updatedData, {
+      updateIntegration.mutate(updatedIntegration, {
         onSuccess: (data) => {
-          // console.log("Updated Successfully", data);
           queryClient.invalidateQueries({
             queryKey: ["integrations"],
-          })
-          // TkToastInfo("Updated Successfully", { hideProgressBar: true });
+          });
+          onClickHandeler();
         },
         onError: (error) => {
           // console.log("error", error);
-          TkToastError("Error: Record not updated");
+          TkToastError("Error in updating record");
+          toggle();
         },
       });
+      hideLoader();
     } else {
-      // console.log("add");
-      const userId = sessionStorage.getItem("userId");
+      // to add new integration
       const integrationData = {
         userId: JSON.parse(userId),
         integrationName: data.integrationName,
@@ -190,24 +133,9 @@ const Integration = ({
         destinationName: data.destinationName.label,
         syncWay: syncWay,
       };
-      addIntegration.mutate(integrationData, {
-        onSuccess: (data) => {
-          queryClient.invalidateQueries({
-            queryKey: ["integrations"],
-          })
-          // console.log("ittegration added==>", data);
-          setIntegrationID(data[0]?.id);
-          // using other.getIntegrationID callback send data[0]?.id to parent component
-          other.getIntegrationID(data[0]?.id);
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
+      getIntegrationDetails(integrationData);
+      hideLoader();
     }
-
-    // // console.log("integration nav submitted data", integrationData);
-    onClickHandeler();
   };
 
   const OnClickExit = () => {
@@ -215,14 +143,10 @@ const Integration = ({
     toggle();
   };
 
-  // console.log("integrationsData", integrationsData);
-
   return (
     <>
       <TkRow className="justify-content-center">
         <TkCol>
-          {/* <TkCard>
-            <TkCardBody> */}
           <TkForm onSubmit={handleSubmit(onSubmit)}>
             <TkRow className="g-3">
               <TkCol lg={12}>
@@ -235,7 +159,6 @@ const Integration = ({
                   requiredStarOnLabel={true}
                   invalid={errors.integrationName?.message ? true : false}
                   disabled={integrationsData ? true : false}
-                  // className={errors.integrationName?.message && "form-control is-invalid"}
                 />
                 {errors.integrationName?.message ? (
                   <FormErrorText>
@@ -254,11 +177,8 @@ const Integration = ({
                       <TkSelect
                         {...field}
                         id="sourceName"
-                        // labelName="Source Name"
                         options={sourceName}
-                        // defaultValue={sourceName[0]}
                         maxMenuHeight="130px"
-                        // disabled={true}
                         disabled={integrationsData || configData ? true : false}
                       />
                     </>
@@ -275,24 +195,15 @@ const Integration = ({
                       <TkLabel id="destinationName">{secondLabel}</TkLabel>
                       <TkSelect
                         {...field}
-                        // labelName="Destination Name"
                         id="destinationName"
                         options={destinationName}
-                        // defaultValue={destinationName[0]}
                         maxMenuHeight="130px"
-                        // disabled={true}
                         disabled={integrationsData || configData ? true : false}
                       />
                     </>
                   )}
                 />
               </TkCol>
-
-              {/* <TkCol lg={12}>
-                    <TkButton type="submit" className="btn btn-success">
-                      Authorize
-                    </TkButton>
-                  </TkCol> */}
             </TkRow>
             <TkRow className="mt-4 justify-content-end">
               <TkCol lg={2}>
@@ -305,19 +216,14 @@ const Integration = ({
                 </TkButton>
               </TkCol>
               <TkCol lg={2}>
-                <TkButton
-                  type="submit"
-                  className="btn-success float-end"
-                  // onClick={onClickHandeler}
-                >
+                <TkButton type="submit" className="btn-success float-end">
                   Next Step
                 </TkButton>
               </TkCol>
             </TkRow>
           </TkForm>
-          {/* </TkCardBody>
-          </TkCard> */}
         </TkCol>
+        {loader}
       </TkRow>
     </>
   );

@@ -223,7 +223,7 @@ const updateIntegration = async (req, res) => {
 };
 
 const addConfigurations = async (req, res) => {
-  // console.log("addConfigurations", req.body);
+  console.log("addConfigurations", req.body);
   try {
     const configurations = await prisma.configurations.create({
       data: {

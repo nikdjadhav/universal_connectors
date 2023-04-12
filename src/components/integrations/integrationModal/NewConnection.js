@@ -1,17 +1,16 @@
 import FormErrorText from "@/globalComponents/ErrorText";
 import TkButton from "@/globalComponents/TkButton";
-import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
+import { TkToastError } from "@/globalComponents/TkToastContainer";
+import useFullPageLoader from "@/globalComponents/useFullPageLoader";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { resolve } from "styled-jsx/css";
 import * as Yup from "yup";
 
 const schema = Yup.object({
@@ -30,7 +29,14 @@ const schema = Yup.object({
   accessSecretToken: Yup.string().required("Access Secret Token is required."),
 }).required();
 
-const NewConnection = ({ onClickHandeler, ...other }) => {
+const NewConnection = ({
+  onClickHandeler,
+  integrationDetails,
+  integrationID,
+  toggle,
+  title,
+  getIntegrationId,
+}) => {
   const {
     control,
     register,
@@ -41,77 +47,42 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
     resolver: yupResolver(schema),
   });
   const queryClient = useQueryClient();
-
+  const [loader, showLoader, hideLoader] = useFullPageLoader();
   const [integrationsData, setIntegrationsData] = useState();
 
+  const authentication = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/restletAuthentication`),
+  });
+
   const addConfigurations = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
   });
 
   const updateConfiguration = useMutation({
-    // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
     mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateConfiguration`),
   });
 
-  const apiResult = useQueries({
-    queries: [
-      {
-        queryKey: ["configurationsData", other.integrationID],
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getConfigurationById/${other.integrationID}`
-        ),
-        // queryFn: tkFetch.get(
-        //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
-        // ),
-        enabled: !!other.integrationID,
-      },
-      {
-        queryKey: ["integrationName", other.integrationID],
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getIntegrationById/${other.integrationID}`
-        ),
-        enabled: !!other.integrationID,
-      }
-    ],
+  const addIntegration = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addIntegration`),
   });
 
-  const [ config, integrations ] = apiResult;
-  const { data: configurationsData, isError: configError, isLoading: configLoading, error: configErrorData } = config;
-  const { data: integrationData, isError: integrationError, isLoading: integrationLoading, error: integrationErrorData } = integrations;
-
-  // const {
-  //   data: configurationsData,
-  //   isError,
-  //   isLoading,
-  //   error,
-  // } = useQuery({
-  //   queryKey: ["configurationsData", other.integrationID],
-  //   queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
-  //   // queryFn: tkFetch.get(
-  //   //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
-  //   // ),
-  //   enabled: !!other.integrationID,
-  // });
-
-  // console.log("configurationsData^^^^", configurationsData);
-
-  // const integration = useMutation({
-  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-  // });
-
-  // console.log("other in new connection", other);
-  // console.log("configurationsData", configurationsData);
-  // console.log("integrationData", integrationData);
-
+  const {
+    data: configurationsData,
+    isError: configError,
+    isLoading: configLoading,
+    error: configErrorData,
+  } = useQuery({
+    queryKey: ["configurationsData", integrationID],
+    queryFn: tkFetch.get(
+      `${API_BASE_URL}/getConfigurationById/${integrationID}`
+    ),
+    enabled: !!integrationID,
+  });
 
   useEffect(() => {
-    // if (other.integrationID) {
     if (configurationsData?.length) {
       configurationsData.map((item) => {
-        if (item.systemName === other.title) {
-          console.log("item", item);
+        if (item.systemName === title) {
           setIntegrationsData(item);
           setValue("integrationName", item.integration.integrationName);
           setValue("accountID", item.accountId);
@@ -121,133 +92,105 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
           setValue("accessSecretToken", item.accessSecretToken);
         }
       });
-    } 
-    // else
-    // // if(integrationData)
-    // {
-    //   setValue("integrationName", integrationData[0].integrationName);
-    // }
-    // getConfigurationById.mutate(
-    //   { integrationId: JSON.parse(other.integrationID) },
-    //   {
-    //     onSuccess: (data) => {
-    //       // console.log("getConfigurationById NS", data);
-    //       data.map((item) => {
-    //         if (item.systemName === other.title) {
-    //           setIntegrationsData(item);
-    //           setValue("integrationName", item.integration.integrationName);
-    //           setValue("accountID", item.accountId);
-    //           setValue("consumerKey", item.consumerKey);
-    //           setValue("consumerSecretKey", item.consumerSecretKey);
-    //           setValue("accessToken", item.accessToken);
-    //           setValue("accessSecretToken", item.accessSecretToken);
-    //         }
-    //       });
-    //     },
-    //     onError: (error) => {
-    //       console.log("error", error);
-    //     },
-    //   }
-    // );
-
-    // integration.mutate(
-    //   {
-    //     id: other.integrationID,
-    //   },
-    //   {
-    //     onSuccess: (data) => {
-    //       // console.log("integration data*&*&", data[0]);
-    //       setValue("integrationName", data[0].integrationName);
-    //     },
-    //     onError: (error) => {
-    //       console.log("error", error);
-    //     },
-    //   }
-    // );
-    // }
-  }, [configurationsData, integrationData, other.integrationID, other.title, setValue]);
-
-  const [integrationID, setIntegrationID] = useState();
-  // console.log("other", other);
-  useEffect(() => {
-    if (other.integrationID) {
-      setIntegrationID(JSON.parse(other.integrationID));
     }
-  }, [other.integrationID]);
+  }, [configurationsData, setValue, title]);
 
-  const onSubmit = (data) => {
-    if (configurationsData?.length) {
-      configurationsData.map((item) => {
-        if (item.systemName === other.title) {
-          // console.log("updated", item.systemName, "for", item.id);
-          const updatedData = {
-            id: item.id,
-            systemName: other.title,
-            // url: data.url,
-            accountId: data.accountID,
-            consumerKey: data.consumerKey,
-            consumerSecretKey: data.consumerSecretKey,
-            accessToken: data.accessToken,
-            accessSecretToken: data.accessSecretToken,
-            authenticationType: "abc",
-          };
-          // console.log("updatedData", updatedData)
-          updateConfiguration.mutate(updatedData, {
+  const onSubmit = (values) => {
+    // console.log("values in ns", values)
+    const userId = sessionStorage.getItem("userId");
+    showLoader();
+    const recordTypeCredentials = {
+      accountId: values.accountID,
+      consumerKey: values.consumerKey,
+      consumerSecretKey: values.consumerSecretKey,
+      accessToken: values.accessToken,
+      accessSecretToken: values.accessSecretToken,
+      authenticationType: "abc",
+      resttype: "ListOfRecordType",
+    };
+
+    authentication.mutate(recordTypeCredentials, {
+      onSuccess: (data) => {
+        //  update configuration
+        if (configurationsData?.length) {
+          configurationsData.map((item) => {
+            if (item.systemName === title) {
+              console.log("updated ns data");
+              const updateConfigData = {
+                id: item.id,
+                accountId: values.accountID,
+                consumerKey: values.consumerKey,
+                consumerSecretKey: values.consumerSecretKey,
+                accessToken: values.accessToken,
+                accessSecretToken: values.accessSecretToken,
+                authenticationType: "xyz",
+              };
+              updateConfiguration.mutate(updateConfigData, {
+                onSuccess: (data) => {
+                  queryClient.invalidateQueries({
+                    queryKey: ["configurationsData"],
+                  });
+                  onClickHandeler();
+                },
+                onError: (error) => {
+                  toggle();
+                  TkToastError("Error in updating configuration");
+                },
+              });
+            }
+          });
+        } else {
+          console.log("added ns data");
+          addIntegration.mutate(integrationDetails, {
             onSuccess: (data) => {
-              // console.log("Updated Successfully", data);
+              const addConfigData = {
+                userId: JSON.parse(userId),
+                integrationId: data[0].id,
+                systemName: title,
+                accountId: values.accountID,
+                consumerKey: values.consumerKey,
+                consumerSecretKey: values.consumerSecretKey,
+                accessToken: values.accessToken,
+                accessSecretToken: values.accessSecretToken,
+                authenticationType: "abc",
+              };
+              getIntegrationId(data[0].id);
+              addConfigurations.mutate(addConfigData, {
+                onSuccess: (data) => {
+                  onClickHandeler();
+                  queryClient.invalidateQueries({
+                    queryKey: ["configurationsData"],
+                  });
+                },
+                onError: (error) => {
+                  toggle();
+                  TkToastError("Error in adding integration");
+                },
+              });
               queryClient.invalidateQueries({
                 queryKey: ["integrations"],
               });
-              // TkToastInfo("Updated Successfully", { hideProgressBar: true });
             },
             onError: (error) => {
-              console.log("error", error);
-              TkToastError("Error: Record not updated");
+              toggle();
+              TkToastError("Error in adding integration");
             },
           });
         }
-      });
-    } else {
-      // console.log("added");
-      const userId = sessionStorage.getItem("userId");
-
-      const configurData = {
-        userId: JSON.parse(userId),
-        // integrationId: integrationID,
-        integrationId: other.integrationID,
-        systemName: other.title,
-        // url: data.url,
-        accountId: data.accountID,
-        consumerKey: data.consumerKey,
-        consumerSecretKey: data.consumerSecretKey,
-        accessToken: data.accessToken,
-        accessSecretToken: data.accessSecretToken,
-        authenticationType: "xyz",
-      };
-      // console.log("configurData", configurData);
-
-      addConfigurations.mutate(configurData, {
-        onSuccess: (data) => {
-          queryClient.invalidateQueries({
-            queryKey: ["integrations"],
-          });
-          // console.log("addConfigurations data", data);
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
-    }
-
-    onClickHandeler();
+        hideLoader();
+      },
+      onError: (error) => {
+        hideLoader();
+        toggle();
+        TkToastError("Error in authentication");
+      },
+    });
   };
 
   return (
     <>
       <TkRow className="justify-content-center">
         <TkCol>
-          {/* <TkCard>
-            <TkCardBody> */}
           <TkForm onSubmit={handleSubmit(onSubmit)} className="my-3">
             <TkRow className="g-3">
               <TkCol lg={12}>
@@ -268,22 +211,6 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
                   </FormErrorText>
                 ) : null}
               </TkCol>
-
-              {/* <TkCol lg={12}>
-                <TkInput
-                  {...register("url")}
-                  id="url"
-                  type="text"
-                  labelName="URL"
-                  placeholder="Enter URL"
-                  requiredStarOnLabel={true}
-                  invalid={errors.url?.message ? true : false}
-                  // disabled={viewMode}
-                />
-                {errors.url?.message ? (
-                  <FormErrorText>{errors.url?.message}</FormErrorText>
-                ) : null}
-              </TkCol> */}
 
               <TkCol lg={12}>
                 <TkInput
@@ -371,15 +298,13 @@ const NewConnection = ({ onClickHandeler, ...other }) => {
 
               <TkCol lg={12}>
                 <TkButton type="submit" className="btn-success float-end">
-                  Next Step
+                  Configure
                 </TkButton>
               </TkCol>
             </TkRow>
-            {/* <div className="d-flex mt-4 space-childern"></div> */}
           </TkForm>
-          {/* </TkCardBody>
-          </TkCard> */}
         </TkCol>
+        {loader}
       </TkRow>
     </>
   );

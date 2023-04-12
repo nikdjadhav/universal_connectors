@@ -27,6 +27,8 @@ import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import { useFieldArray } from "react-hook-form";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
+import TkAlert from "@/globalComponents/TkAlert";
+import DeleteModal from "@/utils/DeleteModal";
 
 const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   // const [control, setControl] = useState(null);
@@ -49,6 +51,8 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
   const [mappedRecordDetails, setMappedRecordDetails] = useState([]);
   const [configurationData, setConfigurationData] = useState(null);
   const [fieldId, setFieldId] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteFieldId, setDeleteFieldId] = useState();
 
   // console.log("mappedRecordId", mappedRecordId);
   const apiResults = useQueries({
@@ -131,7 +135,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     // mutationFn: tkFetch.deleteWithIdInUrl(`http://localhost:4000/v1/deleteField`),
   });
 
-  console.log("^^^^^^^^^^^^^^^", mappedRecordData);
+  // console.log("^^^^^^^^^^^^^^^", mappedRecordData);
   // console.log("restletOptions**********", restletOptions);
   useEffect(() => {
     if (configData) {
@@ -140,13 +144,13 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
         // console.log("item", item)
         if (item.systemName === "NetSuite™") {
           setConfigurationData({
-            account: item.accountId,
+            accountId: item.accountId,
             consumerKey: item.consumerKey,
-            consumerSecret: item.consumerSecretKey,
-            tokenId: item.accessToken,
-            tokenSecret: item.accessSecretToken,
-            scriptDeploymentId: "1",
-            scriptId: "1529",
+            consumerSecretKey: item.consumerSecretKey,
+            accessToken: item.accessToken,
+            accessSecretToken: item.accessSecretToken,
+            // scriptDeploymentId: "1",
+            // scriptId: "1529",
             resttype: "ListOfRecordField",
             recordtype: mappedRecordDetails.source,
           });
@@ -155,6 +159,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     }
 
     if (restletOptions) {
+      setNetsuiteValues([]);
       if (
         restletOptions[0].body.length > 0 ||
         restletOptions[0].lines.length > 0
@@ -303,7 +308,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
           return (
             <i
               className="ri-delete-bin-5-line pe-auto px-3"
-              onClick={() => onClickDelete(props.row.original?.id)}
+              onClick={() => toggleDeleteModel(props.row.original?.id)}
             />
           );
           // } else {
@@ -358,21 +363,29 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     });
   };
 
-  const onClickDelete = (fieldId) => {
-    console.log("fieldId", fieldId);
-    setFieldId(fieldId);
+  const toggleDeleteModel = (fieldId) => {
+    setDeleteFieldId(fieldId);
+    setDeleteModal(true);
+  };
+
+  const onClickDelete = () => {
+    // console.log("data deleted", deleteFieldId)
+    // console.log("fieldId", fieldId);
+    // setFieldId(deleteFieldId);
     deleteFields.mutate(
-      { id: fieldId },
+      { id: deleteFieldId },
       {
         onSuccess: (data) => {
-          TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+          // TkToastInfo("Deleted Successfully", { hideProgressBar: true });
           queryClient.invalidateQueries({
             queryKey: ["getFields"],
           });
+          setDeleteModal(false);
         },
         onError: (error) => {
           console.log("error", error);
           TkToastError("Error for delete fields");
+          setDeleteModal(false);
         },
       }
     );
@@ -453,6 +466,12 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
           <TkLoader />
         ) : integrationId ? (
           <>
+            <DeleteModal
+              show={deleteModal}
+              onDeleteClick={onClickDelete}
+              onCloseClick={() => setDeleteModal(false)}
+              // loading={}
+            />
             <TkTableContainer
               columns={columns}
               data={rows || []}

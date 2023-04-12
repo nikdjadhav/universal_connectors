@@ -15,12 +15,15 @@ import { formatDate, formatTime } from "@/utils/date";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
+import DeleteModal from "@/utils/DeleteModal";
 
 const FieldMappingTable = () => {
   const [mappedRecords, setMappedRecords] = useState([]);
   const [integrationNames, setIntegrationNames] = useState([]);
   const [mappedRecordData, setMappedRecordData] = useState([]);
   const [userId, setUserId] = useState();
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteFieldId, setDeleteFieldId] = useState();
 
   const queryClient = useQueryClient();
 
@@ -139,7 +142,7 @@ const FieldMappingTable = () => {
           <>
             <i
               className="ri-delete-bin-5-line px-2"
-              onClick={() => onClickDelete(props.row.original.id)}
+              onClick={() => toggleDeleteModel(props.row.original.id)}
             />
             <Link href={`/fieldMapping/${props.row.original.id}`}>
               <i
@@ -156,20 +159,27 @@ const FieldMappingTable = () => {
   // const onClickView = (row) => {
   //   // console.log("row", row);
   // };
+  const toggleDeleteModel = (fieldId) => {
+    setDeleteFieldId(fieldId);
+    setDeleteModal(true);
+  };
 
-  const onClickDelete = (mappedRecordId) => {
+  const onClickDelete = () => {
     deleteMappedRecord.mutate(
-      { id: mappedRecordId },
+      { id: deleteFieldId },
       {
         onSuccess: (data) => {
           // console.log("data", data);
-          TkToastInfo("Deleted Successfully", { hideProgressBar: true });
+          // TkToastInfo("Deleted Successfully", { hideProgressBar: true });
           queryClient.invalidateQueries({
             queryKey: ["mappedFieldsDetails"],
           });
+          setDeleteModal(false);
         },
         onError: (error) => {
+          console.log("error", error);
           TkToastError("Error for delete record");
+          setDeleteModal(false);
         },
       }
     );
@@ -180,14 +190,23 @@ const FieldMappingTable = () => {
       {mappedFieldsLoading ? (
         <TkLoader />
       ) : mappedRecordData.length > 0 ? (
-        <TkTableContainer
-          columns={columnHead}
-          data={mappedRecordData || []}
-          // isSearch={true}
-          // isFilters={true}
-          // defaultPageSize={10}
-          // customPageSize={true}
-        />
+        <>
+          <DeleteModal
+            show={deleteModal}
+            onDeleteClick={onClickDelete}
+            onCloseClick={() => setDeleteModal(false)}
+            // loading={}
+          />
+          <TkTableContainer
+            columns={columnHead}
+            data={mappedRecordData || []}
+            showPagination={true}
+            // isSearch={true}
+            // isFilters={true}
+            // defaultPageSize={10}
+            // customPageSize={true}
+          />
+        </>
       ) : (
         <TkNoData />
       )}

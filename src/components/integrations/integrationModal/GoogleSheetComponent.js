@@ -1,26 +1,29 @@
 import FormErrorText from "@/globalComponents/ErrorText";
 import TkButton from "@/globalComponents/TkButton";
-import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import TkSelect from "@/globalComponents/TkSelect";
 import { TkToastError } from "@/globalComponents/TkToastContainer";
-import { API_BASE_URL, netsuiteRecordTypes } from "@/utils/Constants";
+import useFullPageLoader from "@/globalComponents/useFullPageLoader";
+import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 const schema = Yup.object({
   integrationName: Yup.string().required("Integration name is required."),
-
-  googleSheetUrl: Yup.string().required("Google sheet url is required."),
 }).required();
 
-const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
+const GoogleSheetComponent = ({
+  onClickHandeler,
+  toggle,
+  integrationID,
+  title,
+  addedIntegrationsId,
+}) => {
   const {
     control,
     register,
@@ -31,209 +34,99 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
     resolver: yupResolver(schema),
   });
 
-  const queryClient  = useQueryClient();
-
-  const [integrationID, setIntegrationID] = useState();
+  const queryClient = useQueryClient();
+  const [loader, showLoader, hideLoader] = useFullPageLoader();
   const [integrationsData, setIntegrationsData] = useState();
 
   const addConfigurations = useMutation({
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/addConfigurations")
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
   });
 
   const updateConfiguration = useMutation({
-    // mutationFn: tkFetch.putWithIdInUrl("http://localhost:4000/v1/updateConfiguration"),
     mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateConfiguration`),
   });
-  // console.log("other", other);
 
-  // const getConfigurationById = useMutation({
-  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getConfigurationById")
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getConfigurationById`),
-  // });
-  // const {data: configurationsData, isError, isLoading, error} = useQuery({
-  //   queryKey: ["configurations", other.integrationID],
-  //   queryFn: tkFetch.get(`${API_BASE_URL}/getConfigurationById/${other.integrationID}`),
-  //   // queryFn: tkFetch.get(`http://localhost:4000/v1/getConfigurationById/${other.integrationID}`),
-  //   enabled: !!other.integrationID,
-  // });
-  const apiResult = useQueries({
-    queries: [
-      {
-        queryKey: ["configurationsData", other.integrationID],
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getConfigurationById/${other.integrationID}`
-        ),
-        // queryFn: tkFetch.get(
-        //   `http://localhost:4000/v1/getConfigurationById/${other.integrationID}`
-        // ),
-        enabled: !!other.integrationID,
-      },
-      {
-        queryKey: ["integrationName", other.integrationID],
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getIntegrationById/${other.integrationID}`
-        ),
-        enabled: !!other.integrationID,
-      }
-    ],
+  const {
+    data: configurationsData,
+    isError: configError,
+    isLoading: configLoading,
+    error: configErrorData,
+  } = useQuery({
+    queryKey: ["configurationsData", integrationID],
+    queryFn: tkFetch.get(
+      `${API_BASE_URL}/getConfigurationById/${integrationID}`
+    ),
+    enabled: !!integrationID,
   });
 
-  const [ config, integrations ] = apiResult;
-  const { data: configurationsData, isError: configError, isLoading: configLoading, error: configErrorData } = config;
-  const { data: integrationData, isError: integrationError, isLoading: integrationLoading, error: integrationErrorData } = integrations;
-
-  // console.log("configurationsData^^^^^^^^^^",other.integrationID, "^^", configurationsData);
-
-  // const integration = useMutation({
-  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrationById"),
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrationById`),
-  // });
-
   useEffect(() => {
-    // if (other.integrationID) {
-    //   setIntegrationID(JSON.parse(other.integrationID));
-
-      if(configurationsData?.length){
-        configurationsData.map((item) => {
-          // console.log("GS item", item, "and", other.title)
-          if (item.systemName === other.title) {
-            // console.log("item GS", item);
-            setIntegrationsData(item);
-            setValue("integrationName", item.integration.integrationName);
-            setValue("googleSheetUrl", item.url);
-          }
-        });
-      }
-    //   else
-    // // }
-    // //  if(integrationData)
-    //  {
-    //   setValue("integrationName", integrationData.integrationName);
-    // }
-
-    // if (other.integrationID) {
-      
-      // getConfigurationById.mutate(
-      //   { integrationId: JSON.parse(other.integrationID) },
-      //   {
-      //     onSuccess: (data) => {
-      //       // console.log("getConfigurationById GS", data);
-      //       data.map((item) => {
-      //         if (item.systemName === other.title) {
-      //           // console.log("item GS", item);
-      //           setIntegrationsData(item);
-      //           setValue("integrationName", item.integration.integrationName);
-      //           setValue("googleSheetUrl", item.url);
-      //         }
-      //       });
-      //     },
-      //     onError: (error) => {
-      //       console.log("error", error);
-      //     },
-      //   }
-      // );
-
-      // integration.mutate(
-      //   {
-      //     id: other.integrationID,
-      //   },
-      //   {
-      //     onSuccess: (data) => {
-      //       // console.log("integration data", data[0]);
-      //       setValue("integrationName", data[0].integrationName);
-      //     },
-      //     onError: (error) => {
-      //       console.log("error", error);
-      //     },
-      //   }
-      // );
-    // }
-  }, [configurationsData, other.integrationID, other.title, setValue]);
+    if (configurationsData?.length) {
+      configurationsData.map((item) => {
+        if (item.systemName === title) {
+          setIntegrationsData(item);
+          setValue("integrationName", item.integration.integrationName);
+        }
+      });
+    }
+  }, [configurationsData, integrationID, setValue, title]);
 
   const onSubmit = (data) => {
     // console.log("data", data);
+    showLoader();
+    const userId = sessionStorage.getItem("userId");
     if (configurationsData?.length) {
       configurationsData.map((item) => {
-        if (item.systemName === other.title) {
-          // console.log("updated", item.systemName, "for", item.id);
+        if (item.systemName === title) {
           const updatedData = {
             id: item.id,
-            systemName: other.title,
-            url: data.googleSheetUrl,
-            authenticationType: "abc",
+            authenticationType: "xyz",
           };
-          // console.log("updatedData", updatedData)
+          console.log("updatedData in gs");
           updateConfiguration.mutate(updatedData, {
             onSuccess: (data) => {
               queryClient.invalidateQueries({
-                queryKey: ["integrations"],
-              })
-              // console.log("Updated Successfully", data);
-              // TkToastInfo("Updated Successfully", { hideProgressBar: true });
+                queryKey: ["configurationsData"],
+              });
+              onClickHandeler();
             },
             onError: (error) => {
-              console.log("error", error);
+              // console.log("error", error);
+              toggle();
               TkToastError("Error: Record not updated");
             },
           });
         }
       });
+      hideLoader();
     } else {
-      // console.log("added");
-      const userId = sessionStorage.getItem("userId");
-
       const configurData = {
         userId: JSON.parse(userId),
-        // integrationId: integrationID,
-        integrationId: other.integrationID,
-        systemName: other.title,
-        url: data.googleSheetUrl,
-        authenticationType: "xyz",
+        integrationId: addedIntegrationsId,
+        systemName: title,
+        authenticationType: "abc",
       };
-      // console.log("configurData", configurData);
+      console.log("added in gs");
 
       addConfigurations.mutate(configurData, {
         onSuccess: (data) => {
           queryClient.invalidateQueries({
-            queryKey: ["integrations"],
-          })
-          // console.log("addConfigurations data", data);
+            queryKey: ["configurationsData"],
+          });
+          onClickHandeler();
         },
         onError: (error) => {
-          console.log("error", error);
+          // console.log("error", error);
+          toggle();
+          TkToastError("Error: Record not added");
         },
       });
+      hideLoader();
     }
-
-    onClickHandeler();
-    // // console.log("data", data);
-    // const userId = sessionStorage.getItem("userId");
-    // const configurData = {
-    //   userId: JSON.parse(userId),
-    //   integrationId: integrationID,
-    //   systemName: other.title,
-    //   url: data.googleSheetUrl,
-    // };
-    // // console.log("configurData", configurData);
-    // addConfigurations.mutate(configurData, {
-    //   onSuccess: (data) => {
-    //     // console.log("data", data);
-    //   },
-    //   onError: (error) => {
-    //     console.log("error", error);
-    //   },
-    // });
-
-    // onClickHandeler();
   };
 
   return (
     <>
-      {/* <h5 className="text-center">Google Sheet Configuration</h5> */}
-      {/* <TkCard>
-        <TkCardBody> */}
-      <TkForm onSubmit={handleSubmit(onSubmit)}>
+      <TkForm onSubmit={handleSubmit(onSubmit)} className="my-3">
         <TkRow className="g-3">
           <TkCol lg={12}>
             <TkInput
@@ -251,141 +144,16 @@ const GoogleSheetComponent = ({ onClickHandeler, ...other }) => {
             ) : null}
           </TkCol>
 
-          {/* <TkCol lg={12}>
-                <TkSelect
-                  id="netsuiteRecordType"
-                  name="netsuiteRecordType"
-                  labelName="NetSuite Record Type"
-                  options={netsuiteRecordTypes}
-                  defaultValue={netsuiteRecordTypes[0]}
-                  maxMenuHeight="130px"
-                />
-              </TkCol> */}
-
           <TkCol lg={12}>
-            <TkInput
-              {...register("googleSheetUrl")}
-              id="googleSheetUrl"
-              type="text"
-              labelName="Google Sheets™ Url"
-              placeholder="Enter google sheet url"
-              requiredStarOnLabel={true}
-              invalid={errors.googleSheetUrl?.message ? true : false}
-            />
-            {errors.googleSheetUrl?.message ? (
-              <FormErrorText>{errors.googleSheetUrl?.message}</FormErrorText>
-            ) : null}
-          </TkCol>
-
-          {/* <TkCol lg={12}>
-                <TkButton type="submit" className="btn btn-success">
-                  Authorize
-                </TkButton>
-              </TkCol> */}
-
-          <TkCol lg={12}>
-            <TkButton
-              type="submit"
-              className="btn-success float-end"
-              // onClick={onClickHandeler}
-            >
-              {/* Next Step */}
+            <TkButton type="submit" className="btn-success float-end">
               Authorize
             </TkButton>
           </TkCol>
+          {loader}
         </TkRow>
       </TkForm>
-      {/* </TkCardBody>
-      </TkCard> */}
     </>
   );
 };
 
 export default GoogleSheetComponent;
-
-// import TkButton from "@/globalComponents/TkButton";
-// import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
-// import TkForm from "@/globalComponents/TkForm";
-// import TkInput from "@/globalComponents/TkInput";
-// import TkRow, { TkCol } from "@/globalComponents/TkRow";
-// import React from "react";
-
-// const GoogleSheetComponent = ({ onClickHandeler }) => {
-//   return (
-//     <>
-//       <h5 className="text-center">Google Sheet Configuration</h5>
-
-//       <TkRow className="justify-content-center">
-//         <TkCol>
-//           <TkCard>
-//             <TkCardBody>
-//               <TkForm>
-//                 <TkRow className="g-3">
-//                   <TkCol lg={12}>
-//                     <TkInput
-//                       // {...register("clientName")}
-//                       id="integrationName"
-//                       type="text"
-//                       labelName="Integration Name"
-//                       placeholder="Enter integration name"
-//                       // requiredStarOnLabel={true}
-//                       // disabled={viewMode}
-//                     />
-//                   </TkCol>
-
-//                   <TkCol lg={12}>
-//                     <TkInput
-//                       // {...register("clientName")}
-//                       id="netsuiteRecordType"
-//                       type="text"
-//                       labelName="Netsuite record type"
-//                       placeholder="Enter netsuite record type"
-//                       // requiredStarOnLabel={true}
-//                       // disabled={viewMode}
-//                     />
-//                   </TkCol>
-
-//                   <TkCol lg={12}>
-//                     <TkInput
-//                       // {...register("clientName")}
-//                       id="googleSheetUrl"
-//                       type="text"
-//                       labelName="Google sheet URL"
-//                       placeholder="Enter google sheet URL"
-//                       // requiredStarOnLabel={true}
-//                       // disabled={viewMode}
-//                     />
-//                   </TkCol>
-
-//                   <TkCol lg={2}>
-//                     <TkButton
-//                       color="success"
-//                       className="btn btn-success"
-//                       type="submit"
-//                     >
-//                       Authorize
-//                     </TkButton>
-//                   </TkCol>
-
-//                   <TkCol lg={2}>
-//                     <TkButton
-//                       color="success"
-//                       className="btn btn-success"
-//                       // type="submit"
-//                       // onClick={onClickHandeler}
-//                     >
-//                       Next Step
-//                     </TkButton>
-//                   </TkCol>
-
-//                 </TkRow>
-//               </TkForm>
-//             </TkCardBody>
-//           </TkCard>
-//         </TkCol>
-//       </TkRow>
-//     </>
-//   );
-// };
-
-// export default GoogleSheetComponent;
