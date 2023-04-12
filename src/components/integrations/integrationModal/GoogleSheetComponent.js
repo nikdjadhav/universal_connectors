@@ -84,6 +84,7 @@ const GoogleSheetComponent = ({
           console.log("updatedData in gs");
           updateConfiguration.mutate(updatedData, {
             onSuccess: (data) => {
+              hideLoader();
               queryClient.invalidateQueries({
                 queryKey: ["configurationsData"],
               });
@@ -91,13 +92,13 @@ const GoogleSheetComponent = ({
             },
             onError: (error) => {
               // console.log("error", error);
+              hideLoader();
               toggle();
               TkToastError("Error: Record not updated");
             },
           });
         }
       });
-      hideLoader();
     } else {
       const configurData = {
         userId: JSON.parse(userId),
@@ -109,6 +110,7 @@ const GoogleSheetComponent = ({
 
       addConfigurations.mutate(configurData, {
         onSuccess: (data) => {
+          hideLoader();
           queryClient.invalidateQueries({
             queryKey: ["configurationsData"],
           });
@@ -116,11 +118,11 @@ const GoogleSheetComponent = ({
         },
         onError: (error) => {
           // console.log("error", error);
+          hideLoader();
           toggle();
           TkToastError("Error: Record not added");
         },
       });
-      hideLoader();
     }
   };
 

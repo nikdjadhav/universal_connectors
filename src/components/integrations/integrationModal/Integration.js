@@ -112,6 +112,7 @@ const Integration = ({
       };
       updateIntegration.mutate(updatedIntegration, {
         onSuccess: (data) => {
+          hideLoader();
           queryClient.invalidateQueries({
             queryKey: ["integrations"],
           });
@@ -119,11 +120,11 @@ const Integration = ({
         },
         onError: (error) => {
           // console.log("error", error);
+          hideLoader();
           TkToastError("Error in updating record");
           toggle();
         },
       });
-      hideLoader();
     } else {
       // to add new integration
       const integrationData = {

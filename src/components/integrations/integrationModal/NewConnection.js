@@ -127,12 +127,14 @@ const NewConnection = ({
               };
               updateConfiguration.mutate(updateConfigData, {
                 onSuccess: (data) => {
+                  hideLoader();
                   queryClient.invalidateQueries({
                     queryKey: ["configurationsData"],
                   });
                   onClickHandeler();
                 },
                 onError: (error) => {
+                  hideLoader();
                   toggle();
                   TkToastError("Error in updating configuration");
                 },
@@ -157,12 +159,14 @@ const NewConnection = ({
               getIntegrationId(data[0].id);
               addConfigurations.mutate(addConfigData, {
                 onSuccess: (data) => {
+                  hideLoader();
                   onClickHandeler();
                   queryClient.invalidateQueries({
                     queryKey: ["configurationsData"],
                   });
                 },
                 onError: (error) => {
+                  hideLoader();
                   toggle();
                   TkToastError("Error in adding integration");
                 },
@@ -172,12 +176,12 @@ const NewConnection = ({
               });
             },
             onError: (error) => {
+              hideLoader();
               toggle();
               TkToastError("Error in adding integration");
             },
           });
         }
-        hideLoader();
       },
       onError: (error) => {
         hideLoader();
