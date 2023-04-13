@@ -376,10 +376,10 @@ const getRedirectPage = async (req, res) => {
       prompt: "consent",
       include_granted_scopes: "true",
       response_type: "code",
+      redirect_uri: process.env.REDIRECT_URI
       // redirect_uri: "http://localhost:3000/callback",
-      redirect_uri: "https://universal-connectors.vercel.app/callback",
+      // redirect_uri: "https://universal-connectors.vercel.app/callback",
     }
-    // const newUrl = `${urlParams.redirect_uri}?client_id=${urlParams.client_id}&scope=${urlParams.scope}&access_type=${urlParams.access_type}&prompt=${urlParams.prompt}&include_granted_scopes=${urlParams.include_granted_scopes}&response_type=${urlParams.response_type}`
     const url = `https://accounts.google.com/o/oauth2/auth?client_id=${urlParams.client_id}&scope=${urlParams.scope}&access_type=${urlParams.access_type}&prompt=${urlParams.prompt}&include_granted_scopes=${urlParams.include_granted_scopes}&response_type=${urlParams.response_type}&redirect_uri=${urlParams.redirect_uri}`
     // console.log(url)
 

@@ -133,3 +133,8 @@ model NotificationSettings {
   notificationLabel String
   email             String
 }
+
+model credentials {
+  id           Int    @id @default(autoincrement())
+  refreshToken String
+}
