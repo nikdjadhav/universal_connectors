@@ -9,3 +9,8 @@ const CallBack = () => {
 }
 
 export default CallBack
+
+CallBack.options = {
+    // layout: true,
+    auth: true,
+  };
