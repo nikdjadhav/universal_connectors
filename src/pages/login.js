@@ -39,6 +39,8 @@ import useGlobalStore from "@/utils/globalStore";
 import { app } from "../firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { Spinner } from "reactstrap";
+import useFullPageLoader from "@/globalComponents/useFullPageLoader";
+import TkLoader from "@/globalComponents/TkLoader";
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
@@ -70,6 +72,7 @@ const schema = Yup.object({
 const Login = () => {
   const router = useRouter();
   const [loginUserDetails, setLoginUserDetails] = useState(null);
+  // const [loader, showLoader, hideLoader] = useFullPageLoader();
 
   useEffect(() => {
     const token = sessionStorage.getItem("loginCredentials");
@@ -80,7 +83,7 @@ const Login = () => {
     }
   }, [router]);
 
-  const { data, isError, isLoading, error } = useQuery({
+  const { data, isError, isLoading, error, isFetching, isFetched } = useQuery({
     queryKey: ["user", loginUserDetails],
     queryFn: tkFetch.get(`${API_BASE_URL}/login`, {
       params: loginUserDetails,
@@ -102,10 +105,12 @@ const Login = () => {
   });
 
   const onSubmit = async (userData) => {
+    // showLoader();
     setLoginUserDetails({
       email: userData.email,
       password: userData.password,
     });
+    // hideLoader();
   };
   if (data) {
     console.log("user logged in successfully");
@@ -222,13 +227,17 @@ const Login = () => {
                         </div> */}
 
                         <div className="mt-4">
-                          <TkButton
-                            color="success"
-                            className="btn btn-success w-100"
-                            type="submit"
-                          >
-                            Login
-                          </TkButton>
+                          {/* {isFetching ? (
+                            <TkLoader />
+                          ) : ( */}
+                            <TkButton
+                              color="success"
+                              className="btn btn-success w-100"
+                              type="submit"
+                            >
+                              Login
+                            </TkButton>
+                          {/* )} */}
                         </div>
                       </TkForm>
 
@@ -263,6 +272,7 @@ const Login = () => {
             </TkRow>
           </TkContainer>
         </div>
+        {/* {loader} */}
       </ParticlesAuth>
       {/* </div>
       )} */}
