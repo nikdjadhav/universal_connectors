@@ -367,8 +367,54 @@ const authentication = async (req, res) => {
   }
 };
 
+const getRedirectPage = async (req, res) => {
+  try {
+    const urlParams = {
+      client_id: "350110252536-v0id00m9oaathq39hv7o8i1nmj584et1.apps.googleusercontent.com",
+      scope: "https%3A//www.googleapis.com/auth/drive.readonly%20https%3A//www.googleapis.com/auth/spreadsheets",
+      access_type: "offline",
+      prompt: "consent",
+      include_granted_scopes: "true",
+      response_type: "code",
+      // redirect_uri: "http://localhost:3000/callback",
+      redirect_uri: "https://universal-connectors.vercel.app/callback",
+    }
+    // const newUrl = `${urlParams.redirect_uri}?client_id=${urlParams.client_id}&scope=${urlParams.scope}&access_type=${urlParams.access_type}&prompt=${urlParams.prompt}&include_granted_scopes=${urlParams.include_granted_scopes}&response_type=${urlParams.response_type}`
+    const url = `https://accounts.google.com/o/oauth2/auth?client_id=${urlParams.client_id}&scope=${urlParams.scope}&access_type=${urlParams.access_type}&prompt=${urlParams.prompt}&include_granted_scopes=${urlParams.include_granted_scopes}&response_type=${urlParams.response_type}&redirect_uri=${urlParams.redirect_uri}`
+    // console.log(url)
+
+    response({
+      res,
+      success: true,
+      status_code: 200,
+      data: [url],
+      message: "Redirect url",
+    });
+    return;
+
+    // https://accounts.google.com/o/oauth2/auth
+    // ?client_id=350110252536-v0id00m9oaathq39hv7o8i1nmj584et1.apps.googleusercontent.com
+    // &scope=https%3A//www.googleapis.com/auth/drive.readonly%20https%3A//www.googleapis.com/auth/spreadsheets
+    // &access_type=offline
+    // &prompt=consent
+    // &include_granted_scopes=true
+    // &response_type=code
+    // &redirect_uri=https%3A%2F%2Funiversal-connectors.vercel.app%2Fcallback
+  } catch {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      data: [],
+      message: "Error while fetching redirect url",
+    });
+    return;
+  }
+}
+
 module.exports = {
   getRecordTypes,
   getOptions,
-  authentication
+  authentication,
+  getRedirectPage
 };

@@ -8,7 +8,8 @@ import useFullPageLoader from "@/globalComponents/useFullPageLoader";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -37,6 +38,8 @@ const GoogleSheetComponent = ({
   const queryClient = useQueryClient();
   const [loader, showLoader, hideLoader] = useFullPageLoader();
   const [integrationsData, setIntegrationsData] = useState();
+  const [userID, setUserID] = useState();
+  const router = useRouter()
 
   const addConfigurations = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
@@ -60,6 +63,28 @@ const GoogleSheetComponent = ({
   });
 
   useEffect(() => {
+    const Id = sessionStorage.getItem("userId");
+    if(Id){
+      setUserID(Id);
+    }
+  }, [])
+
+  const apiResult = useQueries({
+    queries: [
+      {
+        queryKey: ["redirectUrl", userID],
+        queryFn: tkFetch.get(
+          `${API_BASE_URL}/getRedirectPage`
+        ),
+        enabled: !!userID,
+      }
+    ]
+  });
+
+  const [restletRedirectUrl] = apiResult
+  const { data: redirectUrl, isError: redirectError, isLoading: redirectLoading, error: redirectErrorData } = restletRedirectUrl;
+
+  useEffect(() => {
     if (configurationsData?.length) {
       configurationsData.map((item) => {
         if (item.systemName === title) {
@@ -71,59 +96,66 @@ const GoogleSheetComponent = ({
   }, [configurationsData, integrationID, setValue, title]);
 
   const onSubmit = (data) => {
-    // console.log("data", data);
-    showLoader();
-    const userId = sessionStorage.getItem("userId");
-    if (configurationsData?.length) {
-      configurationsData.map((item) => {
-        if (item.systemName === title) {
-          const updatedData = {
-            id: item.id,
-            authenticationType: "xyz",
-          };
-          console.log("updatedData in gs");
-          updateConfiguration.mutate(updatedData, {
-            onSuccess: (data) => {
-              hideLoader();
-              queryClient.invalidateQueries({
-                queryKey: ["configurationsData"],
-              });
-              onClickHandeler();
-            },
-            onError: (error) => {
-              // console.log("error", error);
-              hideLoader();
-              toggle();
-              TkToastError("Error: Record not updated");
-            },
-          });
-        }
-      });
-    } else {
-      const configurData = {
-        userId: JSON.parse(userId),
-        integrationId: addedIntegrationsId,
-        systemName: title,
-        authenticationType: "abc",
-      };
-      console.log("added in gs");
+    if(redirectUrl){
+      console.log(redirectUrl[0]);
+      router.push(redirectUrl[0]);
 
-      addConfigurations.mutate(configurData, {
-        onSuccess: (data) => {
-          hideLoader();
-          queryClient.invalidateQueries({
-            queryKey: ["configurationsData"],
-          });
-          onClickHandeler();
-        },
-        onError: (error) => {
-          // console.log("error", error);
-          hideLoader();
-          toggle();
-          TkToastError("Error: Record not added");
-        },
-      });
+      // onclick submit button redirect to redirectUrl[0] url
+
     }
+    // // console.log("data", data);
+    // showLoader();
+    // const userId = sessionStorage.getItem("userId");
+    // if (configurationsData?.length) {
+    //   configurationsData.map((item) => {
+    //     if (item.systemName === title) {
+    //       const updatedData = {
+    //         id: item.id,
+    //         authenticationType: "xyz",
+    //       };
+    //       console.log("updatedData in gs");
+    //       updateConfiguration.mutate(updatedData, {
+    //         onSuccess: (data) => {
+    //           hideLoader();
+    //           queryClient.invalidateQueries({
+    //             queryKey: ["configurationsData"],
+    //           });
+    //           onClickHandeler();
+    //         },
+    //         onError: (error) => {
+    //           // console.log("error", error);
+    //           hideLoader();
+    //           toggle();
+    //           TkToastError("Error: Record not updated");
+    //         },
+    //       });
+    //     }
+    //   });
+    // } else {
+    //   const configurData = {
+    //     userId: JSON.parse(userId),
+    //     integrationId: addedIntegrationsId,
+    //     systemName: title,
+    //     authenticationType: "abc",
+    //   };
+    //   console.log("added in gs");
+
+    //   addConfigurations.mutate(configurData, {
+    //     onSuccess: (data) => {
+    //       hideLoader();
+    //       queryClient.invalidateQueries({
+    //         queryKey: ["configurationsData"],
+    //       });
+    //       onClickHandeler();
+    //     },
+    //     onError: (error) => {
+    //       // console.log("error", error);
+    //       hideLoader();
+    //       toggle();
+    //       TkToastError("Error: Record not added");
+    //     },
+    //   });
+    // }
   };
 
   return (
