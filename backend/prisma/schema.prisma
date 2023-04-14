@@ -26,6 +26,7 @@ model Users {
   Logs                 Logs[]
   NotificationSettings NotificationSettings[]
   Configurations       Configurations[]
+  Credentials          Credentials[]
 
   @@unique(fields: [email, password], name: "loginUser")
 }
@@ -134,7 +135,9 @@ model NotificationSettings {
   email             String
 }
 
-model credentials {
+model Credentials {
   id           Int    @id @default(autoincrement())
+  userId       Int
+  user         Users  @relation(fields: [userId], references: [id])
   refreshToken String
 }

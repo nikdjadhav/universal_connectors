@@ -252,16 +252,20 @@ const DashBoard = () => {
 
   return (
     <>
-      <TopBar onSearchChange={searchDebounce(updateSearchText, searchonUI)} />
       {isLoading ? (
         <TkLoader />
       ) : integrationData.length > 0 ? (
-        <TkTableContainer
-          columns={columns}
-          data={integrationData || []}
-          tooltip="tooltip"
-          showPagination={true}
-        />
+        <>
+          <TopBar
+            onSearchChange={searchDebounce(updateSearchText, searchonUI)}
+          />
+          <TkTableContainer
+            columns={columns}
+            data={integrationData || []}
+            tooltip="tooltip"
+            showPagination={true}
+          />
+        </>
       ) : (
         <TkNoData />
       )}

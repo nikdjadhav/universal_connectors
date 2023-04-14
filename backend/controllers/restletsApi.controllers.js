@@ -31,7 +31,7 @@ const getRecordTypes = async (req, res) => {
       scriptDeploymentId: "1",
       scriptId: "1529",
       signatureMethod: "HMAC-SHA256",
-        // base_url: req.body.base_url,
+      // base_url: req.body.base_url,
     };
     // console.log("authentication.length", authentication);
 
@@ -275,7 +275,7 @@ const authentication = async (req, res) => {
       scriptDeploymentId: "1",
       scriptId: "1529",
       signatureMethod: "HMAC-SHA256",
-        // base_url: req.body.base_url,
+      // base_url: req.body.base_url,
     };
     // console.log("authentication.length", authentication);
 
@@ -370,17 +370,19 @@ const authentication = async (req, res) => {
 const getRedirectPage = async (req, res) => {
   try {
     const urlParams = {
-      client_id: "350110252536-v0id00m9oaathq39hv7o8i1nmj584et1.apps.googleusercontent.com",
-      scope: "https%3A//www.googleapis.com/auth/drive.readonly%20https%3A//www.googleapis.com/auth/spreadsheets",
+      client_id:
+        "350110252536-v0id00m9oaathq39hv7o8i1nmj584et1.apps.googleusercontent.com",
+      scope:
+        "https%3A//www.googleapis.com/auth/drive.readonly%20https%3A//www.googleapis.com/auth/spreadsheets",
       access_type: "offline",
       prompt: "consent",
       include_granted_scopes: "true",
       response_type: "code",
-      redirect_uri: process.env.REDIRECT_URI
+      redirect_uri: process.env.REDIRECT_URI,
       // redirect_uri: "http://localhost:3000/callback",
       // redirect_uri: "https://universal-connectors.vercel.app/callback",
-    }
-    const url = `https://accounts.google.com/o/oauth2/auth?client_id=${urlParams.client_id}&scope=${urlParams.scope}&access_type=${urlParams.access_type}&prompt=${urlParams.prompt}&include_granted_scopes=${urlParams.include_granted_scopes}&response_type=${urlParams.response_type}&redirect_uri=${urlParams.redirect_uri}`
+    };
+    const url = `https://accounts.google.com/o/oauth2/auth?client_id=${urlParams.client_id}&scope=${urlParams.scope}&access_type=${urlParams.access_type}&prompt=${urlParams.prompt}&include_granted_scopes=${urlParams.include_granted_scopes}&response_type=${urlParams.response_type}&redirect_uri=${urlParams.redirect_uri}`;
     // console.log(url)
 
     response({
@@ -410,11 +412,93 @@ const getRedirectPage = async (req, res) => {
     });
     return;
   }
-}
+};
+
+const addRefreshToken = async (req, res) => {
+  console.log("reqested", req.body);
+  try {
+    const code = req.body.code;
+    console.log("code", code);
+
+    const url = "https://oauth2.googleapis.com/token";
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+    const payload = {
+      code: code,
+      client_id:
+        "350110252536-v0id00m9oaathq39hv7o8i1nmj584et1.apps.googleusercontent.com",
+      client_secret: "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",
+      redirect_uri: process.env.REDIRECT_URI,
+      grant_type: "authorization_code",
+    };
+
+    await axios({
+      method: "POST",
+      url: url,
+      headers: headers,
+      data: payload,
+    })
+      .then((values) => {
+        response({
+          res,
+          success: true,
+          status_code: 200,
+          data: [values.data],
+          message: "Refresh token fetched successfully",
+        });
+        console.log("response==>", values.data);
+        addCredentials(req.body.userId, values.data.refresh_token);
+      })
+      .catch((error) => {
+        response({
+          res,
+          success: false,
+          status_code: 400,
+          data: [],
+          message: "Refresh token not fetched",
+        });
+        return;
+      });
+  } catch {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      data: [],
+      message: "Error while fetching refresh token",
+    });
+    return;
+  }
+};
+
+const addCredentials = async (user_id, refresh_token) => {
+  console.log("userID", user_id);
+  console.log("refreshToken", refresh_token);
+
+  try {
+    const credentials = await prisma.credentials.create({
+      data: {
+        userId: user_id,
+        refreshToken: refresh_token,
+      },
+    });
+
+    if (credentials) {
+      console.log("credentials added", credentials);
+    } else {
+      console.log("credentials not added");
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
+};
 
 module.exports = {
   getRecordTypes,
   getOptions,
   authentication,
-  getRedirectPage
+  getRedirectPage,
+  addRefreshToken,
+  // addCredentials,
 };

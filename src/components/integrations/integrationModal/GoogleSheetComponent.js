@@ -103,59 +103,59 @@ const GoogleSheetComponent = ({
       // onclick submit button redirect to redirectUrl[0] url
 
     }
-    // // console.log("data", data);
-    // showLoader();
-    // const userId = sessionStorage.getItem("userId");
-    // if (configurationsData?.length) {
-    //   configurationsData.map((item) => {
-    //     if (item.systemName === title) {
-    //       const updatedData = {
-    //         id: item.id,
-    //         authenticationType: "xyz",
-    //       };
-    //       console.log("updatedData in gs");
-    //       updateConfiguration.mutate(updatedData, {
-    //         onSuccess: (data) => {
-    //           hideLoader();
-    //           queryClient.invalidateQueries({
-    //             queryKey: ["configurationsData"],
-    //           });
-    //           onClickHandeler();
-    //         },
-    //         onError: (error) => {
-    //           // console.log("error", error);
-    //           hideLoader();
-    //           toggle();
-    //           TkToastError("Error: Record not updated");
-    //         },
-    //       });
-    //     }
-    //   });
-    // } else {
-    //   const configurData = {
-    //     userId: JSON.parse(userId),
-    //     integrationId: addedIntegrationsId,
-    //     systemName: title,
-    //     authenticationType: "abc",
-    //   };
-    //   console.log("added in gs");
+    // console.log("data", data);
+    showLoader();
+    const userId = sessionStorage.getItem("userId");
+    if (configurationsData?.length) {
+      configurationsData.map((item) => {
+        if (item.systemName === title) {
+          const updatedData = {
+            id: item.id,
+            authenticationType: "xyz",
+          };
+          console.log("updatedData in gs");
+          updateConfiguration.mutate(updatedData, {
+            onSuccess: (data) => {
+              hideLoader();
+              queryClient.invalidateQueries({
+                queryKey: ["configurationsData"],
+              });
+              onClickHandeler();
+            },
+            onError: (error) => {
+              // console.log("error", error);
+              hideLoader();
+              toggle();
+              TkToastError("Error: Record not updated");
+            },
+          });
+        }
+      });
+    } else {
+      const configurData = {
+        userId: JSON.parse(userId),
+        integrationId: addedIntegrationsId,
+        systemName: title,
+        authenticationType: "abc",
+      };
+      console.log("added in gs");
 
-    //   addConfigurations.mutate(configurData, {
-    //     onSuccess: (data) => {
-    //       hideLoader();
-    //       queryClient.invalidateQueries({
-    //         queryKey: ["configurationsData"],
-    //       });
-    //       onClickHandeler();
-    //     },
-    //     onError: (error) => {
-    //       // console.log("error", error);
-    //       hideLoader();
-    //       toggle();
-    //       TkToastError("Error: Record not added");
-    //     },
-    //   });
-    // }
+      addConfigurations.mutate(configurData, {
+        onSuccess: (data) => {
+          hideLoader();
+          queryClient.invalidateQueries({
+            queryKey: ["configurationsData"],
+          });
+          onClickHandeler();
+        },
+        onError: (error) => {
+          // console.log("error", error);
+          hideLoader();
+          toggle();
+          TkToastError("Error: Record not added");
+        },
+      });
+    }
   };
 
   return (
