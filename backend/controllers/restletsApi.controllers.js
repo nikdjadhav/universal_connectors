@@ -474,7 +474,7 @@ const addRefreshToken = async (req, res) => {
 
 const addCredentials = async (user_id, refresh_token) => {
   // console.log("userID", typeof(user_id));
-  console.log("refreshToken", refresh_token);
+  // console.log("refreshToken", refresh_token);
 
   try {
     const credentials = await prisma.credentials.create({
@@ -495,7 +495,7 @@ const addCredentials = async (user_id, refresh_token) => {
 };
 
 const getAccessToken = async (req, res) => {
-  console.log("req==>", req.params)
+  // console.log("req==>", req.params)
   try {
     const token = await prisma.credentials.findMany({
       where: {
@@ -610,6 +610,52 @@ const getFiles = async (req, res) => {
   }
 };
 
+const getSheetsData = async (req, res) => {
+  const sheetsId = req.body.sheetsId;
+  const accessToken = req.body.accessToken;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetsId}/values/A1:ZZ100000`;
+  const headers = {
+    Authorization: `Bearer ${accessToken}`,
+  };
+  try {
+    await axios({
+      method: "GET",
+      url: url,
+      headers: headers,
+    })
+      .then((values) => {
+        response({
+          res,
+          success: true,
+          status_code: 200,
+          data: [values.data],
+          message: "Sheets data fetched successfully",
+        });
+        // console.log("response==>", values.data);
+      })
+      .catch((error) => {
+        response({
+          res,
+          success: false,
+          status_code: 400,
+          data: [],
+          message: "Sheets data not fetched",
+        });
+        return;
+      });
+  } catch {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      data: [],
+      message: "Error while fetching sheets data",
+    });
+    return;
+  }
+};
+
+
 module.exports = {
   getRecordTypes,
   getOptions,
@@ -618,4 +664,5 @@ module.exports = {
   addRefreshToken,
   getAccessToken,
   getFiles,
+  getSheetsData
 };

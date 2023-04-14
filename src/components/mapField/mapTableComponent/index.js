@@ -50,6 +50,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   const [fieldId, setFieldId] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteFieldId, setDeleteFieldId] = useState();
+  const [userId, setUserId] = useState(null);
 
   // console.log("mappedRecordId", mappedRecordId);
   const apiResults = useQueries({
@@ -93,10 +94,16 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         queryFn: tkFetch.get(`${API_BASE_URL}/getFields/${mappedRecordId}`),
         enabled: !!mappedRecordId,
       },
+      {
+        queryKey: ["getAccessToken", userId],
+        queryFn: tkFetch.get(`${API_BASE_URL}/getAccessToken/${userId}`),
+        enabled: !!userId,
+      },
     ],
   });
 
-  const [mappedRecord, config, restletData, getFields] = apiResults;
+  const [mappedRecord, config, restletData, getFields, asscessToken] =
+    apiResults;
   const {
     data: mappedRecordData,
     isLoading: mappedRecordLoading,
@@ -121,6 +128,12 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     isError: fieldsError,
     error: fieldsErrorData,
   } = getFields;
+  const {
+    isLoading: isAccessTokenLoading,
+    isError: isAccessTokenError,
+    error: accessTokenError,
+    data: accessTokenData,
+  } = asscessToken;
 
   const addFields = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
@@ -129,6 +142,44 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   const deleteFields = useMutation({
     mutationFn: tkFetch.deleteWithIdInUrl(`${API_BASE_URL}/deleteField`),
   });
+
+  const getSheetsData = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getSheetsData`),
+  });
+
+  useEffect(() => {
+    const userID = sessionStorage.getItem("userId");
+
+    if (userID) {
+      setUserId(JSON.parse(userID));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (accessTokenData) {
+      const data = {
+        sheetsId: mappedRecordDetails.destination,
+        accessToken: accessTokenData[0].access_token,
+      };
+      console.log("***", data);
+      getSheetsData.mutate(data, {
+        onSuccess: (data) => {
+          data[0].values[0].map((item, index) => {
+            setValue(
+              `destinationFieldValue[${index}]`,
+              item
+            );
+            setValue(`sourceFieldValue[${index}]`, null);
+          });
+          setRows(data[0].values[0]);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
+    }
+  }, [accessTokenData, mappedRecordDetails.destination]);
+
 
   useEffect(() => {
     if (configData) {
@@ -192,7 +243,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
 
   useEffect(() => {
     if (fieldsData) {
-      // console.log("fieldsData", fieldsData)
+      console.log("fieldsData", fieldsData)
       fieldsData.map((field, index) => {
         setValue(
           `destinationFieldValue[${index}]`,
@@ -233,12 +284,13 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         Header: "Google Sheets™ Columns",
         accessor: "destinationFieldValue",
         Cell: ({ row }) => {
+          // console.log("props", row.original)
           return (
             <TkInput
               type="text"
               // name={`googleSheets[${row.index}]`}
               {...register(`destinationFieldValue[${row.index}]`)}
-              disabled={row.original.destinationFieldValue ? true : false}
+              disabled={(row.original||row.original.destinationFieldValue) ? true : false}
               // defaultValue={row && row.original.destinationFieldValue}
               // value={row.original.destinationFieldValue}
               // onChange={(e) => handleChange(row.index, e)}
@@ -418,8 +470,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         <TkCol>
           <TkLabel>
             <span className="fw-bold">
-              Integration Name:{" "}
-              {mappedRecordDetails.recordTypeTitle}
+              Integration Name: {mappedRecordDetails.recordTypeTitle}
             </span>
             &nbsp;&nbsp;
           </TkLabel>
