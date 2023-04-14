@@ -415,10 +415,10 @@ const getRedirectPage = async (req, res) => {
 };
 
 const addRefreshToken = async (req, res) => {
-  console.log("reqested", req.body);
+  // console.log("reqested", req.body);
   try {
     const code = req.body.code;
-    console.log("code", code);
+    // console.log("code", code);
 
     const url = "https://oauth2.googleapis.com/token";
     const headers = {
@@ -447,7 +447,7 @@ const addRefreshToken = async (req, res) => {
           data: [values.data],
           message: "Refresh token fetched successfully",
         });
-        console.log("response==>", values.data);
+        // console.log("response==>", values.data);
         addCredentials(req.body.userId, values.data.refresh_token);
       })
       .catch((error) => {
@@ -473,13 +473,13 @@ const addRefreshToken = async (req, res) => {
 };
 
 const addCredentials = async (user_id, refresh_token) => {
-  console.log("userID", user_id);
+  // console.log("userID", typeof(user_id));
   console.log("refreshToken", refresh_token);
 
   try {
     const credentials = await prisma.credentials.create({
       data: {
-        userId: user_id,
+        userId: Number(user_id),
         refreshToken: refresh_token,
       },
     });
@@ -494,11 +494,128 @@ const addCredentials = async (user_id, refresh_token) => {
   }
 };
 
+const getAccessToken = async (req, res) => {
+  console.log("req==>", req.params)
+  try {
+    const token = await prisma.credentials.findMany({
+      where: {
+        userId: Number(req.params.id),
+      },
+    });
+
+    if (token) {
+      // console.log("backend data", token)
+      const data = {
+        refreshToken: token[0].refreshToken,
+        grantType: "refresh_token",
+        clientId:
+          "350110252536-v0id00m9oaathq39hv7o8i1nmj584et1.apps.googleusercontent.com",
+        clientSecret: "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",
+      };
+
+      const url = `https://oauth2.googleapis.com/token?refresh_token=${data.refreshToken}&grant_type=${data.grantType}&client_id=${data.clientId}&client_secret=${data.clientSecret}`;
+      const headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+      };
+
+      await axios({
+        method: "POST",
+        url: url,
+        headers: headers,
+      })
+        .then((values) => {
+          response({
+            res,
+            success: true,
+            status_code: 200,
+            data: [values.data],
+            message: "Access token fetched successfully",
+          });
+          // console.log("response==>", values.data);
+        })
+        .catch((error) => {
+          response({
+            res,
+            success: false,
+            status_code: 400,
+            data: [],
+            message: "Access token not fetched",
+          });
+          return;
+        });
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        data: [],
+        message: "No token found",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      data: [],
+      message: "Error while fetching access token",
+    });
+    return;
+  }
+};
+
+const getFiles = async (req, res) => {
+  // set type as Bearer Token and paste the access token
+  const accessToken = req.body.accessToken;
+  const url = "https://www.googleapis.com/drive/v3/files";
+  const headers = {
+    Authorization: `Bearer ${accessToken}`,
+  };
+  try {
+    await axios({
+      method: "GET",
+      url: url,
+      headers: headers,
+    })
+      .then((values) => {
+        response({
+          res,
+          success: true,
+          status_code: 200,
+          data: [values.data],
+          message: "Files fetched successfully",
+        });
+        // console.log("response==>", values.data);
+      })
+      .catch((error) => {
+        response({
+          res,
+          success: false,
+          status_code: 400,
+          data: [],
+          message: "Files not fetched",
+        });
+        return;
+      });
+  } catch {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      data: [],
+      message: "Error while fetching files",
+    });
+    return;
+  }
+};
+
 module.exports = {
   getRecordTypes,
   getOptions,
   authentication,
   getRedirectPage,
   addRefreshToken,
-  // addCredentials,
+  getAccessToken,
+  getFiles,
 };

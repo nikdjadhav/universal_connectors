@@ -65,6 +65,8 @@ v1Router.post("/restletAuthentication", resletController.authentication);
 v1Router.post("/getOptions", resletController.getOptions);
 v1Router.get("/getRedirectPage", resletController.getRedirectPage);
 v1Router.post("/addRefreshToken", resletController.addRefreshToken);
+v1Router.get("/getAccessToken/:id", resletController.getAccessToken);
+v1Router.post("/getFiles", resletController.getFiles);
 // v1Router.post("/addCredentials", resletController.addCredentials);
 
 // *** field mapping routes ***

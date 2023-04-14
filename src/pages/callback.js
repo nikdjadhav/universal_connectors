@@ -31,7 +31,7 @@ const CallBack = () => {
         }
       })
 
-      // router.push("/dashboard");
+      router.push("/dashboard");
     }
   }, [router]);
 

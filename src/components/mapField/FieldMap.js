@@ -45,16 +45,7 @@ const FieldMap = () => {
   const [integrationOptions, setIntegrationOptions] = useState([]);
   // const [recordTypes, setRecordTypes] = useState();
   const [records, setRecords] = useState([]);
-  const [googleSheetUrl, setGoogleSheetUrl] = useState([
-    {
-      value: "https",
-      label: "https://..."
-    },
-    {
-      value: "http",
-      label: "http://..."
-    }
-  ]);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState([]);
   const [integrationName, setIntegrationName] = useState();
   const [integrationId, setIntegrationId] = useState(null);
   const [configurationData, setConfigurationData] = useState(null);
@@ -63,6 +54,10 @@ const FieldMap = () => {
   const addMappedRecord = useMutation({
     // mutationFn: tkFetch.post("http://localhost:4000/v1/addMappedRecord"),
     mutationFn: tkFetch.post(`${API_BASE_URL}/addMappedRecord`),
+  });
+
+  const getFiles = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/getFiles`),
   });
 
   const apiResults = useQueries({
@@ -93,10 +88,15 @@ const FieldMap = () => {
         queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
         enabled: !!userId,
       },
+      {
+        queryKey: ["getAccessToken", userId],
+        queryFn: tkFetch.get(`${API_BASE_URL}/getAccessToken/${userId}`),
+        enabled: !!userId,
+      },
     ],
   });
 
-  const [config, restlet, integrations] = apiResults;
+  const [config, restlet, integrations, asscessToken] = apiResults;
   const {
     isLoading: isconfigLoading,
     isError: isConfigError,
@@ -115,9 +115,45 @@ const FieldMap = () => {
     error: integrationsError,
     data: integrationsData,
   } = integrations;
+  const {
+    isLoading: isAccessTokenLoading,
+    isError: isAccessTokenError,
+    error: accessTokenError,
+    data: accessTokenData,
+  } = asscessToken;
 
   // console.log("integrationsData", integrationsData);
 
+  // *** google sheets url
+  useEffect(() => {
+    if (accessTokenData) {
+      console.log("accessTokenData", accessTokenData);
+      getFiles.mutate(
+        { accessToken: accessTokenData[0].access_token },
+        {
+          onSuccess: (data) => {
+            console.log("data", data);
+            data[0].files.map((item) => {
+              // collect data if mimeType is pplication/vnd.google-apps.spreadsheet
+              if (item.mimeType === "application/vnd.google-apps.spreadsheet") {
+                setGoogleSheetUrl((prev) => [
+                  ...prev,
+                  { label: item.name, value: item.id },
+                ]);
+              }
+            });
+          },
+          onError: (error) => {
+            console.log("error", error);
+          },
+        }
+      );
+    }
+  }, [accessTokenData]);
+
+  console.log("googleSheetUrl^^^^^^^^^^", googleSheetUrl)
+
+  // *** record types
   useEffect(() => {
     // if (configData) {
     if (configData) {
@@ -138,7 +174,7 @@ const FieldMap = () => {
           });
           // console.log("configData", configData);
           // console.log("restletOptions", restletRecordTypes);
-        } 
+        }
         // else {
         //   setValue("googleSheetUrl", item.url);
         // }
@@ -160,6 +196,7 @@ const FieldMap = () => {
   }, [configData, restletError, restletRecordTypes, setValue]);
   // console.log("configig data", configurationData);
 
+  // *** integration names
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     // setUserID(sessionStorage.getItem("userId"));
@@ -200,7 +237,8 @@ const FieldMap = () => {
       integrationId: data.integrationName.value,
       recordType: data.recordType.value,
       recordTypeTitle: data.recordType.label,
-      url: data.googleSheetUrl.label,
+      url: data.googleSheetUrl.value,
+      urlTitle: data.googleSheetUrl.label,
     };
     console.log("mapprdRecord==>", mapprdRecord);
     addMappedRecord.mutate(mapprdRecord, {

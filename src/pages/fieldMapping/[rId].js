@@ -39,7 +39,7 @@ const MapTable = () => {
             <MapTableComponent
               mappedRecordId={rId}
               // mappedRecordType={router.query.mappedRecordType}
-              recordTypeTitle={pull_data}
+              integrationsName={pull_data}
             />
           {/* ) : null} */}
         </TkContainer>

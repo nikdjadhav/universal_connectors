@@ -79,6 +79,7 @@ model MappedRecords {
   source           String
   destination      String
   recordTypeTitle  String
+  url              String
   creationDate     DateTime     @default(now())
   modificationDate DateTime     @updatedAt
   Fields           Fields[]

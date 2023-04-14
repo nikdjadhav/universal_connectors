@@ -12,6 +12,7 @@ const addMappedRecord = async (req, res) => {
         source: req.body.recordType,
         recordTypeTitle: req.body.recordTypeTitle,
         destination: req.body.url,
+        url: req.body.urlTitle,
         creationDate: new Date(),
         modificationDate: undefined,
       },
@@ -105,6 +106,7 @@ const getMappedRecordById = async (req, res) => {
         source: true,
         recordTypeTitle: true,
         destination: true,
+        url: true,
         creationDate: true,
         modificationDate: true,
         integration: {

@@ -3,7 +3,6 @@ import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
-// import { netsuiteValues } from "@/utils/Constants";
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -30,13 +29,11 @@ import TkNoData from "@/globalComponents/TkNoData";
 import TkAlert from "@/globalComponents/TkAlert";
 import DeleteModal from "@/utils/DeleteModal";
 
-const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
-  // const [control, setControl] = useState(null);
+const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   const [recordType, setRecordType] = useState(null);
   const [integrationName, setIntegrationName] = useState(null);
   const [url, setUrl] = useState(null);
   const [resletOptions, setResletOptions] = useState([]);
-  // const [mappedRecordData, setMappedRecordData] = useState([]);
   const [selectedOption, setSelectedOption] = useState();
   // const [restletData, setRestletData] = useState({});
   // const router = useRouter();
@@ -127,16 +124,12 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
 
   const addFields = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
-    // mutationFn: tkFetch.post("http://localhost:4000/v1/addFields"),
   });
 
   const deleteFields = useMutation({
     mutationFn: tkFetch.deleteWithIdInUrl(`${API_BASE_URL}/deleteField`),
-    // mutationFn: tkFetch.deleteWithIdInUrl(`http://localhost:4000/v1/deleteField`),
   });
 
-  // console.log("^^^^^^^^^^^^^^^", mappedRecordData);
-  // console.log("restletOptions**********", restletOptions);
   useEffect(() => {
     if (configData) {
       // console.log("available")
@@ -214,30 +207,10 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
     }
     if (mappedRecordData) {
       setMappedRecordDetails(mappedRecordData[0]);
-      // console.log("mappedRecordData", mappedRecordData);
       setIntegrationId(mappedRecordData[0].integrationId);
-      recordTypeTitle(mappedRecordData[0].recordTypeTitle);
-      // setRecordType(mappedRecordData[0].recordTypeTitle);
+      integrationsName(mappedRecordData[0].integration?.integrationName);
     }
-  }, [fieldsData, mappedRecordData, recordTypeTitle, setValue]);
-
-  // console.log("netsuiteValues**********", netsuiteValues);
-
-  // if (rows.length > 0) {
-  //   rows.map((row, index) => {
-  //     setValue(
-  //       `googleSheets[${index}]`,
-  //       row.destinationFieldValue || row.googleSheets
-  //     );
-  //     setValue(
-  //       `netSuite[${index}]`,
-  //       {
-  //         value: row.sourceFieldValue,
-  //         label: row.sourceFieldValue,
-  //       } || { value: row.netSuite, label: row.netSuite }
-  //     );
-  //   });
-  // }
+  }, [fieldsData, mappedRecordData, integrationsName, setValue]);
 
   const handleChange = (index, e) => {
     const addedRow = [...rows];
@@ -446,7 +419,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
           <TkLabel>
             <span className="fw-bold">
               Integration Name:{" "}
-              {mappedRecordDetails.integration?.integrationName}
+              {mappedRecordDetails.recordTypeTitle}
             </span>
             &nbsp;&nbsp;
           </TkLabel>
@@ -454,7 +427,7 @@ const MapTableComponent = ({ mappedRecordId, recordTypeTitle, ...other }) => {
         <TkCol>
           <TkLabel>
             <span className="fw-bold">
-              Google Sheets™ Url: {mappedRecordDetails.destination}
+              Google Sheets™ Url: {mappedRecordDetails.url}
             </span>
             &nbsp;&nbsp;
           </TkLabel>
