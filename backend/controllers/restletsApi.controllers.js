@@ -611,8 +611,9 @@ const getFiles = async (req, res) => {
 };
 
 const getSheetsData = async (req, res) => {
-  const sheetsId = req.body.sheetsId;
-  const accessToken = req.body.accessToken;
+  // console.log("req==>", req.query)
+  const sheetsId = req.query.sheetsId;
+  const accessToken = req.query.accessToken;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetsId}/values/A1:ZZ100000`;
   const headers = {
     Authorization: `Bearer ${accessToken}`,
