@@ -180,7 +180,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   //   }
   // }, [accessTokenData, mappedRecordDetails.destination]);
 
-
   useEffect(() => {
     if (configData) {
       // console.log("available")
@@ -242,9 +241,9 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   // console.log("configurationData==>", configurationData);
 
   useEffect(() => {
-    if (fieldsData.length) {
-      console.log("data from backend")
-      console.log("fieldsData", fieldsData)
+    if (fieldsData?.length > 0) {
+      console.log("data from backend");
+      console.log("fieldsData", fieldsData);
       fieldsData.map((field, index) => {
         setValue(
           `destinationFieldValue[${index}]`,
@@ -256,8 +255,8 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         });
       });
       setRows(fieldsData);
-    }else if (accessTokenData) {
-      console.log("data from google sheets")
+    } else if (accessTokenData) {
+      console.log("data from google sheets");
       const data = {
         sheetsId: mappedRecordDetails.destination,
         accessToken: accessTokenData[0].access_token,
@@ -266,10 +265,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
       getSheetsData.mutate(data, {
         onSuccess: (data) => {
           data[0].values[0].map((item, index) => {
-            setValue(
-              `destinationFieldValue[${index}]`,
-              item
-            );
+            setValue(`destinationFieldValue[${index}]`, item);
             setValue(`sourceFieldValue[${index}]`, null);
           });
           setRows(data[0].values[0]);
@@ -284,7 +280,14 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
       setIntegrationId(mappedRecordData[0].integrationId);
       integrationsName(mappedRecordData[0].integration?.integrationName);
     }
-  }, [fieldsData, mappedRecordData, integrationsName, setValue, accessTokenData, mappedRecordDetails.destination]);
+  }, [
+    fieldsData,
+    mappedRecordData,
+    integrationsName,
+    setValue,
+    accessTokenData,
+    mappedRecordDetails.destination,
+  ]);
 
   const handleChange = (index, e) => {
     const addedRow = [...rows];
@@ -313,7 +316,11 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
               type="text"
               // name={`googleSheets[${row.index}]`}
               {...register(`destinationFieldValue[${row.index}]`)}
-              disabled={(row.original||row.original.destinationFieldValue) ? true : false}
+              disabled={
+                row.original || row.original.destinationFieldValue
+                  ? true
+                  : false
+              }
               // defaultValue={row && row.original.destinationFieldValue}
               // value={row.original.destinationFieldValue}
               // onChange={(e) => handleChange(row.index, e)}
@@ -443,6 +450,30 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     history.back();
   };
 
+  const onClickRefresh = () => {
+    console.log("refresh...");
+    // if (accessTokenData) {
+    //   console.log("data from google sheets");
+    //   const data = {
+    //     sheetsId: mappedRecordDetails.destination,
+    //     accessToken: accessTokenData[0].access_token,
+    //   };
+    //   console.log("***", data);
+    //   getSheetsData.mutate(data, {
+    //     onSuccess: (data) => {
+    //       data[0].values[0].map((item, index) => {
+    //         setValue(`destinationFieldValue[${index}]`, item);
+    //         setValue(`sourceFieldValue[${index}]`, null);
+    //       });
+    //       setRows(data[0].values[0]);
+    //     },
+    //     onError: (error) => {
+    //       console.log("error", error);
+    //     },
+    //   });
+    // }
+  };
+
   // //  ***  change rows on click of record type "sales"
   // const onClickSales = () => {
   //   setControl("sales");
@@ -489,6 +520,13 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
 
   return (
     <>
+      <TkRow className="mb-2">
+        <TkCol lg={3}>
+          <TkButton className="btn-success" onClick={onClickRefresh}>
+            Refresh
+          </TkButton>
+        </TkCol>
+      </TkRow>
       <TkRow>
         <TkCol>
           <TkLabel>
