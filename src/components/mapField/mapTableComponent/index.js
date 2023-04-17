@@ -155,30 +155,30 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (accessTokenData) {
-      const data = {
-        sheetsId: mappedRecordDetails.destination,
-        accessToken: accessTokenData[0].access_token,
-      };
-      console.log("***", data);
-      getSheetsData.mutate(data, {
-        onSuccess: (data) => {
-          data[0].values[0].map((item, index) => {
-            setValue(
-              `destinationFieldValue[${index}]`,
-              item
-            );
-            setValue(`sourceFieldValue[${index}]`, null);
-          });
-          setRows(data[0].values[0]);
-        },
-        onError: (error) => {
-          console.log("error", error);
-        },
-      });
-    }
-  }, [accessTokenData, mappedRecordDetails.destination]);
+  // useEffect(() => {
+  //   if (accessTokenData) {
+  //     const data = {
+  //       sheetsId: mappedRecordDetails.destination,
+  //       accessToken: accessTokenData[0].access_token,
+  //     };
+  //     console.log("***", data);
+  //     getSheetsData.mutate(data, {
+  //       onSuccess: (data) => {
+  //         data[0].values[0].map((item, index) => {
+  //           setValue(
+  //             `destinationFieldValue[${index}]`,
+  //             item
+  //           );
+  //           setValue(`sourceFieldValue[${index}]`, null);
+  //         });
+  //         setRows(data[0].values[0]);
+  //       },
+  //       onError: (error) => {
+  //         console.log("error", error);
+  //       },
+  //     });
+  //   }
+  // }, [accessTokenData, mappedRecordDetails.destination]);
 
 
   useEffect(() => {
@@ -242,7 +242,8 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   // console.log("configurationData==>", configurationData);
 
   useEffect(() => {
-    if (fieldsData) {
+    if (fieldsData.length) {
+      console.log("data from backend")
       console.log("fieldsData", fieldsData)
       fieldsData.map((field, index) => {
         setValue(
@@ -255,13 +256,35 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         });
       });
       setRows(fieldsData);
+    }else if (accessTokenData) {
+      console.log("data from google sheets")
+      const data = {
+        sheetsId: mappedRecordDetails.destination,
+        accessToken: accessTokenData[0].access_token,
+      };
+      console.log("***", data);
+      getSheetsData.mutate(data, {
+        onSuccess: (data) => {
+          data[0].values[0].map((item, index) => {
+            setValue(
+              `destinationFieldValue[${index}]`,
+              item
+            );
+            setValue(`sourceFieldValue[${index}]`, null);
+          });
+          setRows(data[0].values[0]);
+        },
+        onError: (error) => {
+          console.log("error", error);
+        },
+      });
     }
     if (mappedRecordData) {
       setMappedRecordDetails(mappedRecordData[0]);
       setIntegrationId(mappedRecordData[0].integrationId);
       integrationsName(mappedRecordData[0].integration?.integrationName);
     }
-  }, [fieldsData, mappedRecordData, integrationsName, setValue]);
+  }, [fieldsData, mappedRecordData, integrationsName, setValue, accessTokenData, mappedRecordDetails.destination]);
 
   const handleChange = (index, e) => {
     const addedRow = [...rows];

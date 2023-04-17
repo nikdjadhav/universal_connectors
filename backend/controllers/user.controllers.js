@@ -212,7 +212,7 @@ const updateUser = async (req, res) => {
 
 // *** using jwt token ***
 const userLogin = async (req, res) => {
-  console.log("req", req.query);
+  // console.log("req", req.query);
   try {
     const logedinUser = await prisma.users.findUnique({
       where: {
