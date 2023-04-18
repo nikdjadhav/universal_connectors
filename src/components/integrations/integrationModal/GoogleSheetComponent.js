@@ -98,7 +98,7 @@ const GoogleSheetComponent = ({
   const onSubmit = (data) => {
     if(redirectUrl){
       console.log(redirectUrl[0]);
-      router.push(redirectUrl[0]);
+      // router.push(redirectUrl[0]);
 
       // onclick submit button redirect to redirectUrl[0] url
 

@@ -48,6 +48,7 @@ v1Router.get(
 );
 v1Router.post("/deleteIntegration", integrationController.deleteIntegration);
 v1Router.put("/updateIntegration/:id", integrationController.updateIntegration);
+v1Router.put("/updateIntegrationState/:id", integrationController.updateIntegrationState);
 v1Router.post("/addConfigurations", integrationController.addConfigurations);
 v1Router.get(
   "/getConfigurationById/:id",

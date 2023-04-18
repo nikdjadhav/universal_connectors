@@ -222,6 +222,66 @@ const updateIntegration = async (req, res) => {
   }
 };
 
+const updateIntegrationState = async (req, res) => {
+  console.log("updateIntegrationState", req.params);
+
+  try {
+    const integration = await prisma.integrations.update({
+      where: {
+        id: Number(req.params.id),
+      },
+      data: {
+        schedule: req.body.schedule,
+        fieldMapping: req.body.fieldMapping,
+      },
+    });
+
+    if (integration) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [integration],
+        message: "Integration updated successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Integration not updated",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in updating integration",
+    });
+    console.log("error", error);
+    return;
+  }
+};
+
+// const getIntegrationState = async (req, res) => {
+//   console.log("getIntegrationState", req.params);
+//   try {
+//     const mappedRecords = await prisma.MappedRecords.update({
+//       where: {
+//         integrationId: integrationId
+//       },
+//       data: {
+//         include: {
+//           integration: {
+//             fieldMapping: true,
+//           }
+//         }
+//       }
+//   }
+
 const addConfigurations = async (req, res) => {
   // console.log("addConfigurations", req.body);
   try {
@@ -431,6 +491,7 @@ module.exports = {
   getIntegrationById,
   deleteIntegration,
   updateIntegration,
+  updateIntegrationState,
   addConfigurations,
   getConfigurationById,
   updateConfiguration,

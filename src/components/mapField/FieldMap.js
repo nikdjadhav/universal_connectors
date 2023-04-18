@@ -60,6 +60,12 @@ const FieldMap = () => {
     mutationFn: tkFetch.post(`${API_BASE_URL}/getFiles`),
   });
 
+  const updateIntegrationState = useMutation({
+    mutationFn: tkFetch.putWithIdInUrl(
+      `${API_BASE_URL}/updateIntegrationState`
+    ),
+  });
+
   const apiResults = useQueries({
     queries: [
       {
@@ -151,7 +157,7 @@ const FieldMap = () => {
     }
   }, [accessTokenData]);
 
-  console.log("googleSheetUrl^^^^^^^^^^", googleSheetUrl)
+  console.log("googleSheetUrl^^^^^^^^^^", googleSheetUrl);
 
   // *** record types
   useEffect(() => {
@@ -258,6 +264,21 @@ const FieldMap = () => {
         console.log("error==", error);
       },
     });
+
+    updateIntegrationState.mutate(
+      {
+        integrationId: data.integrationName.value,
+        fieldMapping: true,
+      },
+      {
+        onSuccess: (data) => {
+          // console.log("data==", data);
+        },
+        onError: (error) => {
+          console.log("error==", error);
+        },
+      }
+    );
   };
 
   return (

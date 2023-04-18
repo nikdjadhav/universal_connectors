@@ -3,7 +3,7 @@ import TkButton from "@/globalComponents/TkButton";
 import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import { TkToastError } from "@/globalComponents/TkToastContainer";
+import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import useFullPageLoader from "@/globalComponents/useFullPageLoader";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
@@ -86,10 +86,10 @@ const NewConnection = ({
           setIntegrationsData(item);
           setValue("integrationName", item.integration.integrationName);
           setValue("accountID", item.accountId);
-          setValue("consumerKey", item.consumerKey);
-          setValue("consumerSecretKey", item.consumerSecretKey);
-          setValue("accessToken", item.accessToken);
-          setValue("accessSecretToken", item.accessSecretToken);
+          // setValue("consumerKey", item.consumerKey);
+          // setValue("consumerSecretKey", item.consumerSecretKey);
+          // setValue("accessToken", item.accessToken);
+          // setValue("accessSecretToken", item.accessSecretToken);
         }
       });
     }
@@ -128,6 +128,7 @@ const NewConnection = ({
               updateConfiguration.mutate(updateConfigData, {
                 onSuccess: (data) => {
                   hideLoader();
+                  TkToastInfo("Updated Successfully", { hideProgressBar: true });
                   queryClient.invalidateQueries({
                     queryKey: ["configurationsData"],
                   });
@@ -185,7 +186,7 @@ const NewConnection = ({
       },
       onError: (error) => {
         hideLoader();
-        toggle();
+        // toggle();
         TkToastError("Error in authentication");
       },
     });

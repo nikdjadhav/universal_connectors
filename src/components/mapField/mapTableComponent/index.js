@@ -40,6 +40,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   // console.log("mappedRecordId^^^^^^^^^^^",mappedRecordId)
 
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { register, handleSubmit, setValue, control, watch } = useForm();
   const [netsuiteValues, setNetsuiteValues] = useState([]);
@@ -52,16 +53,13 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   const [deleteFieldId, setDeleteFieldId] = useState();
   const [userId, setUserId] = useState(null);
   const [sheetData, setSheetData] = useState([]);
-  const [sheetsRecord, setSheetsRecord] = useState([]);
+  const [tableData, setTableData] = useState([]);
 
   // console.log("mappedRecordId", mappedRecordId);
   const apiResults = useQueries({
     queries: [
       {
         queryKey: ["getMappedRecordById", mappedRecordId],
-        // queryFn: tkFetch.get(
-        //   `http://localhost:4000/v1/getMappedRecordById/${mappedRecordId}`
-        // ),
         queryFn: tkFetch.get(
           `${API_BASE_URL}/getMappedRecordById/${mappedRecordId}`
         ),
@@ -69,9 +67,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
       },
       {
         queryKey: ["config", integrationId],
-        // queryFn: tkFetch.get(
-        //   `http://localhost:4000/v1/getConfigurationByIntegrationId/${integrationId}`
-        // ),
         queryFn: tkFetch.get(
           `${API_BASE_URL}/getConfigurationByIntegrationId/${integrationId}`
         ),
@@ -79,10 +74,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
       },
       {
         queryKey: ["configDetails", configurationData],
-        // queryFn: tkFetch.get(
-        //   `http://localhost:4000/v1/getRecordTypes`,
-        //   { params: configurationData }
-        // ),
         queryFn: tkFetch.get(`${API_BASE_URL}/getRecordTypes`, {
           params: configurationData,
         }),
@@ -90,9 +81,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
       },
       {
         queryKey: ["getFields", mappedRecordId],
-        // queryFn: tkFetch.get(
-        //   `http://localhost:4000/v1/getFields/${mappedRecordId}`
-        // ),
         queryFn: tkFetch.get(`${API_BASE_URL}/getFields/${mappedRecordId}`),
         enabled: !!mappedRecordId,
       },
@@ -106,8 +94,8 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         queryFn: tkFetch.get(`${API_BASE_URL}/getSheetsData`, {
           params: sheetData,
         }),
-        enabled: !!sheetData,
-      },
+        // enabled: sheetData.length>0,
+      }
     ],
   });
 
@@ -156,7 +144,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     data: excelSheetData,
   } = googleSheetApi;
 
-  // console.log("sheetsData==>", excelSheetData);
+  // console.log("accessTokenData==>", accessTokenData);
 
   const addFields = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
@@ -165,6 +153,10 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   const deleteFields = useMutation({
     mutationFn: tkFetch.deleteWithIdInUrl(`${API_BASE_URL}/deleteField`),
   });
+
+  // const updateIntegrationState = useMutation({
+  //   mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateIntegrationState`),
+  // })
 
   // const getSheetsData = useMutation({
   //   mutationFn: tkFetch.post(`${API_BASE_URL}/getSheetsData`),
@@ -179,13 +171,14 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   }, []);
 
   useEffect(() => {
-    if (accessTokenData && mappedRecordDetails) {
+    // console.log("worked");
+    if (accessTokenData && mappedRecordData) {
       setSheetData({
-        sheetsId: mappedRecordDetails.destination,
+        sheetsId: mappedRecordData[0].destination,
         accessToken: accessTokenData[0].access_token,
       });
     }
-  }, [accessTokenData, mappedRecordDetails]);
+  }, [accessTokenData, mappedRecordData]);
 
   useEffect(() => {
     if (configData) {
@@ -226,7 +219,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         restletOptions[0]?.lines.map((item) => {
           const lineEntries = Object.entries(item);
           lineEntries.map(([key, value], index) => {
-            //  console.log("value", value);
+            //  console.log("value^^^^^^^^^", key);
             const valueEntries = Object.entries(value);
             valueEntries.map(([key1, value1], index) => {
               // console.log("value1", value1);
@@ -235,7 +228,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
                 // console.log("value2", value2);
                 setNetsuiteValues((netsuiteValues) => [
                   ...netsuiteValues,
-                  { label: value2, value: key2 },
+                  { label: key+":"+value2, value: key+"__"+key2 },
                 ]);
               });
             });
@@ -245,7 +238,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     }
   }, [configData, mappedRecordDetails.source, restletOptions]);
   // console.log("integration id==>", integrationId);
-  // console.log("configurationData==>", configurationData);
+  // console.log("netsuiteValues=======>", netsuiteValues);
 
   useEffect(() => {
     // console.log("fieldsData", fieldsData);
@@ -262,31 +255,31 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         });
       });
       setRows(fieldsData);
-    } else if ( excelSheetData!==undefined) {
+    } else if (excelSheetData !== undefined) {
+      const sheetsData = [];
       // console.log("data from google sheets");
       excelSheetData[0]?.values[0].map((item, index) => {
         // console.log("item", item)
-        setValue(`destinationFieldValue[${index}]`, item);
-        setValue(`sourceFieldValue[${index}]`, null);
+        // setValue(`destinationFieldValue[${index}]`, item);
+        // setValue(`sourceFieldValue[${index}]`, null);
+        sheetsData.push({
+          destinationFieldValue: item,
+          sourceFieldValue: null,
+        });
       });
-      setRows(excelSheetData[0]?.values[0]);
+      setRows([...sheetsData]);
     } else {
       console.log("other case");
     }
+  }, [excelSheetData, fieldsData, setValue]);
+
+  useEffect(() => {
     if (mappedRecordData) {
       setMappedRecordDetails(mappedRecordData[0]);
       setIntegrationId(mappedRecordData[0].integrationId);
       integrationsName(mappedRecordData[0].integration?.integrationName);
     }
-  }, [
-    accessTokenData,
-    fieldsData,
-    integrationsName,
-    mappedRecordData,
-    setValue,
-    excelSheetData,
-    sheetData,
-  ]);
+  }, [integrationsName, mappedRecordData]);
 
   const handleChange = (index, e) => {
     const addedRow = [...rows];
@@ -409,6 +402,17 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         queryClient.invalidateQueries({
           queryKey: ["getFields"],
         });
+        router.push("/fieldMapping");
+        // updateIntegrationState.mutate(
+        //   { id: integrationId, fieldMapping: true },
+        //   {
+        //     onSuccess: (data) => {
+        //       // console.log("data", data);
+        //     }, onError: (error) => {
+        //       console.log("error", error);
+        //     }
+        //   }
+        // )
       },
       onError: (error) => {
         console.log("error", error);
@@ -449,39 +453,79 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     history.back();
   };
 
+  // setTimeout(() => {
+  //   queryClient.invalidateQueries({
+  //     queryKey: ["getSheetsData"],
+  //   });
+  // }, 1000);
+
   const onClickRefresh = () => {
     console.log("refresh...");
-    // if (accessTokenData) {
-    //   setSheetData({
-    //     sheetsId: mappedRecordDetails.destination,
-    //     accessToken: accessTokenData[0].access_token,
+    queryClient.invalidateQueries({
+      queryKey: ["getSheetsData"],
+    });
+    // if (excelSheetData?.length > 0) {
+    //   const sheetsRecord = [...rows];
+    //   excelSheetData[0]?.values[0].map((item, index) => {
+    //     sheetsRecord.push(
+    //       {
+    //         id: index,
+    //         destinationFieldValue: item,
+    //         sourceFieldValue: null,
+    //       },
+    //     );
     //   });
+
+    //   console.log("sheetsRecord^^^^^^^^^", sheetsRecord);
+    //   const unique = sheetsRecord.filter(
+    //     (thing, index, self) =>
+    //       index ===
+    //       self.findIndex((t) => t.destinationFieldValue === thing.destinationFieldValue)
+    //   );
+    //   console.log("unique************", unique);
+    //   setRows([...unique]);
     // }
 
-    excelSheetData[0]?.values[0].map((item, index) => {
-      setSheetsRecord((prev) => [
-        ...prev,
-        {
-          destinationFieldValue: item,
-          sourceFieldValue: null,
-        },
-      ]);
-    });
-    setRows([...rows, ...sheetsRecord]);
+    // setTimeout(() => {
+    if (excelSheetData?.length > 0) {
+      const sheetsRecord = [];
+      excelSheetData[0]?.values[0].filter((item, index) => {
+        const isExist = rows.find((row) => row.destinationFieldValue === item);
+        console.log("exist", isExist);
+        if (!isExist) {
+          console.log("notExist", item);
+          sheetsRecord.push({
+            id: index,
+            destinationFieldValue: item,
+            sourceFieldValue: null,
+          });
+        }
+      });
+      setRows([...rows, ...sheetsRecord]);
+    }
+    // }, 2000);
   };
 
-  console.log("sheetsRecord", sheetsRecord)
   console.log("rows", rows);
+  console.log("excelSheetData==>", excelSheetData);
 
-  // useEffect(() => {
-  //   if (rows) {
-  //     rows.map((item, index) => {
-  //       // console.log(item);
-  //       setValue(`destinationFieldValue[${index}]`, item.destinationFieldValue);
-  //       setValue(`sourceFieldValue[${index}]`, item.sourceFieldValue);
-  //     });
-  //   }
-  // }, [rows, setValue]);
+  useEffect(() => {
+    if (rows) {
+      rows.map((item, index) => {
+        // console.log(item);
+        setValue(`destinationFieldValue[${index}]`, item.destinationFieldValue);
+        setValue(
+          `sourceFieldValue[${index}]`,
+          item.sourceFieldValue
+            ? {
+                label: item.sourceFieldValue,
+                value: item.sourceFieldValue,
+              }
+            : null
+        );
+      });
+    }
+  }, [rows, setValue]);
 
   // //  ***  change rows on click of record type "sales"
   // const onClickSales = () => {
@@ -591,7 +635,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
           Add Row
         </TkButton>
         <TkButton className="btn-success m-2" type="submit">
-          Submit
+          Save
         </TkButton>
         <TkButton
           className="btn-success m-2"

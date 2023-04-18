@@ -16,7 +16,7 @@ import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import ModalButton from "../integrations/integrationModal";
 import TopBar from "../topBar";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
 import { formatDate, formatTime } from "@/utils/date";
@@ -42,6 +42,12 @@ const DashBoard = () => {
     enabled: !!userId,
   });
 
+  // const updateIntegrationState = useMutation({
+  //   mutationFn: tkFetch.putWithIdInUrl(
+  //     `${API_BASE_URL}/updateIntegrationState`
+  //   ),
+  // });
+
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
     if (userID) {
@@ -54,8 +60,27 @@ const DashBoard = () => {
       setIntegrationData(integrations);
       // setDashboardData(integrations);
     }
-  }, [userId]);
+  }, [integrations, userId]);
   // console.log("integrations=>", integrationData);
+
+  // useEffect(() => {
+  //   if (updateIntegrationState) {
+  //     updateIntegrationState.mutate(
+  //       {
+  //         integrationId: integrationID,
+  //         // fieldMappingState: true,
+  //       },
+  //       {
+  //         onSuccess: (data) => {
+  //           // console.log("data=>", data);
+  //         },
+  //         onError: (error) => {
+  //           console.log("error", error);
+  //         },
+  //       }
+  //     );
+  //   }
+  // });
 
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
@@ -213,14 +238,14 @@ const DashBoard = () => {
       Cell: (props) => {
         if (props.value) {
           return (
-            <Link href="/fieldMapping/mapTable" className="">
+            <Link href="/fieldMapping" className="">
               <span className="">Yes</span>
               <i className="ri-edit-2-fill ps-2"></i>
             </Link>
           );
         } else {
           return (
-            <Link href="/fieldMapping/mapTable" className="">
+            <Link href="/fieldMapping" className="">
               <span className="">No</span>
               <i className="ri-add-fill ps-2"></i>
             </Link>
