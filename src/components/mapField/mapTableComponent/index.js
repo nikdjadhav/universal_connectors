@@ -95,7 +95,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
           params: sheetData,
         }),
         // enabled: sheetData.length>0,
-      }
+      },
     ],
   });
 
@@ -142,9 +142,18 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     isError: excelSheetError,
     error: excelSheetErrorData,
     data: excelSheetData,
+    status: excelSheetStatus,
+    isFetched: excelSheetFetched,
+    isFetching: excelSheetFetching,
   } = googleSheetApi;
 
   // console.log("accessTokenData==>", accessTokenData);
+
+  // useEffect(() => {
+    console.log("status-----", excelSheetStatus);
+    console.log("isFetched----", excelSheetFetched);
+    console.log("isFetching", excelSheetFetching)
+  // }, [excelSheetFetched, excelSheetFetching, excelSheetStatus])
 
   const addFields = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
@@ -153,14 +162,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
   const deleteFields = useMutation({
     mutationFn: tkFetch.deleteWithIdInUrl(`${API_BASE_URL}/deleteField`),
   });
-
-  // const updateIntegrationState = useMutation({
-  //   mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateIntegrationState`),
-  // })
-
-  // const getSheetsData = useMutation({
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getSheetsData`),
-  // });
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
@@ -228,7 +229,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
                 // console.log("value2", value2);
                 setNetsuiteValues((netsuiteValues) => [
                   ...netsuiteValues,
-                  { label: key+":"+value2, value: key+"__"+key2 },
+                  { label: key + ":" + value2, value: key + "__" + key2 },
                 ]);
               });
             });
@@ -255,23 +256,39 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         });
       });
       setRows(fieldsData);
-    } else if (excelSheetData !== undefined) {
+    } 
+    // else if (excelSheetData !== undefined) {
+    //   const sheetsData = [];
+    //   // console.log("data from google sheets");
+    //   excelSheetData[0]?.values[0].map((item, index) => {
+    //     setValue(`destinationFieldValue[${index}]`, item);
+    //     setValue(`sourceFieldValue[${index}]`, null);
+    //     sheetsData.push({
+    //       destinationFieldValue: item,
+    //       sourceFieldValue: null,
+    //     });
+    //   });
+    //   setRows([...sheetsData]);
+    // } else {
+    //   console.log("other case");
+    // }
+  }, [fieldsData, setValue]);
+
+  useEffect(() => {
+    if (fieldsData?.length === 0 && excelSheetData !== undefined) {
       const sheetsData = [];
       // console.log("data from google sheets");
       excelSheetData[0]?.values[0].map((item, index) => {
-        // console.log("item", item)
-        // setValue(`destinationFieldValue[${index}]`, item);
-        // setValue(`sourceFieldValue[${index}]`, null);
+        setValue(`destinationFieldValue[${index}]`, item);
+        setValue(`sourceFieldValue[${index}]`, null);
         sheetsData.push({
           destinationFieldValue: item,
           sourceFieldValue: null,
         });
       });
       setRows([...sheetsData]);
-    } else {
-      console.log("other case");
     }
-  }, [excelSheetData, fieldsData, setValue]);
+  }, [excelSheetData, fieldsData?.length, setValue])
 
   useEffect(() => {
     if (mappedRecordData) {
@@ -464,55 +481,45 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     queryClient.invalidateQueries({
       queryKey: ["getSheetsData"],
     });
-    // if (excelSheetData?.length > 0) {
-    //   const sheetsRecord = [...rows];
-    //   excelSheetData[0]?.values[0].map((item, index) => {
-    //     sheetsRecord.push(
-    //       {
-    //         id: index,
-    //         destinationFieldValue: item,
-    //         sourceFieldValue: null,
-    //       },
-    //     );
-    //   });
 
-    //   console.log("sheetsRecord^^^^^^^^^", sheetsRecord);
-    //   const unique = sheetsRecord.filter(
-    //     (thing, index, self) =>
-    //       index ===
-    //       self.findIndex((t) => t.destinationFieldValue === thing.destinationFieldValue)
-    //   );
-    //   console.log("unique************", unique);
-    //   setRows([...unique]);
-    // }
-
-    // setTimeout(() => {
-    if (excelSheetData?.length > 0) {
+    if (!excelSheetFetching) {
+      console.log("Fetching----")
+      // get excell sheet data, and sort it by destinationFieldValue
       const sheetsRecord = [];
-      excelSheetData[0]?.values[0].filter((item, index) => {
-        const isExist = rows.find((row) => row.destinationFieldValue === item);
-        console.log("exist", isExist);
-        if (!isExist) {
-          console.log("notExist", item);
-          sheetsRecord.push({
-            id: index,
-            destinationFieldValue: item,
-            sourceFieldValue: null,
-          });
-        }
+      excelSheetData[0]?.values[0].map((item, index) => {
+        rows.map((row) => {
+          if (row.destinationFieldValue === item) {
+            sheetsRecord.push({
+              // id: row.id,
+              destinationFieldValue: row.destinationFieldValue,
+              sourceFieldValue: row.sourceFieldValue,
+            });
+          } else {
+            sheetsRecord.push({
+              id: index,
+              destinationFieldValue: item,
+              sourceFieldValue: null,
+            });
+          }
+        });
       });
-      setRows([...rows, ...sheetsRecord]);
-    }
-    // }, 2000);
-  };
+      // console.log("sheetsRecord", sheetsRecord);
 
-  console.log("rows", rows);
-  console.log("excelSheetData==>", excelSheetData);
+      // get unique values from mapped data
+      const unique = [
+        ...new Set(sheetsRecord.map((item) => item.destinationFieldValue)),
+      ].map((destinationFieldValue) => {
+        return {
+          destinationFieldValue: destinationFieldValue,
+          sourceFieldValue: rows.find(
+            (row) => row.destinationFieldValue === destinationFieldValue
+          )?.sourceFieldValue,
+        };
+      });
+      // console.log("unique^^^^^", unique);
 
-  useEffect(() => {
-    if (rows) {
-      rows.map((item, index) => {
-        // console.log(item);
+      // set values to table rows
+      unique.map((item, index) => {
         setValue(`destinationFieldValue[${index}]`, item.destinationFieldValue);
         setValue(
           `sourceFieldValue[${index}]`,
@@ -524,8 +531,31 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
             : null
         );
       });
+
+      setRows([...unique]);
     }
-  }, [rows, setValue]);
+  };
+
+  // console.log("rows", rows);
+  console.log("excelSheetData==>", excelSheetData);
+
+  // useEffect(() => {
+  //   if (rows) {
+  //     rows.map((item, index) => {
+  //       // console.log(item);
+  //       setValue(`destinationFieldValue[${index}]`, item.destinationFieldValue);
+  //       setValue(
+  //         `sourceFieldValue[${index}]`,
+  //         item.sourceFieldValue
+  //           ? {
+  //               label: item.sourceFieldValue,
+  //               value: item.sourceFieldValue,
+  //             }
+  //           : null
+  //       );
+  //     });
+  //   }
+  // }, [rows, setValue]);
 
   // //  ***  change rows on click of record type "sales"
   // const onClickSales = () => {

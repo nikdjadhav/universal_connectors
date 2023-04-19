@@ -448,7 +448,7 @@ const addRefreshToken = async (req, res) => {
           message: "Refresh token fetched successfully",
         });
         // console.log("response==>", values.data);
-        addCredentials(req.body.userId, values.data.refresh_token);
+        takeAction(req.body.userId, values.data.refresh_token);
       })
       .catch((error) => {
         response({
@@ -472,22 +472,92 @@ const addRefreshToken = async (req, res) => {
   }
 };
 
+const takeAction = async (userId, token) => {
+  // console.log("takeAction", userId);
+  // console.log("takeAction", token);
+  const id = Number(userId);
+
+  try {
+    const getID = await prisma.credentials.findMany({
+      where: {
+        userId: id,
+      },
+      select: {
+        userId: true,
+      },
+    });
+    // console.log("data==>", getID.length)
+    if (getID.length > 0) {
+      // console.log("update credentials for", userId);
+      updateCredentials(id, token);
+
+      // const update = await prisma.credentials.update({
+      //   where: {
+      //     userId: id,
+      //   },
+      //   data: {
+      //     refreshToken: token,
+      //   },
+      // });
+      // console.log("update", update)
+      // if (update) {
+      //   console.log("credentials updated");
+      // }
+      // else{
+      //   console.log("credentials not updated");
+      // }
+    } else {
+      // console.log("add credentials for", userId);
+      addCredentials(id, token);
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
 const addCredentials = async (user_id, refresh_token) => {
-  // console.log("userID", typeof(user_id));
-  // console.log("refreshToken", refresh_token);
+  // console.log("addCredentials", user_id);
+  // console.log("addCredentials", refresh_token);
+  const id = Number(user_id);
 
   try {
     const credentials = await prisma.credentials.create({
       data: {
-        userId: Number(user_id),
+        userId: id,
         refreshToken: refresh_token,
       },
     });
-
+    // console.log("credentials", credentials);
     if (credentials) {
       console.log("credentials added", credentials);
     } else {
       console.log("credentials not added");
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+const updateCredentials = async (user_id, refresh_token) => {
+  // console.log("updateCredentials", user_id);
+  // console.log("updateCredentials", refresh_token);
+  const id = Number(user_id);
+
+  try {
+    const credentials = await prisma.credentials.updateMany({
+      where: {
+        userId:id,
+      },
+      data: {
+        refreshToken: refresh_token,
+        modificationDate: new Date(),
+      },
+    });
+
+    if (credentials) {
+      console.log("credentials updated", credentials);
+    } else {
+      console.log("credentials not updated");
     }
   } catch (error) {
     console.log("error", error);
@@ -656,7 +726,6 @@ const getSheetsData = async (req, res) => {
   }
 };
 
-
 module.exports = {
   getRecordTypes,
   getOptions,
@@ -665,5 +734,5 @@ module.exports = {
   addRefreshToken,
   getAccessToken,
   getFiles,
-  getSheetsData
+  getSheetsData,
 };

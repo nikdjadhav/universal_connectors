@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Users {
-  id                   Int                    @id @default(autoincrement())
+  id                   Int                    @id @unique @default(autoincrement())
   firstName            String
   lastName             String
   country              String?
@@ -137,8 +137,10 @@ model NotificationSettings {
 }
 
 model Credentials {
-  id           Int    @id @default(autoincrement())
-  userId       Int
-  user         Users  @relation(fields: [userId], references: [id])
-  refreshToken String
+  id               Int      @id @unique @default(autoincrement())
+  userId           Int
+  users            Users    @relation(fields: [userId], references: [id])
+  refreshToken     String
+  creationDate     DateTime @default(now())
+  modificationDate DateTime @updatedAt
 }

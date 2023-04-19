@@ -99,8 +99,8 @@ const GoogleSheetComponent = ({
     if(redirectUrl){
       console.log(redirectUrl[0]);
       // router.push(redirectUrl[0]);
-
-      // onclick submit button redirect to redirectUrl[0] url
+      // window.location.assign(redirectUrl[0]);
+      window.open(redirectUrl[0],"mywindow","menubar=1,resizable=,width=550,height=550")
 
     }
     // console.log("data", data);
