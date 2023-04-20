@@ -546,7 +546,7 @@ const updateCredentials = async (user_id, refresh_token) => {
   try {
     const credentials = await prisma.credentials.updateMany({
       where: {
-        userId:id,
+        userId: id,
       },
       data: {
         refreshToken: refresh_token,
@@ -726,6 +726,48 @@ const getSheetsData = async (req, res) => {
   }
 };
 
+const getcredentialDetailsById = async (req, res) => {
+  // console.log("getcredentialDetailsById", req.params)
+  try {
+    const credentials = await prisma.credentials.findMany({
+      where: {
+        userId: Number(req.params.id),
+      },
+      select: {
+        id: true,
+        userId: true,
+      }
+    });
+console.log("credentials", credentials)
+    if (credentials) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: credentials,
+        message: "Credentials fetched successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        data: [],
+        message: "Credentials not fetched",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error while fetching credentials",
+    });
+  }
+};
+
 module.exports = {
   getRecordTypes,
   getOptions,
@@ -735,4 +777,5 @@ module.exports = {
   getAccessToken,
   getFiles,
   getSheetsData,
+  getcredentialDetailsById
 };

@@ -8,7 +8,12 @@ import useFullPageLoader from "@/globalComponents/useFullPageLoader";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,7 +44,8 @@ const GoogleSheetComponent = ({
   const [loader, showLoader, hideLoader] = useFullPageLoader();
   const [integrationsData, setIntegrationsData] = useState();
   const [userID, setUserID] = useState();
-  const router = useRouter()
+  const [authButton, setAuthButton] = useState("Authorize");
+  const router = useRouter();
 
   const addConfigurations = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
@@ -49,43 +55,61 @@ const GoogleSheetComponent = ({
     mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateConfiguration`),
   });
 
+  const apiResults = useQueries({
+    queries: [
+      {
+        queryKey: ["configurationsData", integrationID],
+        queryFn: tkFetch.get(
+          `${API_BASE_URL}/getConfigurationById/${integrationID}`
+        ),
+        enabled: !!integrationID,
+      },
+      {
+        queryKey: ["redirectUrl", userID],
+        queryFn: tkFetch.get(`${API_BASE_URL}/getRedirectPage`),
+        enabled: !!userID,
+      },
+      {
+        queryKey: ["getcredentialDetailsById", userID],
+        queryFn: tkFetch.get(
+          `${API_BASE_URL}/getcredentialDetailsById/${userID}`
+        ),
+        enabled: !!userID,
+      },
+    ],
+  });
+
+  const [configurationsResult, restletRedirectUrl, credentialDetailsResult] =
+    apiResults;
   const {
     data: configurationsData,
     isError: configError,
     isLoading: configLoading,
     error: configErrorData,
-  } = useQuery({
-    queryKey: ["configurationsData", integrationID],
-    queryFn: tkFetch.get(
-      `${API_BASE_URL}/getConfigurationById/${integrationID}`
-    ),
-    enabled: !!integrationID,
-  });
+  } = configurationsResult;
+  const {
+    data: redirectUrl,
+    isError: redirectError,
+    isLoading: redirectLoading,
+    error: redirectErrorData,
+  } = restletRedirectUrl;
+  const {
+    data: credentialDetailsData,
+    isError: credentialError,
+    isLoading: credentialLoading,
+    error: credentialErrorData,
+  } = credentialDetailsResult;
 
   useEffect(() => {
     const Id = sessionStorage.getItem("userId");
-    if(Id){
+    if (Id) {
       setUserID(Id);
     }
-  }, [])
-
-  const apiResult = useQueries({
-    queries: [
-      {
-        queryKey: ["redirectUrl", userID],
-        queryFn: tkFetch.get(
-          `${API_BASE_URL}/getRedirectPage`
-        ),
-        enabled: !!userID,
-      }
-    ]
-  });
-
-  const [restletRedirectUrl] = apiResult
-  const { data: redirectUrl, isError: redirectError, isLoading: redirectLoading, error: redirectErrorData } = restletRedirectUrl;
+  }, []);
 
   useEffect(() => {
     if (configurationsData?.length) {
+      console.log("configurationsData", configurationsData)
       configurationsData.map((item) => {
         if (item.systemName === title) {
           setIntegrationsData(item);
@@ -95,13 +119,25 @@ const GoogleSheetComponent = ({
     }
   }, [configurationsData, integrationID, setValue, title]);
 
+  useEffect(() => {
+    if (credentialDetailsData?.length) {
+      console.log("credentialDetailsData", credentialDetailsData);
+      setAuthButton("Reauthorize");
+    }
+  }, [credentialDetailsData]);
+  console.log("credentialDetailsData^^^", credentialDetailsData);
+
+
   const onSubmit = (data) => {
-    if(redirectUrl){
+    if (redirectUrl) {
       console.log(redirectUrl[0]);
       // router.push(redirectUrl[0]);
       // window.location.assign(redirectUrl[0]);
-      window.open(redirectUrl[0],"mywindow","menubar=1,resizable=,width=550,height=550")
-
+      window.open(
+        redirectUrl[0],
+        "mywindow",
+        "menubar=1,resizable=,width=550,height=550"
+      );
     }
     // console.log("data", data);
     showLoader();
@@ -180,7 +216,7 @@ const GoogleSheetComponent = ({
 
           <TkCol lg={12}>
             <TkButton type="submit" className="btn-success float-end">
-              Authorize
+              {authButton}
             </TkButton>
           </TkCol>
           {loader}

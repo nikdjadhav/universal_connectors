@@ -69,14 +69,12 @@ v1Router.post("/addRefreshToken", resletController.addRefreshToken);
 v1Router.get("/getAccessToken/:id", resletController.getAccessToken);
 v1Router.post("/getFiles", resletController.getFiles);
 v1Router.get("/getSheetsData", resletController.getSheetsData);
+v1Router.get("/getcredentialDetailsById/:id", resletController.getcredentialDetailsById);
 // v1Router.post("/addCredentials", resletController.addCredentials);
 
 // *** field mapping routes ***
 v1Router.post("/addMappedRecord", fieldMappingController.addMappedRecord);
-// v1Router.post(
-//   "/getAllMappedRecords",
-//   fieldMappingController.getAllMappedRecords
-// );
+// v1Router.put("/updateFieldMappingState/:id", fieldMappingController.updateFieldMappingState);
 v1Router.get(
   "/getMappedRecordById/:id",
   fieldMappingController.getMappedRecordById

@@ -257,25 +257,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
       });
       setRows(fieldsData);
     } 
-    // else if (excelSheetData !== undefined) {
-    //   const sheetsData = [];
-    //   // console.log("data from google sheets");
-    //   excelSheetData[0]?.values[0].map((item, index) => {
-    //     setValue(`destinationFieldValue[${index}]`, item);
-    //     setValue(`sourceFieldValue[${index}]`, null);
-    //     sheetsData.push({
-    //       destinationFieldValue: item,
-    //       sourceFieldValue: null,
-    //     });
-    //   });
-    //   setRows([...sheetsData]);
-    // } else {
-    //   console.log("other case");
-    // }
-  }, [fieldsData, setValue]);
-
-  useEffect(() => {
-    if (fieldsData?.length === 0 && excelSheetData !== undefined) {
+    else if (excelSheetData !== undefined) {
       const sheetsData = [];
       // console.log("data from google sheets");
       excelSheetData[0]?.values[0].map((item, index) => {
@@ -287,8 +269,26 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
         });
       });
       setRows([...sheetsData]);
+    } else {
+      console.log("other case");
     }
-  }, [excelSheetData, fieldsData?.length, setValue])
+  }, [excelSheetData, fieldsData, setValue]);
+
+  // useEffect(() => {
+  //   if (fieldsData?.length === 0 && excelSheetData !== undefined) {
+  //     const sheetsData = [];
+  //     // console.log("data from google sheets");
+  //     excelSheetData[0]?.values[0].map((item, index) => {
+  //       setValue(`destinationFieldValue[${index}]`, item);
+  //       setValue(`sourceFieldValue[${index}]`, null);
+  //       sheetsData.push({
+  //         destinationFieldValue: item,
+  //         sourceFieldValue: null,
+  //       });
+  //     });
+  //     setRows([...sheetsData]);
+  //   }
+  // }, [excelSheetData, fieldsData?.length, setValue])
 
   useEffect(() => {
     if (mappedRecordData) {
@@ -412,7 +412,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
     );
 
     setTableRecords(tableRecord);
-    // console.log("tableRecord", tableRecord);
+    console.log("tableRecord", tableRecord);
     addFields.mutate(tableRecord, {
       onSuccess: (data) => {
         TkToastInfo("Added Successfully", { hideProgressBar: true });
@@ -482,8 +482,8 @@ const MapTableComponent = ({ mappedRecordId, integrationsName, ...other }) => {
       queryKey: ["getSheetsData"],
     });
 
-    if (!excelSheetFetching) {
-      console.log("Fetching----")
+    if (excelSheetData?.length > 0) {
+      // console.log("Fetching----")
       // get excell sheet data, and sort it by destinationFieldValue
       const sheetsRecord = [];
       excelSheetData[0]?.values[0].map((item, index) => {

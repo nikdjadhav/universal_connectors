@@ -48,18 +48,26 @@ const addMappedRecord = async (req, res) => {
   }
 };
 
-const getAllMappedRecords = async (req, res) => {
-  //   console.log("getAllMappedRecords", req.body);
+const updateFieldMappingState = async (req, res) => {
+  console.log("getAllMappedRecords", req.params);
 
   try {
-    const recordMapping = await prisma.mappedRecords.findMany({
+    const recordMapping = await prisma.mappedRecords.updateMany({
+      //  update field mapping state in integration table, if user id exists in mapped records table then set true else false
       where: {
-        userId: req.body.userId,
-        // integrationId: req.body.integrationId,
-        // recordType: req.body.recordType,
+        id: Number(req.params.id),
+      },
+      data: {
+        // include: {
+          integration: {
+            // data: {
+              fieldMapping: true,
+            // },
+          },
+        // },
       },
     });
-
+    console.log("recordMapping", recordMapping);
     if (recordMapping) {
       response({
         res,
@@ -630,7 +638,7 @@ const deleteField = async (req, res) => {
 
 module.exports = {
   addMappedRecord,
-  // getAllMappedRecords,
+  updateFieldMappingState,
   getMappedRecordById,
   deleteMappedRecordByID,
   getMappedFieldsDetails,

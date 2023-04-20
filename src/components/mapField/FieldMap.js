@@ -251,34 +251,26 @@ const FieldMap = () => {
       onSuccess: (data) => {
         // console.log("data==", data);
         router.push(`/fieldMapping/${data[0].id}`);
-        // router.push(
+
+        // updateIntegrationState.mutate(
         //   {
-        //     pathname: "/fieldMapping/mapTable",
-        //     query: { mappedRecordId: JSON.stringify(data[0].id) },
-        //     // query: { mappedRecordId: JSON.stringify(4) }
+        //     id: data.integrationName.value,
+        //     userId: userId,
         //   },
-        //   "/fieldMapping/mapTable"
+        //   {
+        //     onSuccess: (data) => {
+        //       console.log("data==", data);
+        //     },
+        //     onError: (error) => {
+        //       console.log("error==", error);
+        //     },
+        //   }
         // );
       },
       onError: (error) => {
         console.log("error==", error);
       },
     });
-
-    updateIntegrationState.mutate(
-      {
-        integrationId: data.integrationName.value,
-        fieldMapping: true,
-      },
-      {
-        onSuccess: (data) => {
-          // console.log("data==", data);
-        },
-        onError: (error) => {
-          console.log("error==", error);
-        },
-      }
-    );
   };
 
   return (

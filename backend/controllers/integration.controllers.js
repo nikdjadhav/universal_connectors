@@ -223,19 +223,20 @@ const updateIntegration = async (req, res) => {
 };
 
 const updateIntegrationState = async (req, res) => {
-  console.log("updateIntegrationState", req.params);
+  console.log("updateIntegrationState", req.body);
 
   try {
     const integration = await prisma.integrations.update({
       where: {
         id: Number(req.params.id),
+        userId: Number(req.body.userId),
       },
       data: {
         schedule: req.body.schedule,
         fieldMapping: req.body.fieldMapping,
       },
     });
-
+    console.log("integration", integration);
     if (integration) {
       response({
         res,

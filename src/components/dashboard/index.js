@@ -16,7 +16,7 @@ import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import ModalButton from "../integrations/integrationModal";
 import TopBar from "../topBar";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
 import { formatDate, formatTime } from "@/utils/date";
@@ -42,11 +42,6 @@ const DashBoard = () => {
     enabled: !!userId,
   });
 
-  // const updateIntegrationState = useMutation({
-  //   mutationFn: tkFetch.putWithIdInUrl(
-  //     `${API_BASE_URL}/updateIntegrationState`
-  //   ),
-  // });
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
