@@ -221,7 +221,7 @@ const FieldMap = () => {
         });
       }
     }
-  }, [integrationsData, userID]);
+  }, [integrationsData]);
 
   // console.log("recordTypes==", recordTypes);
   // console.log("records==", records);

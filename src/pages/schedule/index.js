@@ -10,7 +10,7 @@ import ScheduleTable from "@/components/schedule";
 const Schedule = () => {
   const router = useRouter();
   const addSchedule = () => {
-    router.push("/schedule/field");
+    router.push("/schedule/event");
   };
   return (
     <>

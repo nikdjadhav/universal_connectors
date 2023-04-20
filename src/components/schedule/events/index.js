@@ -2,15 +2,38 @@ import TkButton from "@/globalComponents/TkButton";
 import TkContainer from "@/globalComponents/TkContainer";
 import TkRadioButton from "@/globalComponents/TkRadioButton";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DailyEvent from "./DailyEvent";
 import MonthlyEvent from "./MonthlyEvent";
 import RealtimeEvent from "./RealtimeEvent";
 import SingleEvent from "./SingleEvent";
 import WeeklyEvent from "./WeeklyEvent";
 import YearlyEvent from "./YearlyEvent";
+import TkForm from "@/globalComponents/TkForm";
+import { Controller, useForm } from "react-hook-form";
+import TkSelect from "@/globalComponents/TkSelect";
+import FormErrorText from "@/globalComponents/ErrorText";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useQueries } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
+import { API_BASE_URL } from "@/utils/Constants";
+
+const schema = Yup.object({
+  integrationName: Yup.object().required("Integration name is required."),
+}).required();
 
 const EventSchedule = () => {
+  const {
+    register,
+    control,
+    formState: { errors, isDirty },
+    handleSubmit,
+    setValue
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   const [showComponent, setShowComponent] = useState("realtimeEvent");
   const [realtimeEvent, setRealtimeEvent] = useState(true);
   const [singleEvent, setSingleEvent] = useState(false);
@@ -18,6 +41,51 @@ const EventSchedule = () => {
   const [weeklyEvent, setWeeklyEvent] = useState(false);
   const [monthlyEvent, setMonthlyEvent] = useState(false);
   const [yearlyEvent, setYearlyEvent] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [integrationOptions, setIntegrationOptions] = useState([]);
+
+  const apiResults = useQueries({
+    queries: [
+      {
+        queryKey: ["integrationData", userId],
+        // queryFn: tkFetch.get(
+        //   `http://localhost:4000/v1/getIntegrations/${userId}`
+        // ),
+        queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
+        enabled: !!userId,
+      },
+    ]
+  })
+
+  const [integrations] = apiResults;
+  const {
+    isLoading: isIntegrationsLoading,
+    isError: isIntegrationsError,
+    error: integrationsError,
+    data: integrationsData,
+  } = integrations;
+
+
+  useEffect(() => {
+    const userID = sessionStorage.getItem("userId");
+    // setUserID(sessionStorage.getItem("userId"));
+
+    if (userID) {
+      // const id = {
+      //   userId: JSON.parse(userID),
+      // };
+      setUserId(JSON.parse(userID));
+      if (integrationsData) {
+        console.log("integrationsData==>", integrationsData)
+        integrationsData.map((item) => {
+          setIntegrationOptions((prev) => [
+            ...prev,
+            { label: item.integrationName, value: item.id },
+          ]);
+        });
+      }
+    }
+  }, [integrationsData]);
 
   const toggleComponet = (value) => {
     // console.log("yftdyd",value);
@@ -30,15 +98,58 @@ const EventSchedule = () => {
     // setYearlyEvent(value === "yearlyEvent" ? true : false);
   };
 
+  // useEffect(() => {
+  //   setValue("integrationName", "NSGS")
+  // },[setValue])
+
   return (
     <>
-      <TkRow className="align-items-end">
+      {/* dropdown for select integration */}
+      {/* <TkForm onSubmit={handleSubmit(onsubmit)}> */}
+        <TkRow className="mt-1">
+
+          <TkCol lg={4}>
+            <Controller
+              name="integrationName"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Integration Name"
+                  id="integrationName"
+                  options={integrationOptions}
+                  // defaultValue={integrations[0]}
+                  disabled={true}
+                  value={integrationOptions[0]}
+                  maxMenuHeight="120px"
+                  requiredStarOnLabel={true}
+                />
+              )}
+            />
+            {errors.integrationName?.message ? (
+              <FormErrorText>{errors.integrationName?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
+
+          {/* <TkCol lg={12} className="d-flex justify-content-center">
+            <TkButton
+              className="btn-success my-4"
+              type="submit"
+              // onClick={handleSubmit}
+            >
+              Next
+            </TkButton>
+          </TkCol> */}
+        </TkRow>
+      {/* </TkForm> */}
+
+      {/* Radio buttons for selecting event type */}
+      {/* <TkRow className="align-items-end mt-2">
         <TkCol lg={2}>
           <h5>Events</h5>
         </TkCol>
-      </TkRow>
+      </TkRow> */}
 
-      {/* *** Radio buttons for selecting event type *** */}
       <TkContainer className="my-5">
         <TkRow>
           <TkCol lg={3} sm={3}>
