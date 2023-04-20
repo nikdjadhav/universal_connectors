@@ -17,8 +17,10 @@ const BreadCrumb = ({
   parentLink,
   buttonText,
   onButtonClick,
+  syncButton,
+  onSyncClick,
   searchbar,
-  data
+  data,
 }) => {
   // const [searchInput, setSearchInput] = useState("");
   // const handleChange = (e) => {
@@ -39,34 +41,18 @@ const BreadCrumb = ({
       <TkRow>
         <TkCol xs={12}>
           <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-            {/* <h4 className="mb-sm-0">{pageTitle}</h4> */}
-            <div className="page-title-right">
+            {/* <div className="page-title-right">
               <ol className="breadcrumb m-0">
                 {checkURl(parentLink) && (
                   <li className="breadcrumb-item">
                     <Link href={parentLink}>
-                      {/* <a> */}
                       {parentTitle}
-                      {/* </a> */}
                     </Link>
                   </li>
                 )}
                 <li className="breadcrumb-item active">{pageTitle}</li>
               </ol>
-            </div>
-            {/* <TkInput style={{"width": "150px"}} className=""  type="search" placeholder="Search here" />
-            {buttonText ? (
-              <div>
-                <TkButton
-                  color="primary"
-                  className="btn add-btn me-1"
-                  onClick={onButtonClick}
-                >
-                  <i className="ri-add-line align-bottom me-1"></i>
-                  {buttonText}
-                </TkButton>
-              </div>
-            ) : null} */}
+            </div> */}
             <div className="row justify-content-between">
               {/* {searchbar ? (
                 <div className="col">
@@ -92,6 +78,30 @@ const BreadCrumb = ({
                   </div>
                 </div>
               ) : null}
+              {syncButton ? (
+                <div className="col">
+                  <div>
+                    <TkButton
+                      color="primary"
+                      className="btn add-btn me-1"
+                      onClick={onSyncClick}
+                    >
+                      <i className="ri-add-line align-bottom me-1"></i>
+                      {syncButton}
+                    </TkButton>
+                  </div>
+                </div>
+              ) : null}
+              <div className="page-title-right mt-1">
+                <ol className="breadcrumb m-0">
+                  {checkURl(parentLink) && (
+                    <li className="breadcrumb-item">
+                      <Link href={parentLink}>{parentTitle}</Link>
+                    </li>
+                  )}
+                  <li className="breadcrumb-item active">{pageTitle}</li>
+                </ol>
+              </div>
             </div>
           </div>
         </TkCol>

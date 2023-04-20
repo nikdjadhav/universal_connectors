@@ -659,46 +659,16 @@ const scheduleHead = [
     accessor: "integrationName",
   },
   {
-    Header: "Creation Date",
-    accessor: "creationDate",
-    Cell: (props) => {
-      return (
-        <>
-          <Tooltip
-            color="invert"
-            content={`${props.value} ${props.row.original?.creationTime}`}
-            placement="bottom"
-          >
-            <span>{props.value}</span>
-          </Tooltip>
-        </>
-      );
-    },
+    Header: "Event",
+    accessor: "event",
   },
   {
-    Header: "Modified Date",
-    accessor: "modifiedDate",
-    Cell: (props) => {
-      return (
-        <>
-          <Tooltip
-            color="invert"
-            content={`${props.value} ${props.row.original?.modificationTime}`}
-            placement="bottom"
-          >
-            <span>{props.value}</span>
-          </Tooltip>
-        </>
-      );
-    },
+    Header: "Start Date",
+    accessor: "startDate",
   },
   {
-    Header: "System One",
-    accessor: "systemOne",
-  },
-  {
-    Header: "System Two",
-    accessor: "systemTwo",
+    Header: "End Date",
+    accessor: "endDate",
   },
   {
     Header: "Action",
@@ -710,9 +680,9 @@ const scheduleHead = [
           <Link href="/schedule/event">
             <i className="ri-edit-2-fill mx-2" />
           </Link>
-          <Link href="/schedule/event">
+          {/* <Link href="/schedule/event">
             <i className="ri-eye-fill" />
-          </Link>
+          </Link> */}
         </>
       );
     },
@@ -796,9 +766,14 @@ const logsHead = [
   },
 ];
 
-const serachFields =  {
-  dashboard: ["integrationName", "sourceName", "destinationName", "CreationDate"],
-}
+const serachFields = {
+  dashboard: [
+    "integrationName",
+    "sourceName",
+    "destinationName",
+    "CreationDate",
+  ],
+};
 
 const filterFields = {
   dashboard: {
@@ -806,9 +781,9 @@ const filterFields = {
     // creationDate: "creationDate",
     // endDate: "endDate",
     sourceName: "sourceName",
-    destinationName: "destinationName"
-  }
-}
+    destinationName: "destinationName",
+  },
+};
 
 // we take maxTake as 100 from database for all queries, but here I have set it to 99 to be safe from any future changes
 const maxDataLengthForUISearch = 99;
@@ -873,5 +848,5 @@ export {
   scheduleHead,
   logsHead,
   serachFields,
-  filterFields
+  filterFields,
 };

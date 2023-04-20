@@ -21,15 +21,12 @@ const Schedule = () => {
       <div className="page-content">
         <BreadCrumb
           pageTitle="Schedule"
+          syncButton="sync Now"
           buttonText={"Add Schedule"}
           onButtonClick={addSchedule}
         />
 
-        {/* <TkContainer> */}
-        {/* <FieldMapping /> */}
         <ScheduleTable />
-        {/* <FieldMap route="/schedule/event" /> */}
-        {/* </TkContainer> */}
       </div>
     </>
   );

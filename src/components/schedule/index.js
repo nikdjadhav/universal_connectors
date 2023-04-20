@@ -1,30 +1,48 @@
-import TkTableContainer from '@/globalComponents/TkTableContainer';
-import { scheduleHead } from '@/utils/Constants';
-import React from 'react'
+import TkButton from "@/globalComponents/TkButton";
+import TkTableContainer from "@/globalComponents/TkTableContainer";
+import { scheduleHead } from "@/utils/Constants";
+import React, { useCallback, useState } from "react";
+
+const data = [
+  {
+    id: 1,
+    integrationName: "NSGS",
+    event: "Single Event",
+    startDate: "16 Feb, 2022",
+    endDate: "13 Feb, 2023",
+    action: "",
+  },
+  {
+    id: 2,
+    integrationName: "NSGS",
+    event: "Single Event",
+    startDate: "16 Feb, 2022",
+    endDate: "13 Feb, 2023",
+    action: "",
+  },
+];
 
 const ScheduleTable = () => {
-    const data = [
-        {
-          integrationName: "NSGS",
-          creationDate: "16 Feb, 2022",
-          creationTime: "10:34 AM",
-          modifiedDate: "13 Feb, 2023",
-          modificationTime: "11:00 PM",
-          systemOne: "NetSuite™",
-          systemTwo: "Google Sheets™",
-          action: "",
-        },
-      ];
-      return (
-        <>
-          <TkTableContainer
-            columns={scheduleHead}
-            data={data}
-            // defaultPageSize={10}
-            // customPageSize={true}
-          />
-        </>
-      );
-}
+  const [checkboxSelected, setCheckboxSelected] = useState([]);
 
-export default ScheduleTable
+  const selectedRowsId = useCallback((rows) => {
+    const ids = data.map((row) => row.id);
+    setCheckboxSelected(ids);
+  }, []);
+
+  return (
+    <>
+      <TkTableContainer
+        columns={scheduleHead}
+        data={data}
+        rowSelection={true}
+        onRowSelection={selectedRowsId}
+
+        // defaultPageSize={10}
+        // customPageSize={true}
+      />
+    </>
+  );
+};
+
+export default ScheduleTable;

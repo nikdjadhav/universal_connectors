@@ -153,9 +153,6 @@ const EventSchedule = () => {
       <TkContainer className="my-5">
         <TkRow>
           <TkCol lg={3} sm={3}>
-            <TkButton type="button" className="btn-success btn-sm ms-4 mb-3">
-              Sync now
-            </TkButton>
 
             <TkRadioButton
               type="radio"
