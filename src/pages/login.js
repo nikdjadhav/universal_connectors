@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { getSession, signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import ParticlesAuth from "@/utils/ParticlesAuth";
 import TkInput from "@/globalComponents/TkInput";
-import TkLabel from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkContainer from "@/globalComponents/TkContainer";
@@ -23,24 +22,15 @@ import {
 } from "@/utils/Constants";
 import {
   TkToastError,
-  TkToastSuccess,
 } from "@/globalComponents/TkToastContainer";
 import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
 import TkForm from "@/globalComponents/TkForm";
-// import { ToastContainer, toast, Slide } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
-import { AuthContext } from "@/utils/Contexts";
-import useGlobalStore from "@/utils/globalStore";
-// "use client";
 
 // *** using firebase ***
 import { app } from "../firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { Spinner } from "reactstrap";
-import useFullPageLoader from "@/globalComponents/useFullPageLoader";
-import TkLoader from "@/globalComponents/TkLoader";
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
@@ -65,14 +55,11 @@ const schema = Yup.object({
       "Password must have One Uppercase, One Lowercase, One Number and one Special Character. \n Special Characters can be on of @ $ # ^ ( ) + ! % * ? &"
     )
     .required("Password is required"),
-
-  // rememberMe: Yup.boolean(),
 }).required();
 
 const Login = () => {
   const router = useRouter();
   const [loginUserDetails, setLoginUserDetails] = useState(null);
-  // const [loader, showLoader, hideLoader] = useFullPageLoader();
 
   useEffect(() => {
     const token = sessionStorage.getItem("loginCredentials");
@@ -91,10 +78,6 @@ const Login = () => {
     enabled: !!loginUserDetails,
   });
 
-  console.log("loggedInUser", data);
-  console.log("isError", isError);
-  console.log("isLoading", isLoading);
-  console.log("error", error);
 
   const {
     register,
@@ -105,16 +88,12 @@ const Login = () => {
   });
 
   const onSubmit = async (userData) => {
-    console.log("userData", userData)
-    // showLoader();
     setLoginUserDetails({
       email: userData.email,
       password: userData.password,
     });
-    // hideLoader();
   };
   if (data) {
-    console.log("user logged in successfully");
     sessionStorage.setItem("loginCredentials", data[0].token);
     sessionStorage.setItem("userId", JSON.stringify(data[0].userId));
     router.push("/dashboard");
@@ -123,12 +102,11 @@ const Login = () => {
   }
 
   const googleLoginHabdler = async () => {
-    await signIn("google", { callbackUrl: "/dashboard" }); // it redirects use to dashboard after signIn
+    await signIn("google", { callbackUrl: "/dashboard" });
   };
 
   // *** using firebase ***
   const googleLogin = () => {
-    console.log("google login");
     signInWithPopup(auth, googleProvider);
     const user = app.auth;
     if (user) {
@@ -138,9 +116,6 @@ const Login = () => {
 
   return (
     <>
-      {/* {isLoading && (
-        <div className="d-flex align-item-center justify-content-center">
-          <Spinner /> */}
       <TkPageHead>
         <title>{`Login - ${process.env.NEXT_PUBLIC_APP_NAME}`}</title>
       </TkPageHead>
@@ -172,7 +147,6 @@ const Login = () => {
                     <div className="p-2 mt-4">
                       <TkForm onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-3">
-                          {/* TODO: add validation taht it is required */}
                           <TkInput
                             {...register("email")}
                             labelName="Email"
@@ -214,31 +188,14 @@ const Login = () => {
                           ) : null}
                         </div>
 
-                        {/* <div className="form-check">
-                          <TkCheckBox
-                            {...register("rememberMe")}
-                            className="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="auth-remember-check"
-                          />
-                          <TkLabel className="form-check-label" id="auth-remember-check">
-                            Remember me
-                          </TkLabel>
-                        </div> */}
-
                         <div className="mt-4">
-                          {/* {isFetching ? (
-                            <TkLoader />
-                          ) : ( */}
-                            <TkButton
-                              color="success"
-                              className="btn btn-success w-100"
-                              type="submit"
-                            >
-                              Login
-                            </TkButton>
-                          {/* )} */}
+                          <TkButton
+                            color="success"
+                            className="btn btn-success w-100"
+                            type="submit"
+                          >
+                            Login
+                          </TkButton>
                         </div>
                       </TkForm>
 
@@ -249,7 +206,6 @@ const Login = () => {
                         <div>
                           <GoogleLoginBtn
                             onClick={googleLogin}
-                            // onClick={googleLoginHabdler}
                             btnText={"Login with Google"}
                           />
                         </div>
@@ -273,10 +229,7 @@ const Login = () => {
             </TkRow>
           </TkContainer>
         </div>
-        {/* {loader} */}
       </ParticlesAuth>
-      {/* </div>
-      )} */}
     </>
   );
 };

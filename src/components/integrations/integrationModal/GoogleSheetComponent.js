@@ -11,10 +11,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   useMutation,
   useQueries,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -24,18 +22,17 @@ const schema = Yup.object({
 }).required();
 
 const GoogleSheetComponent = ({
-  onClickHandeler,
+  onClickHandler,
   toggle,
   integrationID,
   title,
   addedIntegrationsId,
 }) => {
   const {
-    control,
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -45,7 +42,6 @@ const GoogleSheetComponent = ({
   const [integrationsData, setIntegrationsData] = useState();
   const [userID, setUserID] = useState();
   const [authButton, setAuthButton] = useState("Authorize");
-  const router = useRouter();
 
   const addConfigurations = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
@@ -109,7 +105,6 @@ const GoogleSheetComponent = ({
 
   useEffect(() => {
     if (configurationsData?.length) {
-      console.log("configurationsData", configurationsData)
       configurationsData.map((item) => {
         if (item.systemName === title) {
           setIntegrationsData(item);
@@ -121,25 +116,18 @@ const GoogleSheetComponent = ({
 
   useEffect(() => {
     if (credentialDetailsData?.length) {
-      console.log("credentialDetailsData", credentialDetailsData);
       setAuthButton("Reauthorize");
     }
   }, [credentialDetailsData]);
-  console.log("credentialDetailsData^^^", credentialDetailsData);
-
 
   const onSubmit = (data) => {
     if (redirectUrl) {
-      console.log(redirectUrl[0]);
-      // router.push(redirectUrl[0]);
-      // window.location.assign(redirectUrl[0]);
       window.open(
         redirectUrl[0],
         "mywindow",
         "menubar=1,resizable=,width=550,height=550"
       );
     }
-    // console.log("data", data);
     showLoader();
     const userId = sessionStorage.getItem("userId");
     if (configurationsData?.length) {
@@ -149,17 +137,16 @@ const GoogleSheetComponent = ({
             id: item.id,
             authenticationType: "xyz",
           };
-          console.log("updatedData in gs");
           updateConfiguration.mutate(updatedData, {
             onSuccess: (data) => {
               hideLoader();
               queryClient.invalidateQueries({
                 queryKey: ["configurationsData"],
               });
-              onClickHandeler();
+              onClickHandler();
             },
             onError: (error) => {
-              // console.log("error", error);
+              console.log(error)
               hideLoader();
               toggle();
               TkToastError("Error: Record not updated");
@@ -174,7 +161,6 @@ const GoogleSheetComponent = ({
         systemName: title,
         authenticationType: "abc",
       };
-      console.log("added in gs");
 
       addConfigurations.mutate(configurData, {
         onSuccess: (data) => {
@@ -182,10 +168,10 @@ const GoogleSheetComponent = ({
           queryClient.invalidateQueries({
             queryKey: ["configurationsData"],
           });
-          onClickHandeler();
+          onClickHandler();
         },
         onError: (error) => {
-          // console.log("error", error);
+          console.log(error);
           hideLoader();
           toggle();
           TkToastError("Error: Record not added");

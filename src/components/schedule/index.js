@@ -1,4 +1,3 @@
-import TkButton from "@/globalComponents/TkButton";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import { scheduleHead } from "@/utils/Constants";
 import React, { useCallback, useState } from "react";
@@ -37,9 +36,6 @@ const ScheduleTable = () => {
         data={data}
         rowSelection={true}
         onRowSelection={selectedRowsId}
-
-        // defaultPageSize={10}
-        // customPageSize={true}
       />
     </>
   );

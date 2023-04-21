@@ -16,31 +16,28 @@ const schema = Yup.object({
 
 const Field = () => {
   const {
-    register,
     control,
-    formState: { errors, isDirty },
+    formState: { errors },
     handleSubmit,
-    setValue
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   useEffect(() => {
-    setValue("integrationName", integrations[0])
-  })
+    setValue("integrationName", integrations[0]);
+  });
 
   const router = useRouter();
 
   const onsubmit = (data) => {
-    console.log("data", data);
     router.push("/schedule/event");
   };
 
   return (
     <>
-    <TkForm onSubmit={handleSubmit(onsubmit)}>
+      <TkForm onSubmit={handleSubmit(onsubmit)}>
         <TkRow className="mt-5 justify-content-center">
-
           <TkCol lg={4}>
             <Controller
               name="integrationName"
@@ -51,7 +48,6 @@ const Field = () => {
                   labelName="Integration Name"
                   id="integrationName"
                   options={integrations}
-                  // defaultValue={integrations[0]}
                   disabled={true}
                   maxMenuHeight="120px"
                   requiredStarOnLabel={true}
@@ -63,13 +59,8 @@ const Field = () => {
             ) : null}
           </TkCol>
 
-          {/* <TkRow className="mt-3 justify-content-center"> */}
           <TkCol lg={12} className="d-flex justify-content-center">
-            <TkButton
-              className="btn-success my-4"
-              type="submit"
-              // onClick={handleSubmit}
-            >
+            <TkButton className="btn-success my-4" type="submit">
               Next
             </TkButton>
           </TkCol>

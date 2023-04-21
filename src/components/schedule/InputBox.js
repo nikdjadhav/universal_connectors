@@ -11,12 +11,7 @@ const InputBox = ({ className, firstLabel, secondLabel }) => {
         </TkCol>
 
         <TkCol lg={2} sm={2} className="px-0">
-          <TkInput
-            type="number"
-            name="repeatEveryDay"
-            // min="1"
-            // max="365"
-          />
+          <TkInput type="number" name="repeatEveryDay" />
         </TkCol>
 
         <TkCol lg={2} sm={2} className="align-self-center">
@@ -36,12 +31,7 @@ export function TwoInputBoxes({ className }) {
         </TkCol>
 
         <TkCol lg={1} sm={1} className="px-0">
-          <TkInput
-            type="number"
-            name="repeatEveryDay"
-            // min="1"
-            // max="365"
-          />
+          <TkInput type="number" name="repeatEveryDay" />
         </TkCol>
 
         <TkCol lg={2} sm={2} className="align-self-center px-4">
@@ -49,12 +39,7 @@ export function TwoInputBoxes({ className }) {
         </TkCol>
 
         <TkCol lg={1} sm={1} className="px-0">
-          <TkInput
-            type="number"
-            name="repeatEveryDay"
-            // min="1"
-            // max="365"
-          />
+          <TkInput type="number" name="repeatEveryDay" />
         </TkCol>
 
         <TkCol lg={2} sm={2} className="align-self-center">

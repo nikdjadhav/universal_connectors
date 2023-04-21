@@ -1,4 +1,3 @@
-import TkButton from "@/globalComponents/TkButton";
 import TkRadioButton from "@/globalComponents/TkRadioButton";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import React from "react";
@@ -31,12 +30,6 @@ const YearlyEvent = () => {
       </TkRow>
 
       <SingleEvent />
-
-      {/* <div className="d-flex justify-content-center my-4">
-        <TkButton type="submit" className="btn-success">
-          Save
-        </TkButton>
-      </div> */}
     </>
   );
 };

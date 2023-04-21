@@ -6,14 +6,9 @@ const userController = require("./controllers/user.controllers");
 const integrationController = require("./controllers/integration.controllers");
 const resletController = require("./controllers/restletsApi.controllers");
 const fieldMappingController = require("./controllers/fieldMapping.controllers");
-// require("dotenv").config();
-// const session = require("express-session");
-// const prisma = require("./lib/prisma");
-// const jwt = require("jsonwebtoken");
 
 const app = express();
 dotenv.config();
-// const port = 4000;
 const port = process.env.PORT || 4000;
 
 var allowCrossDomain = function (req, res, next) {
@@ -48,13 +43,19 @@ v1Router.get(
 );
 v1Router.post("/deleteIntegration", integrationController.deleteIntegration);
 v1Router.put("/updateIntegration/:id", integrationController.updateIntegration);
-v1Router.put("/updateIntegrationState/:id", integrationController.updateIntegrationState);
+v1Router.get(
+  "/updateIntegrationState/:id",
+  integrationController.updateIntegrationState
+);
 v1Router.post("/addConfigurations", integrationController.addConfigurations);
 v1Router.get(
   "/getConfigurationById/:id",
   integrationController.getConfigurationById
 );
-v1Router.put("/updateConfiguration/:id", integrationController.updateConfiguration);
+v1Router.put(
+  "/updateConfiguration/:id",
+  integrationController.updateConfiguration
+);
 v1Router.get(
   "/getConfigurationByIntegrationId/:id",
   integrationController.getConfigurationByIntegrationId
@@ -69,12 +70,13 @@ v1Router.post("/addRefreshToken", resletController.addRefreshToken);
 v1Router.get("/getAccessToken/:id", resletController.getAccessToken);
 v1Router.post("/getFiles", resletController.getFiles);
 v1Router.get("/getSheetsData", resletController.getSheetsData);
-v1Router.get("/getcredentialDetailsById/:id", resletController.getcredentialDetailsById);
-// v1Router.post("/addCredentials", resletController.addCredentials);
+v1Router.get(
+  "/getcredentialDetailsById/:id",
+  resletController.getcredentialDetailsById
+);
 
 // *** field mapping routes ***
 v1Router.post("/addMappedRecord", fieldMappingController.addMappedRecord);
-// v1Router.put("/updateFieldMappingState/:id", fieldMappingController.updateFieldMappingState);
 v1Router.get(
   "/getMappedRecordById/:id",
   fieldMappingController.getMappedRecordById
@@ -89,7 +91,6 @@ v1Router.get(
 );
 // *** add fields routes
 v1Router.post("/addFields", fieldMappingController.addFields);
-// v1Router.post("/addPrimaryFields", fieldMappingController.addPrimaryFields);
 v1Router.get("/getFields/:id", fieldMappingController.getFields);
 v1Router.delete("/deleteField/:id", fieldMappingController.deleteField);
 

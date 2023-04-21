@@ -1,8 +1,5 @@
-import TkButton from "@/globalComponents/TkButton";
 import TkRadioButton from "@/globalComponents/TkRadioButton";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import TkSelect from "@/globalComponents/TkSelect";
-import { options } from "@/utils/Constants";
 import React from "react";
 import Dropdown from "../Dropdown";
 import { TwoInputBoxes } from "../InputBox";
@@ -19,7 +16,6 @@ const MonthlyEvent = () => {
         </TkCol>
 
         <TkCol lg={11} sm={11} className="mb-3 ms-n5">
-          {/* <InputBox firstLabel="Day" secondLabel="" /> */}
           <TwoInputBoxes className="mt-n2" />
         </TkCol>
       </TkRow>
@@ -46,12 +42,6 @@ const MonthlyEvent = () => {
       </TkRow>
 
       <SingleEvent />
-
-      {/* <div className="d-flex justify-content-center my-4">
-        <TkButton type="submit" className="btn-success">
-          Save
-        </TkButton>
-      </div> */}
     </>
   );
 };

@@ -11,16 +11,14 @@ import {
   searchAndFilterData,
   searchDebounce,
 } from "@/utils/utilsFunctions";
-import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import ModalButton from "../integrations/integrationModal";
 import TopBar from "../topBar";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
 import { formatDate, formatTime } from "@/utils/date";
-import { Spinner } from "reactstrap";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
 
@@ -28,20 +26,16 @@ const DashBoard = () => {
   const [integrationData, setIntegrationData] = useState();
   const [integrationID, setIntegrationID] = useState();
   const [userId, setUserId] = useState(null);
-  const [dashboardData, setDashboardData] = useState();
 
   const {
     data: integrations,
-    isError,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["integrations", userId],
     queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
 
     enabled: !!userId,
   });
-
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
@@ -53,40 +47,15 @@ const DashBoard = () => {
   useEffect(() => {
     if (userId) {
       setIntegrationData(integrations);
-      // setDashboardData(integrations);
     }
   }, [integrations, userId]);
-  // console.log("integrations=>", integrationData);
 
-  // useEffect(() => {
-  //   if (updateIntegrationState) {
-  //     updateIntegrationState.mutate(
-  //       {
-  //         integrationId: integrationID,
-  //         // fieldMappingState: true,
-  //       },
-  //       {
-  //         onSuccess: (data) => {
-  //           // console.log("data=>", data);
-  //         },
-  //         onError: (error) => {
-  //           console.log("error", error);
-  //         },
-  //       }
-  //     );
-  //   }
-  // });
-
-  const router = useRouter();
   const [searchText, setSearchText] = useState("");
-  const [urlParamsStr, setUrlParamsStr] = React.useState("");
 
   const [filters, updateFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
       [filterFields.dashboard.integrationName]: null,
-      // [filterFields.dashboard.startDate]: null,
-      // [filterFields.dashboard.endDate]: null,
     }
   );
 
@@ -105,32 +74,25 @@ const DashBoard = () => {
     }
 
     if (!doSearch && !doFilter) {
-      // setDashboardData(integrations || []);
       setIntegrationData(integrations || []);
-      setUrlParamsStr("");
       return;
     }
 
-    // if (isSearchonUI(data)) {
     if (isSearchonUI(integrationData)) {
       const newData = searchAndFilterData(
         integrationData,
-        // data
         searchText,
         serachFields.dashboard,
         filters
       );
-      // setDashboardData(newData);
       setIntegrationData(newData);
     } else {
       const urlParamString = convertToURLParamsString({
         [searchParamName]: searchText,
         ...filters,
       });
-      setUrlParamsStr(urlParamString);
     }
   }, [filters, integrationData, integrations, searchText]);
-  // const searchonUI = isSearchonUI(data);
   const searchonUI = isSearchonUI(integrationData);
 
   const [modal, setModal] = useState(false);
@@ -139,7 +101,7 @@ const DashBoard = () => {
     if (e.target.value.length >= minSearchLength) {
       setSearchText(e.target.value);
     } else {
-      setSearchText(""); // dont pass any search text to search filter if saerch text is less than minSearchLength (currently 3)(at time of wirting this comment)
+      setSearchText("");
     }
   };
 
@@ -262,8 +224,6 @@ const DashBoard = () => {
               className="ri-edit-2-fill mx-2 pointer-event"
               onClick={() => onClickOpenModal(props.row.original?.id)}
             />
-
-            {/* <i className="ri-eye-fill" /> */}
           </>
         );
       },

@@ -12,7 +12,6 @@ import { Spinner } from "reactstrap";
 
 const IntegrationDetails = ({ id }) => {
   const [integrationData, setIntegrationData] = useState();
-  const [integrationID, setIntegrationID] = useState();
 
   const {
     data: integration,
@@ -22,25 +21,12 @@ const IntegrationDetails = ({ id }) => {
   } = useQuery({
     queryKey: ["getIntegration", id],
     queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrationById/${id}`),
-    // queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrationById/${integrationID}`),
     enabled: !!id,
   });
 
   useEffect(() => {
     if (id) {
-      // const id = {
-      //   id: integrationID,
-      // };
       setIntegrationData(integration);
-      // integration.mutate(id, {
-      //   onSuccess: (data) => {
-      //     console.log("data", data);
-      //     setIntegrationData(data);
-      //   },
-      //   onError: (error) => {
-      //     console.log("error", error);
-      //   },
-      // });
     }
   }, [id, integration]);
 
@@ -55,7 +41,6 @@ const IntegrationDetails = ({ id }) => {
   }, [modal]);
 
   const onSubmit = () => {
-    // console.log("id", id);
     toggle();
   };
 
@@ -85,9 +70,6 @@ const IntegrationDetails = ({ id }) => {
                 ) : (
                   <>
                     <h5>
-                      {/* NetSuite™ to Google Sheets™ Two Way Integration for Smooth,
-  Effortless & Swift Data Sync. */}
-                      {/* {integrationData.sourceName} to {integrationData.destinationName} */}
                       {integrationData && integrationData[0]?.sourceName} to{" "}
                       {integrationData && integrationData[0]?.destinationName}
                       Two Way Integration for Smooth, Effortless & Swift Data
@@ -105,12 +87,6 @@ const IntegrationDetails = ({ id }) => {
                     <TkButton className="btn-success" onClick={onSubmit}>
                       Procced
                     </TkButton>
-                    {/* <ModalButton
-  modal={modal}
-  setModal={setModal}
-  toggle={toggle}
->
-</ModalButton> */}
                   </>
                 )}
               </TkCol>

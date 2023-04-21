@@ -1,9 +1,6 @@
-import FieldMap from "@/components/mapField/FieldMap";
-import TkContainer from "@/components/TkContainer";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import BreadCrumb from "@/utils/BreadCrumb";
 import React from "react";
-import FieldMapping from "@/components/mapField";
 import { useRouter } from "next/router";
 import ScheduleTable from "@/components/schedule";
 

@@ -5,7 +5,7 @@ import ExistConnection from "./ExistConnection";
 import NewConnection from "./NewConnection";
 
 const NetsuiteComponent = ({
-  onClickHandeler,
+  onClickHandler,
   toggle,
   integrationDetails,
   integrationID,
@@ -17,7 +17,6 @@ const NetsuiteComponent = ({
   const [existTab, setExistTab] = useState(false);
 
   const toggleComponet = (value) => {
-    // console.log(value);
     setShowComponent(value);
     setNewTab(value === "one" ? true : false);
     setExistTab(value === "two" ? true : false);
@@ -30,7 +29,6 @@ const NetsuiteComponent = ({
           <TkRadioButton
             type="radio"
             name="connection"
-            // checked="true"
             checked={newTab}
             onChange={() => toggleComponet("one")}
           >
@@ -49,7 +47,7 @@ const NetsuiteComponent = ({
 
         {showComponent === "one" ? (
           <NewConnection
-            onClickHandeler={onClickHandeler}
+            onClickHandler={onClickHandler}
             integrationID={integrationID}
             title={title}
             integrationDetails={integrationDetails}
@@ -57,7 +55,7 @@ const NetsuiteComponent = ({
             getIntegrationId={getIntegrationId}
           />
         ) : (
-          <ExistConnection onClickHandeler={onClickHandeler} />
+          <ExistConnection onClickHandler={onClickHandler} />
         )}
       </TkRow>
     </>

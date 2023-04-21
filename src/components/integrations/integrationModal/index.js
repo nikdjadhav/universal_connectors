@@ -9,7 +9,7 @@ import Integration from "./Integration";
 import NetsuiteComponent from "./NetsuiteComponent";
 import GoogleSheetComponent from "./GoogleSheetComponent";
 import { API_BASE_URL } from "@/utils/Constants";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 
 const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
@@ -58,7 +58,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
   const getIntegrationDetails = (integrationData) => {
     if (integrationData) {
       setIntegrationData(integrationData);
-      onClickHandeler();
+      onClickHandler();
     }
   };
 
@@ -75,7 +75,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
     }
   };
 
-  const onClickHandeler = () => {
+  const onClickHandler = () => {
     if (activeTab === tabs.Integration) {
       setActiveTab(tabs.NetsuiteConfiguration);
     }
@@ -89,10 +89,8 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
 
   return (
     <>
-      {/* *** forms modal *** */}
       <TkModal
         isOpen={modal}
-        // toggle={toggle}
         centered
         size="lg"
         className="border-0"
@@ -137,9 +135,9 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
                 className={classnames({
                   active: activeTab === tabs.GoogleSheetConfiguration,
                 })}
-                onClick={() => {
-                  toggleTab(tabs.GoogleSheetConfiguration);
-                }}
+                // onClick={() => {
+                //   toggleTab(tabs.GoogleSheetConfiguration);
+                // }}
               >
                 {GSCTitle} Configuration
               </NavLink>
@@ -151,7 +149,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
           <TabContent activeTab={activeTab}>
             <TabPane tabId={tabs.Integration}>
               <Integration
-                onClickHandeler={onClickHandeler}
+                onClickHandler={onClickHandler}
                 syncWay={syncWay}
                 configData={configData}
                 toggle={toggle}
@@ -162,7 +160,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
 
             <TabPane tabId={tabs.NetsuiteConfiguration}>
               <NetsuiteComponent
-                onClickHandeler={onClickHandeler}
+                onClickHandler={onClickHandler}
                 toggle={toggle}
                 integrationID={integrationID}
                 title={NSCTitle}
@@ -173,7 +171,7 @@ const ModalButton = ({ modal, toggle, syncWay, configData, integrationID }) => {
 
             <TabPane tabId={tabs.GoogleSheetConfiguration}>
               <GoogleSheetComponent
-                onClickHandeler={onClickHandeler}
+                onClickHandler={onClickHandler}
                 toggle={toggle}
                 integrationID={integrationID}
                 title={GSCTitle}

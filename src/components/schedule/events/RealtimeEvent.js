@@ -1,4 +1,4 @@
-import FormErrorText, { FormErrorBox } from "@/globalComponents/ErrorText";
+import FormErrorText from "@/globalComponents/ErrorText";
 import TkButton from "@/globalComponents/TkButton";
 import TkCheckBox from "@/globalComponents/TkCheckBox";
 import TkDate from "@/globalComponents/TkDate";
@@ -6,9 +6,8 @@ import TkForm from "@/globalComponents/TkForm";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller, set } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 
 const schema = Yup.object({
@@ -16,7 +15,6 @@ const schema = Yup.object({
 }).required();
 
 const RealtimeEvent = ({ toggleComponet }) => {
-  const router = useRouter();
   const {
     control,
     register,
@@ -27,64 +25,32 @@ const RealtimeEvent = ({ toggleComponet }) => {
     resolver: yupResolver(schema),
   });
 
-  // const cDate = date.split(" ");
-  // const dateArray = [cDate[1], cDate[2], cDate[3]];
-  // console.log("formatted date", dateArray);
-  // dateArray.push()
-  // const [currentDate, setCurrentDate] = useState();
-
   const [checkboxValue, setCheckboxValue] = useState(true);
-  // const [disableEndDate, setDisableEndDate] = useState(true);
-  // console.log("checkboxValue", checkboxValue);
   useEffect(() => {
     setValue("startDate", new Date());
   }, [setValue]);
 
   const handleOnChange = (dates) => {
-    console.log("value", dates);
     if (dates) {
       setCheckboxValue(false);
-      // console.log('data');
     } else {
       setCheckboxValue(true);
-      // console.log('null');
     }
-    // ***
-    // if (e.target.checked) {
-    //   setCheckboxValue(true);
-    //   setDisableEndDate(true);
-    //   setValue("endDate", null);
-    // } else {
-    //   setCheckboxValue(false);
-    //   setDisableEndDate(false);
-    // }
   };
 
-  const onChangeEvent = (e) => {
-    console.log("original", e.target.value);
-  };
+  
 
   const onSubmit = (data) => {
-    console.log(data);
     if (data.endDate) {
-      // console.log('end date');
       data.noEndDate = false;
     } else {
-      // console.log('no end date');
       data.endDate = null;
       data.noEndDate = true;
     }
     toggleComponet("singleEvent");
-    // if (checkboxValue === true) {
-    //   data.endDate = null;
-    // }
   };
   const onCancel = () => {
-    // router.push("/schedule/field");
     history.back();
-    // setValue("startDate", null);
-    // setValue("endDate", null);
-    // setCheckboxValue(true);
   };
 
   return (
@@ -117,7 +83,6 @@ const RealtimeEvent = ({ toggleComponet }) => {
             {errors.startDate?.message ? (
               <FormErrorText>{errors.startDate?.message}</FormErrorText>
             ) : null}
-            {/* {startDate.isError ? <FormErrorBox errMessage={startDate.error?.message} /> : null} */}
           </TkCol>
         </TkRow>
 
@@ -132,7 +97,6 @@ const RealtimeEvent = ({ toggleComponet }) => {
                   labelName="End By"
                   id="endDate"
                   placeholder="End Date"
-                  // disabled={disableEndDate}
                   className="mb-3"
                   onChange={(e) => {
                     handleOnChange(e);
@@ -155,8 +119,6 @@ const RealtimeEvent = ({ toggleComponet }) => {
               id="noEndDate"
               checked={checkboxValue}
               disabled={true}
-              // onChange={(e) => onChangeEvent(e)}
-              // onChange={handleOnChange}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
               No End Date
@@ -170,11 +132,6 @@ const RealtimeEvent = ({ toggleComponet }) => {
               Save
             </TkButton>
           </TkCol>
-          {/* <TkCol lg={2} sm={4} className="">
-            <TkButton type="button" className="btn-success">
-              Sync now
-            </TkButton>
-          </TkCol> */}
 
           <TkCol lg={2} sm={4} className="">
             <TkButton type="button" onClick={onCancel} className="btn-success">

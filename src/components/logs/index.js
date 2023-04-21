@@ -14,9 +14,6 @@ const LogTable = () => {
       lastSyncTime: "11:00 PM",
       status: "Error",
       message: "Error for updating the records",
-      // message: (
-      //   <span className="text-danger">Error for updating the records</span>
-      // ),
       action: "",
       details: "Contact records not updated successfully for NSGS",
     },
@@ -30,11 +27,6 @@ const LogTable = () => {
       lastSyncTime: "11:39 PM",
       status: "Success",
       message: "50 records updated successfully out of 50",
-      // message: (
-      //   <span className="text-success">
-      //     50 records updated successfully out of 50
-      //   </span>
-      // ),
       action: "",
       details: "All NSGS Vendor records updated successfully",
     },

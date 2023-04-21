@@ -51,10 +51,6 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
 
   const router = useRouter();
-  const [verified, setVerified] = useState(null);
-  // const verifyToken = useMutation({
-  //   mutationFn: tkFetch.post("http://localhost:4000/v1/verifyToken"),
-  // });
 
   useEffect(() => {
     if (
@@ -72,19 +68,18 @@ export default function MyApp({ Component, pageProps }) {
         async function tokenVerifiedApi() {
           // const response = await fetch("http://localhost:4000/v1/verifyToken", {
           const response = await fetch(`${API_BASE_URL}/verifyToken`, {
-
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(userToken),
           }).then(async (response) => {
-             const userToken = await response.json();
-             console.log("token verified API response",userToken);
-             if(!userToken.data[0]?.verified){
-                sessionStorage.clear();
-                router.push("/login");
-             }
+            const userToken = await response.json();
+            console.log("token verified API response", userToken);
+            if (!userToken.data[0]?.verified) {
+              sessionStorage.clear();
+              router.push("/login");
+            }
           });
         }
         tokenVerifiedApi();

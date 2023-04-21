@@ -2,10 +2,8 @@ import React, { useCallback, useState } from "react";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import IntegrationCard from "@/components/integrations/IntegrationCard";
 import BreadCrumb from "@/utils/BreadCrumb";
-import Topbar from "@/components/integrations/Topbar";
 
 const Integrations = () => {
-  // ***to open radio button modal
   const [modal, setModal] = useState(false);
 
   const toggleModal = useCallback(() => {
@@ -29,17 +27,11 @@ const Integrations = () => {
           pageTitle="Integrations"
           buttonText={"Add Integration"}
           onButtonClick={toggleModal}
-
-          // onButtonClick={toggle}
         />
-
-        {/* <Topbar /> */}
 
         <h4>Integrations</h4>
 
         <IntegrationCard modal={modal} toggleModal={toggleModal} />
-
-        {/* <TkContainer></TkContainer> */}
       </div>
     </>
   );

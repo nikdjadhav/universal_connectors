@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import ParticlesAuth from "@/utils/ParticlesAuth";
 import TkInput from "@/globalComponents/TkInput";
@@ -25,8 +24,7 @@ import {
   MinPasswordLength,
 } from "@/utils/Constants";
 import { TkToastError } from "@/globalComponents/TkToastContainer";
-import GoogleLoginBtn from "@/globalComponents/googleLoginBtn";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 
 const schema = Yup.object({
@@ -91,10 +89,6 @@ const Register = () => {
     }
   }, [router]);
 
-  // const googleSignupHandler = async () => {
-  //   await signIn("google", { callbackUrl: "/start" }); // it redirects use to dashboard after signIn
-  // };
-
   const {
     register,
     handleSubmit,
@@ -104,13 +98,10 @@ const Register = () => {
   });
 
   const user = useMutation({
-    //     mutationFn: tkFetch.post("http://localhost:4000/v1")
-    //  mutationFn: tkFetch.post(" https://demo-40do.onrender.com/v1")
     mutationFn: tkFetch.post(`${API_BASE_URL}`),
   });
 
   const OnSubmit = async (formData) => {
-    // console.log('user data', formData);
     const newUser = {
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -120,7 +111,6 @@ const Register = () => {
 
     user.mutate(newUser, {
       onSuccess: (data) => {
-        console.log("user creat ed", data);
         const user = {
           userId: data[0].userId,
           firstName: data[0].firstName,
@@ -130,8 +120,6 @@ const Register = () => {
           verrified: data[0].verrified,
           token: data[0].token,
         };
-        console.log("user", user);
-        // localStorage.setItem("loginCredentials", JSON.stringify(user));
         sessionStorage.setItem("userId", JSON.stringify(user.userId));
         sessionStorage.setItem("loginCredentials", user.token);
         router.push("/dashboard");
@@ -141,90 +129,7 @@ const Register = () => {
         TkToastError("Invalid Credentials");
       },
     });
-
-    // const user = await fetch("http://localhost:4000/createUser", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(newUser),
-    // }).then(async (res) => {
-    //   if (res.error) {
-    //     // TkToastError(res.error, { autoClose: 5000 });
-    //     console.log("error", res.error);
-    //   } else {
-    //     const data = await res.json();
-    //     console.log('user created', data);
-    //     if (data.success) {
-    //       try {
-    //         // await signIn("credentials", {
-    //         //   email: formData.email,
-    //         //   password: formData.password,
-    //         //   redirect: false,
-    //         // });
-    //         // router.push("/start");
-    //         router.push("/dashboard");
-    //       } catch (err) {
-    //         console.log(err, "error occured");
-    //         TkToastError("Some Error occured while creating user. Please try again", { autoClose: 5000 });
-    //       }
-    //     } else {
-    //       TkToastError(data.message, { autoClose: 5000 });
-    //     }
-    //   }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
-
-    // // ***
-    // // // TODO: upadte this fetch call with react query wrapper
-    // // const user = fetch("/api/v1/users/new-admin", {
-    // //   method: "POST",
-    // //   headers: {
-    // //     "Content-Type": "application/json",
-    // //   },
-    // //   body: JSON.stringify(formData),
-    // // })
-    // //   .then(async (res) => {
-    // //     if (res.error) {
-    // //       TkToastError(res.error, { autoClose: 5000 });
-    // //       console.log("error", res.error);
-    // //     } else {
-    // //       const data = await res.json();
-    // //       if (data.success) {
-    // //         try {
-    // //           await signIn("credentials", {
-    // //             email: formData.email,
-    // //             password: formData.password,
-    // //             redirect: false,
-    // //           });
-    // //           router.push("/start");
-    // //         } catch (err) {
-    // //           console.log(err, "error occured");
-    // //           TkToastError("Some Error occured while creating user. Please try again", { autoClose: 5000 });
-    // //         }
-    // //       } else {
-    // //         TkToastError(data.message, { autoClose: 5000 });
-    // //       }
-    // //     }
-    // //   })
-    // //   .catch((err) => {
-    // //     TkToastError("Some Error occured while creating user. Please try again Later.", { autoClose: 5000 });
-    // //     console.log("err", err);
-    // //   });
   };
-
-  // const { status } = useSession({
-  //   required: true,
-  //   onUnauthenticated() {
-  //     // dont remove this function though it has empty body, because else page will be refreshed with an error
-  //     // console.log("unauthenticated");
-  //   },
-  // });
-  // if (status === "authenticated") {
-  //   router.push("/dashboard");
-  // }
 
   return (
     <>
@@ -386,15 +291,7 @@ const Register = () => {
                         </div>
                       </TkForm>
                     </div>
-                    <div className="mt-4 text-center">
-                      {/* <div className="signin-other-title">
-                        <h5 className="fs-13 mb-4 title text-muted">OR</h5>
-                      </div>
-                      <div>
-                        <GoogleLoginBtn onClick={googleSignupHandler} btnText={"SignUp with Google"} />
-                      </div>
-                    </div> */}
-                    </div>
+                    <div className="mt-4 text-center"></div>
                   </TkCardBody>
                 </TkCard>
                 <div className="mt-4 text-center">
@@ -418,5 +315,3 @@ const Register = () => {
 };
 
 export default Register;
-
-// Register.noLayout = true;

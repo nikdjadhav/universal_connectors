@@ -1,5 +1,3 @@
-import TkButton from "@/globalComponents/TkButton";
-import TkInput from "@/globalComponents/TkInput";
 import TkRadioButton from "@/globalComponents/TkRadioButton";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import React from "react";
@@ -19,7 +17,6 @@ const DailyEvent = () => {
             label="Repeat Every Day(s)"
             value="repeatEveryDay"
             className="mb-3"
-            // checked={true}
           ></TkRadioButton>
         </TkCol>
         <TkCol lg={5} sm={5} className="ms-n4">
@@ -44,12 +41,6 @@ const DailyEvent = () => {
       </TkRow>
 
       <SingleEvent />
-
-      {/* <div className="d-flex justify-content-center my-4">
-        <TkButton type="submit" className="btn-success">
-          Save
-        </TkButton>
-      </div> */}
     </>
   );
 };

@@ -2,7 +2,6 @@ import FieldMap from "@/components/mapField/FieldMap";
 import TkContainer from "@/components/TkContainer";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import BreadCrumb from "@/utils/BreadCrumb";
-import { useRouter } from "next/router";
 import React from "react";
 
 const Field = () => {

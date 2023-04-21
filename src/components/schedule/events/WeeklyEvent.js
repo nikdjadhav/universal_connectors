@@ -38,26 +38,19 @@ const WeeklyEvent = ({ toggleComponet }) => {
   }, [isDirty, setValue]);
 
   const [checkboxValue, setCheckboxValue] = useState(true);
-  // const [disableEndDate, setDisableEndDate] = useState(true);
 
   const handleOnChange = (dates) => {
-    console.log("value", dates);
     if (dates) {
       setCheckboxValue(false);
-      // console.log('data');
     } else {
       setCheckboxValue(true);
-      // console.log('null');
     }
   };
 
   const onSubmit = (data) => {
-    console.log(data);
     if (data.endDate) {
-      // console.log('end date');
       data.noEndDate = false;
     } else {
-      // console.log('no end date');
       data.endDate = null;
       data.noEndDate = true;
     }
@@ -65,7 +58,6 @@ const WeeklyEvent = ({ toggleComponet }) => {
 
   const onCancel = () => {
     toggleComponet("singleEvent");
-    // history.back();
   };
 
   return (
@@ -76,91 +68,9 @@ const WeeklyEvent = ({ toggleComponet }) => {
         <TkRow>
           <TkCol lg={5} sm={5} className="mb-2 fw-bold">
             Repeat Every 1 Week
-            {/* <InputBox
-            className="mb-2"
-            firstLabel="Repeat Every"
-            secondLabel="Week(s)"
-          /> */}
           </TkCol>
         </TkRow>
 
-        {/* <TkRow>
-        <TkCol lg={4} className="my-1">
-          <TkCheckBox
-            className="form-check-input"
-            type="checkbox"
-            id="sunday"
-          />
-          <TkLabel className="form-check-label mx-2" id="sunday">
-            Sunday
-          </TkLabel>
-        </TkCol>
-
-        <TkCol lg={4} className="my-1">
-          <TkCheckBox
-            className="form-check-input"
-            type="checkbox"
-            id="monday"
-          />
-          <TkLabel className="form-check-label mx-2" id="monday">
-            Monday
-          </TkLabel>
-        </TkCol>
-        <TkCol lg={4} className="my-1">
-          <TkCheckBox
-            className="form-check-input"
-            type="checkbox"
-            id="tuesday"
-          />
-          <TkLabel className="form-check-label mx-2" id="tuesday">
-            Tuesday
-          </TkLabel>
-        </TkCol>
-
-        <TkCol lg={4} className="my-1">
-          <TkCheckBox
-            className="form-check-input"
-            type="checkbox"
-            id="wednesday"
-          />
-          <TkLabel className="form-check-label mx-2" id="wednesday">
-            Wednesday
-          </TkLabel>
-        </TkCol>
-
-        <TkCol lg={4} className="my-1">
-          <TkCheckBox
-            className="form-check-input"
-            type="checkbox"
-            id="thursday"
-          />
-          <TkLabel className="form-check-label mx-2" id="thursday">
-            Thursday
-          </TkLabel>
-        </TkCol>
-
-        <TkCol lg={4} className="my-1">
-          <TkCheckBox
-            className="form-check-input"
-            type="checkbox"
-            id="friday"
-          />
-          <TkLabel className="form-check-label mx-2" id="friday">
-            Friday
-          </TkLabel>
-        </TkCol>
-
-        <TkCol lg={4} className="my-1">
-          <TkCheckBox
-            className="form-check-input"
-            type="checkbox"
-            id="saturday"
-          />
-          <TkLabel className="form-check-label mx-2" id="saturday">
-            Saturday
-          </TkLabel>
-        </TkCol>
-      </TkRow> */}
         <TkRow>
           <TkCol lg={4} sm={4}>
             <Controller
@@ -171,7 +81,6 @@ const WeeklyEvent = ({ toggleComponet }) => {
                   {...field}
                   labelName="Start Date"
                   id="startDate"
-                  // name="startDate"
                   placeholder="Start Date"
                   className="mb-3"
                   requiredStarOnLabel={true}
@@ -244,7 +153,6 @@ const WeeklyEvent = ({ toggleComponet }) => {
                   id="endDate"
                   placeholder="End Date"
                   className="mb-3"
-                  // disabled={disableEndDate}
                   onChange={(e) => {
                     handleOnChange(e);
                     field.onChange(e);
@@ -266,7 +174,6 @@ const WeeklyEvent = ({ toggleComponet }) => {
               id="noEndDate"
               checked={checkboxValue}
               disabled={true}
-              // onChange={handleOnChange}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
               No End Date
@@ -280,11 +187,6 @@ const WeeklyEvent = ({ toggleComponet }) => {
               Save
             </TkButton>
           </TkCol>
-          {/* <TkCol lg={2} sm={4} className="">
-            <TkButton type="button" className="btn-success">
-              Sync now
-            </TkButton>
-          </TkCol> */}
 
           <TkCol lg={2} sm={4} className="">
             <TkButton type="button" onClick={onCancel} className="btn-success">
@@ -293,14 +195,6 @@ const WeeklyEvent = ({ toggleComponet }) => {
           </TkCol>
         </TkRow>
       </TkForm>
-
-      {/* <SingleEvent /> */}
-
-      {/* <div className="d-flex justify-content-center my-4">
-        <TkButton type="submit" className="btn-success">
-          Save
-        </TkButton>
-      </div> */}
     </>
   );
 };

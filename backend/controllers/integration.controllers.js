@@ -2,8 +2,6 @@ const prisma = require("../lib/prisma");
 const response = require("../lib/response");
 
 const createIntegration = async (req, res) => {
-  // console.log('requestd body',req.body);
-  // console.log(req.method);
   try {
     const integration = await prisma.integrations.create({
       data: {
@@ -11,8 +9,6 @@ const createIntegration = async (req, res) => {
         integrationName: req.body.integrationName,
         sourceName: req.body.sourceName,
         destinationName: req.body.destinationName,
-        // createdAt: new Date(),
-        // updatedAt: undefined,
         creationDate: new Date(),
         modificationDate: undefined,
         schedule: false,
@@ -21,7 +17,6 @@ const createIntegration = async (req, res) => {
         syncWay: req.body.syncWay,
       },
     });
-    // console.log('integration',integration);
 
     if (integration) {
       response({
@@ -53,9 +48,7 @@ const createIntegration = async (req, res) => {
   }
 };
 
-// get integration using id
 const getIntegrationById = async (req, res) => {
-  // console.log("getIntegrationById requestd body", req.params.id);
   try {
     const integration = await prisma.integrations.findUnique({
       where: {
@@ -89,20 +82,16 @@ const getIntegrationById = async (req, res) => {
       message: "Error in fetching integration",
     });
     console.log("error", error);
-    // return;
   }
 };
 
 const getIntegrations = async (req, res) => {
-  // console.log("requestd body");
-  // console.log('requestd body',req.params.id);
   try {
     const integrations = await prisma.integrations.findMany({
       where: {
         userId: Number(req.params.id),
       },
     });
-    // console.log('integrations',integrations);
     if (integrations) {
       response({
         res,
@@ -129,7 +118,6 @@ const getIntegrations = async (req, res) => {
       message: "Error in fetching integrations",
     });
     console.log("error", error);
-    // return;
   }
 };
 
@@ -172,9 +160,6 @@ const deleteIntegration = async (req, res) => {
 };
 
 const updateIntegration = async (req, res) => {
-  // console.log("updateIntegration", req.params);
-  // console.log("updateIntegration", req.body);
-
   try {
     const integration = await prisma.integrations.update({
       where: {
@@ -185,10 +170,6 @@ const updateIntegration = async (req, res) => {
         sourceName: req.body.sourceName,
         destinationName: req.body.destinationName,
         modificationDate: new Date(),
-        // schedule: req.body.schedule,
-        // fieldMapping: req.body.fieldMapping,
-        // status: req.body.status,
-        // syncWay: req.body.syncWay,
       },
     });
 
@@ -223,37 +204,33 @@ const updateIntegration = async (req, res) => {
 };
 
 const updateIntegrationState = async (req, res) => {
-  console.log("updateIntegrationState", req.body);
-
   try {
-    const integration = await prisma.integrations.update({
+    const mappedRecord = await prisma.mappedRecords.findMany({
       where: {
-        id: Number(req.params.id),
-        userId: Number(req.body.userId),
+        integrationId: Number(req.params.id),
       },
-      data: {
-        schedule: req.body.schedule,
-        fieldMapping: req.body.fieldMapping,
+      select: {
+        id: true,
+        integrationId: true,
       },
     });
-    console.log("integration", integration);
-    if (integration) {
+
+    if (mappedRecord.length === 0) {
+      await prisma.integrations.update({
+        where: {
+          id: Number(req.params.id),
+        },
+        data: {
+          fieldMapping: false,
+        },
+      });
+
       response({
         res,
         success: true,
         status_code: 200,
-        data: [integration],
         message: "Integration updated successfully",
       });
-      return;
-    } else {
-      response({
-        res,
-        success: false,
-        status_code: 400,
-        message: "Integration not updated",
-      });
-      return;
     }
   } catch (error) {
     response({
@@ -267,24 +244,7 @@ const updateIntegrationState = async (req, res) => {
   }
 };
 
-// const getIntegrationState = async (req, res) => {
-//   console.log("getIntegrationState", req.params);
-//   try {
-//     const mappedRecords = await prisma.MappedRecords.update({
-//       where: {
-//         integrationId: integrationId
-//       },
-//       data: {
-//         include: {
-//           integration: {
-//             fieldMapping: true,
-//           }
-//         }
-//       }
-//   }
-
 const addConfigurations = async (req, res) => {
-  // console.log("addConfigurations", req.body);
   try {
     const configurations = await prisma.configurations.create({
       data: {
@@ -332,12 +292,9 @@ const addConfigurations = async (req, res) => {
 };
 
 const getConfigurationById = async (req, res) => {
-  // console.log("requestd body", req.params);
-  // console.log("query", req.query);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {
-        // id: req.body.id,
         integrationId: Number(req.params.id),
       },
       include: {
@@ -375,21 +332,16 @@ const getConfigurationById = async (req, res) => {
       message: "Error in fetching configuration",
     });
     console.log("error", error);
-    // return;
   }
 };
 
 const updateConfiguration = async (req, res) => {
-  // console.log("updateConfiguration", req.params);
-  // console.log("updateConfiguration", req.body);
-
   try {
     const configuration = await prisma.configurations.update({
       where: {
         id: Number(req.params.id),
       },
       data: {
-        // systemName: req.body.systemName,
         url: req.body.url,
         accountId: req.body.accountId,
         consumerKey: req.body.consumerKey,
@@ -432,15 +384,11 @@ const updateConfiguration = async (req, res) => {
 };
 
 const getConfigurationByIntegrationId = async (req, res) => {
-  // console.log("requestd body", req.params.id);
   try {
     const configuration = await prisma.configurations.findMany({
       where: {
-        // id: req.body.id,
         integrationId: Number(req.params.id),
       },
-      // include: {
-      //   cofigData: {
       select: {
         id: true,
         systemName: true,
@@ -452,8 +400,6 @@ const getConfigurationByIntegrationId = async (req, res) => {
         accessSecretToken: true,
         authenticationType: true,
       },
-      //   },
-      // },
     });
 
     if (configuration) {
@@ -482,7 +428,6 @@ const getConfigurationByIntegrationId = async (req, res) => {
       message: "Error in fetching configuration",
     });
     console.log("error", error);
-    // return;
   }
 };
 

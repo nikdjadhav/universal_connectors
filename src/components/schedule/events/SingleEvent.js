@@ -5,7 +5,7 @@ import TkForm from "@/globalComponents/TkForm";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
-import { repeatOptions, timeOptions } from "@/utils/Constants";
+import { timeOptions } from "@/utils/Constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -30,43 +30,25 @@ const SingleEvent = ({ toggleComponet }) => {
   });
 
   const [endDateCheckbox, setEndDateCheckbox] = useState(true);
-  // const [disableEndDate, setDisableEndDate] = useState(true);
   const [repeatEveryDay, setRepeatEveryDay] = useState(true);
 
   useEffect(() => {
     setValue("startDate", new Date());
   }, [setValue]);
 
-  const repeatValue = (e) => {
-    console.log("value", e.target.value);
-  };
 
   const handleOnChange = (dates) => {
-    console.log("value", dates);
     if (dates) {
       setEndDateCheckbox(false);
-      // console.log('data');
     } else {
       setEndDateCheckbox(true);
-      // console.log('null');
     }
-    // if (e.target.checked) {
-    //   setEndDateCheckbox(true);
-    //   setDisableEndDate(true);
-    //   setValue("endDate", null);
-    // } else {
-    //   setEndDateCheckbox(false);
-    //   setDisableEndDate(false);
-    // }
   };
 
   const onSubmit = (data) => {
-    console.log("data", data);
     if (data.endDate) {
-      // console.log('end date');
       data.noEndDate = false;
     } else {
-      // console.log('no end date');
       data.endDate = null;
       data.noEndDate = true;
     }
@@ -75,7 +57,6 @@ const SingleEvent = ({ toggleComponet }) => {
 
   const onCancel = () => {
     toggleComponet("realtimeEvent");
-    // history.back();
   };
 
   return (
@@ -138,23 +119,11 @@ const SingleEvent = ({ toggleComponet }) => {
               type="checkbox"
               id="repeatEveryDay"
               defaultChecked={repeatEveryDay}
-              // onChange={repeatValue}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="repeatEveryDay">
               Repeat Every Day
             </TkLabel>
           </TkCol>
-
-          {/* <TkCol lg={4} sm={4}>
-          <TkSelect
-            labelName="Repeat"
-            id="repeat"
-            name="repeat"
-            className="mb-3"
-            options={repeatOptions}
-            maxMenuHeight="130px"
-          />
-        </TkCol> */}
 
           <TkCol lg={12} sm={12}>
             <Controller
@@ -167,7 +136,6 @@ const SingleEvent = ({ toggleComponet }) => {
                   id="endDate"
                   placeholder="End Date"
                   className="mb-3"
-                  // disabled={disableEndDate}
                   onChange={(e) => {
                     handleOnChange(e);
                     field.onChange(e);
@@ -189,18 +157,11 @@ const SingleEvent = ({ toggleComponet }) => {
               id="noEndDate"
               checked={endDateCheckbox}
               disabled={true}
-              // onChange={handleOnChange}
             />
             <TkLabel className="form-check-label mx-2" id="noEndDate">
               No End Date
             </TkLabel>
           </TkCol>
-
-          {/* <div className="d-flex justify-content-center my-4">
-          <TkButton type="submit" className="btn-success">
-            Save
-          </TkButton>
-        </div> */}
         </TkRow>
 
         <TkRow className="justify-content-center mt-2">
@@ -209,11 +170,6 @@ const SingleEvent = ({ toggleComponet }) => {
               Save
             </TkButton>
           </TkCol>
-          {/* <TkCol lg={2} sm={4} className="">
-            <TkButton type="button" className="btn-success">
-              Sync now
-            </TkButton>
-          </TkCol> */}
 
           <TkCol lg={2} sm={4} className="">
             <TkButton type="button" onClick={onCancel} className="btn-success">

@@ -1,53 +1,38 @@
 import React, { useCallback, useEffect, useState } from "react";
 import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import TkModal, {
   TkModalBody,
   TkModalHeader,
 } from "@/globalComponents/TkModal";
-import TkSelect from "@/globalComponents/TkSelect";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
-import TkCheckBox from "@/globalComponents/TkCheckBox";
 import TkLabel from "@/globalComponents/TkLabel";
-import TkButton from "@/globalComponents/TkButton";
-import ModalButton from "./integrationModal";
-import { API_BASE_URL, destinationName, sourceName } from "@/utils/Constants";
-import TkRadioButton from "@/globalComponents/TkRadioButton";
+import { API_BASE_URL } from "@/utils/Constants";
 import DropdownModal from "./DropdownModal";
 import TkForm from "@/globalComponents/TkForm";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import TkInput from "@/globalComponents/TkInput";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
-import { Spinner } from "reactstrap";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
 import TkContainer from "../TkContainer";
 
 const IntegrationCard = ({ modal, toggleModal }) => {
   const {
-    control,
+    
     register,
     handleSubmit,
-    setValue,
+    
     formState: { errors },
-  } = useForm({
-    // resolver: yupResolver(schema),
-  });
+  } = useForm({});
 
   const [oneWaySync, setOneWaySync] = useState(true);
   const [twoWaySync, setTwoWaySync] = useState(false);
   const [syncWay, setSyncWay] = useState();
-  const [integrationData, setIntegrationData] = useState();
   const [userId, setUserId] = useState(null);
 
-  // const integration = useMutation({
-  //   // mutationFn: tkFetch.post("http://localhost:4000/v1/getIntegrations"),
-  //   mutationFn: tkFetch.post(`${API_BASE_URL}/getIntegrations`),
-
-  // });
   const {
     data: integrations,
     isError,
@@ -56,78 +41,35 @@ const IntegrationCard = ({ modal, toggleModal }) => {
   } = useQuery({
     queryKey: ["integrations", userId],
     queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
-    // queryFn: tkFetch.get(`http://localhost:4000/v1/getIntegrations/${userId}`),
     enabled: !!userId,
   });
 
   useEffect(() => {
     const userID = sessionStorage.getItem("userId");
-    // console.log("userID", userID);
     setUserId(JSON.parse(userID));
-    // const id = {
-    //   "userId": JSON.parse(userID)
-    // }
   }, []);
-
-  // console.log("userId", userId);
-
-  useEffect(() => {
-    if (userId) {
-      setIntegrationData(integrations);
-      // integration.mutate(userId, {
-      //   onSuccess: (data) => {
-      //     setIntegrationData(data);
-      //   },
-      //   onError: (error) => {
-      //     console.log("error", error);
-      //   },
-      // });
-    }
-  }, [integrations, userId]);
-  // console.log("integrationData", integrationData);
 
   const toggleComponet = (value) => {
     setOneWaySync(value === "oneWaySync" ? true : false);
     setTwoWaySync(value === "twoWaySync" ? true : false);
-    // setSyncWay(value);
-    // console.log('setSyncWay in toggleComponet',value);
   };
 
-  // ***to open dropdown modal
   const [dModal, setDModal] = useState(false);
 
   const dropdownToggleModal = useCallback(() => {
     if (dModal) {
       setDModal(false);
 
-      // *** close last modal(radio btn modal)
       toggleModal();
     } else {
       setDModal(true);
     }
   }, [dModal, toggleModal]);
 
-  //
-  const router = useRouter();
-
-  const onClickCard = (id) => {
-    // console.log("Clicked", id);
-    // router.push("/integrations/details");
-    // router.push(
-    //   {
-    //     pathname: "/integrations/details",
-    //     query: { integrationId: id },
-    //   },
-    //   "/integrations/details"
-    // );
-  };
 
   const onSubmit = (data) => {
-    // console.log("radio button value", data);
-    // console.log("radio button value", data.radio);
     setSyncWay(data.radio);
   };
-  // console.log('setSyncWay onSubmit', syncWay);
 
   return (
     <>
@@ -136,18 +78,13 @@ const IntegrationCard = ({ modal, toggleModal }) => {
           <TkLoader />
         ) : integrations.length > 0 ? (
           integrations.map((item) => {
-            // console.log("item", item.sourceName);
-
             return (
               <TkCol lg={3} key={item.id}>
                 <TkCard
                   className="mt-4"
                   style={{ width: "300px", boxShadow: "2px 2px 2px 2px gray" }}
                 >
-                  <TkCardBody
-                    className="p-4"
-                    // onClick={() => onClickCard(item.id)}
-                  >
+                  <TkCardBody className="p-4">
                     <Link href={`/integrations/${item.id}`}>
                       <div className="text-center">
                         <Image
@@ -157,7 +94,6 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                           height={30}
                           className="w-auto"
                         />
-                        {/* <h5 className="mt-3">NetSuite™ Google Sheets™</h5> */}
                         <h5 className="mt-3">
                           {item.sourceName} {item.destinationName}
                         </h5>
@@ -185,7 +121,6 @@ const IntegrationCard = ({ modal, toggleModal }) => {
       {/* *** radio button modal *** */}
       <TkModal
         isOpen={modal}
-        // toggle={toggle}
         centered
         size="lg"
         className="border-0"
@@ -198,32 +133,6 @@ const IntegrationCard = ({ modal, toggleModal }) => {
         <TkModalBody className="modal-body">
           <TkForm onSubmit={handleSubmit(onSubmit)}>
             <TkRow className="justify-content-center">
-              {/* <TkCol lg={6} className="my-3">
-                <Controller
-                  name="source"
-                  control={control}
-                  render={({ field }) => (
-                    <TkSelect
-                      {...field}
-                      id="source"
-                      labelName="Source"
-                      options={sourceName}
-                      maxMenuHeight="130px"
-                    />
-                  )}
-                />
-              </TkCol> */}
-
-              {/* <TkCol lg={6} className="my-3">
-              <TkSelect
-                id="destination"
-                name="destination"
-                labelName="Destination"
-                options={destinationName}
-                maxMenuHeight="130px"
-              />
-            </TkCol> */}
-
               <TkCol lg={12} className="my-2 d-flex justify-content-center">
                 <TkInput
                   {...register("radio")}
@@ -236,8 +145,6 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                   onClick={() => toggleComponet("oneWaySync")}
                 />
                 <TkLabel id="oneWaySync">One Way Sync</TkLabel>
-                {/* One Way Sync
-                </TkInput> */}
               </TkCol>
 
               <TkCol lg={12} className="my-2 d-flex justify-content-center">
@@ -252,19 +159,9 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                   onClick={() => toggleComponet("twoWaySync")}
                 />
                 <TkLabel id="twoWaySync">Two Way Sync</TkLabel>
-                {/* Two Way Sync
-                </TkInput> */}
               </TkCol>
 
               <TkCol lg={12} className="my-4 d-flex justify-content-center">
-                {/* <TkButton className="btn-success">Submit</TkButton> */}
-                {/* <ModalButton
-                modal={integrationModal}
-                setModal={settntegrationModal}
-                toggle={integrationToggle}
-              >
-                Submit
-              </ModalButton> */}
                 <DropdownModal
                   dModal={dModal}
                   dropdownToggleModal={dropdownToggleModal}

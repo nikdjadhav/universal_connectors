@@ -18,14 +18,10 @@ import useFullPageLoader from "@/globalComponents/useFullPageLoader";
 
 const schema = Yup.object({
   integrationName: Yup.string().required("Integration name is required."),
-
-  // sourceName: Yup.object().required("Field is required."),
-
-  // destinationName: Yup.object().required("Field is required."),
 }).required();
 
 const Integration = ({
-  onClickHandeler,
+  onClickHandler,
   syncWay,
   configData,
   toggle,
@@ -37,7 +33,7 @@ const Integration = ({
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -103,7 +99,6 @@ const Integration = ({
 
     // to update existing integration
     if (integrationID) {
-      console.log("updated integration data");
       const updatedIntegration = {
         id: integrationID,
         integrationName: data.integrationName,
@@ -116,10 +111,10 @@ const Integration = ({
           queryClient.invalidateQueries({
             queryKey: ["integrations"],
           });
-          onClickHandeler();
+          onClickHandler();
         },
         onError: (error) => {
-          // console.log("error", error);
+          console.log(error)
           hideLoader();
           TkToastError("Error in updating record");
           toggle();
@@ -140,7 +135,6 @@ const Integration = ({
   };
 
   const OnClickExit = () => {
-    // history.back();
     toggle();
   };
 

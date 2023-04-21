@@ -1,6 +1,6 @@
 import { Container } from "reactstrap";
 import Proptypes from "prop-types";
-function TkContainer({ className, fluid, children, ...other }) {
+function TkContainer({ className, fluid, children }) {
   return (
     <Container className={className} fluid={fluid}>
       {children}

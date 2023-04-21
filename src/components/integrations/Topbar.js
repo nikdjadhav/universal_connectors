@@ -3,13 +3,6 @@ import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import React from "react";
 
 const Topbar = () => {
-  const items = [
-    { id: 0, value: "ruby" },
-    { id: 1, value: "javascript" },
-    { id: 2, value: "lua" },
-    { id: 3, value: "go" },
-    { id: 4, value: "julia" },
-  ];
 
   return (
     <>

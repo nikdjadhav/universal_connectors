@@ -1,31 +1,30 @@
-import EventSchedule from '@/components/schedule/events';
-import TkContainer from '@/components/TkContainer';
-import TkPageHead from '@/globalComponents/TkPageHead';
-import BreadCrumb from '@/utils/BreadCrumb';
-import React from 'react'
+import EventSchedule from "@/components/schedule/events";
+import TkPageHead from "@/globalComponents/TkPageHead";
+import BreadCrumb from "@/utils/BreadCrumb";
+import React from "react";
 
 const Event = () => {
   return (
     <>
-    <TkPageHead>
+      <TkPageHead>
         <title>{"Event"}</title>
-    </TkPageHead>
+      </TkPageHead>
 
-    <div className="page-content">
-        <BreadCrumb parentTitle="Schedule" parentLink='/schedule' pageTitle='Event' />
+      <div className="page-content">
+        <BreadCrumb
+          parentTitle="Schedule"
+          parentLink="/schedule"
+          pageTitle="Event"
+        />
 
-        {/* <TkContainer> */}
-            <EventSchedule />
-        {/* </TkContainer> */}
-    </div>
+        <EventSchedule />
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default Event
+export default Event;
 Event.options = {
-    layout: true,
-    auth: true,
-  };
-
-   
+  layout: true,
+  auth: true,
+};

@@ -6,20 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import TkInput from "@/globalComponents/TkInput";
 import FormErrorText from "@/globalComponents/ErrorText";
-import TkSelect from "@/globalComponents/TkSelect";
-import TkLabel from "@/globalComponents/TkLabel";
-import TkCheckBox from "@/globalComponents/TkCheckBox";
 import TkButton from "@/globalComponents/TkButton";
-import TkModal, {
-  TkModalBody,
-  TkModalHeader,
-} from "@/globalComponents/TkModal";
+
 import { useForm } from "react-hook-form";
 import avatar1 from "/public/images/users/avatar-1.jpg";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
 import {
   useMutation,
-  useQueries,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -39,20 +32,10 @@ const schema = Yup.object({
 
 const ProfileSetting = () => {
   const queryClient = useQueryClient();
-  //   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // const [logedinUser, setLogedinUser] = useState();
   const [userToken, setUserToken] = useState();
 
-  //   const toggle = React.useCallback(() => {
-  //     if (isModalOpen) {
-  //       setIsModalOpen(false);
-  //       // setTask(null);
-  //     } else {
-  //       setIsModalOpen(true);
-  //       // setDate(defaultdate());
-  //     }
-  //   }, [isModalOpen]);
+ 
 
   const {
     register,
@@ -85,7 +68,6 @@ const ProfileSetting = () => {
 
   useEffect(() => {
     if (logedinUser) {
-      console.log("logedinUser", logedinUser);
       setValue("firstName", logedinUser[0].firstName);
       setValue("lastName", logedinUser[0].lastName);
       setValue("email", logedinUser[0].email);
@@ -95,7 +77,6 @@ const ProfileSetting = () => {
   }, [logedinUser, setValue]);
 
   const onSubmit = (data) => {
-    console.log("updated user", data);
     const apiData = {
       id: logedinUser[0].userId,
       firstName: data.firstName,
@@ -104,7 +85,6 @@ const ProfileSetting = () => {
       country: data.country,
       city: data.city,
     };
-    console.log("apiData^^^^", apiData);
     updateUser.mutate(apiData, {
       onSuccess: (data) => {
         queryClient.invalidateQueries({
@@ -118,7 +98,6 @@ const ProfileSetting = () => {
           country: data[0].country,
           city: data[0].city,
         };
-        console.log("updatedUser", updatedUser);
 
         setValue("firstName", updatedUser.firstName);
         setValue("lastName", updatedUser.lastName);
@@ -126,7 +105,6 @@ const ProfileSetting = () => {
         setValue("country", updatedUser.country);
         setValue("city", updatedUser.city);
         TkToastInfo("Updated Successfully", { hideProgressBar: true });
-        // setLogedinUser(updatedUser);
       },
       onError: (error) => {
         console.log("error", error);
@@ -134,15 +112,11 @@ const ProfileSetting = () => {
       },
     });
 
-    // console.log("data", data);
-    // TODO: submit form and do validations
-    // toggle();
   };
 
   const onClickCancel = () => {
     history.back();
   };
-  // console.log("logedinUser", logedinUser);
 
   return (
     <>
@@ -175,29 +149,23 @@ const ProfileSetting = () => {
                                 </div>
                                 <div className="team-content">
                                   <Link href="/users/view/test-user">
-                                    {/* <a> */}
                                     <h5 className="fs-16 mb-1">
                                       {logedinUser[0]?.firstName}{" "}
                                       {logedinUser[0]?.lastName}
                                     </h5>
-                                    {/* </a> */}
                                   </Link>
                                   <p className="text-muted mb-0">
-                                    {/* Lead Designer / Developer */}
                                   </p>
                                 </div>
                               </div>
                             </TkCol>
                             <TkCol lg={4}>
                               <div className="text-end">
-                                {/* {TODO: Add a button to upload profile image (input type="file")} */}
                                 <Link
                                   href="#"
                                   className="btn btn-light view-btn"
                                 >
-                                  {/* <a> */}
                                   Update Photo
-                                  {/* </a> */}
                                 </Link>
                               </div>
                             </TkCol>

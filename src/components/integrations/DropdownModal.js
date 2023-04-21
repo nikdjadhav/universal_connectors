@@ -23,15 +23,12 @@ const schema = Yup.object({
 const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
   const {
     control,
-    register,
     handleSubmit,
-    setValue,
-    formState: { errors, isDurty },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  // console.log("syncWay in next", syncWay);
   const [firstLabel, setFirstTitle] = useState();
   const [secondLabel, setSecondTitle] = useState();
   const [data, setData] = useState();
@@ -44,14 +41,14 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
       setFirstTitle("System One");
       setSecondTitle("System Two");
     }
-  },[syncWay]);
-  // ***to open form modal
+  }, [syncWay]);
+  // to open form modal
   const [integrationModal, setIntegrationModal] = useState(false);
   const integrationToggle = useCallback(() => {
     if (integrationModal) {
       setIntegrationModal(false);
 
-      // *** close last modal(dropdown modal)
+      // close last modal(dropdown modal)
       dropdownToggleModal();
     } else {
       setIntegrationModal(true);
@@ -59,16 +56,13 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
   }, [dropdownToggleModal, integrationModal]);
 
   const onSubmit = (values) => {
-    // console.log("values", values);
-    // console.log('data',values.source.label, values.destination.label);
     integrationToggle();
     const lables = {
       source: values.source.label,
       destination: values.destination.label,
-    }
+    };
     setData(lables);
   };
-  // console.log('setData',data);
 
   return (
     <>
@@ -80,7 +74,7 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
         {children}
       </TkButton>
 
-      {/* *** dropdown modal *** */}
+      {/* dropdown modal */}
       <TkModal
         isOpen={dModal}
         centered
@@ -110,7 +104,6 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
                       <TkSelect
                         {...field}
                         id="source"
-                        // labelName="Source"
                         options={sourceName}
                         maxMenuHeight="130px"
                       />
@@ -134,7 +127,6 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
                       <TkSelect
                         {...field}
                         id="destination"
-                        // labelName="Destination"
                         options={destinationName}
                         maxMenuHeight="130px"
                       />
@@ -147,13 +139,9 @@ const DropdownModal = ({ children, dModal, dropdownToggleModal, syncWay }) => {
               </TkCol>
 
               <TkCol lg={12} className="my-4 d-flex justify-content-center">
-                {/* <ModalButton
-                  modal={ integrationModal}
-                  toggle={ integrationToggle}
-                  syncWay={syncWay}
-                > */}
-                <TkButton className="btn-success" type="submit">Submit</TkButton>
-                {/* </ModalButton> */}
+                <TkButton className="btn-success" type="submit">
+                  Submit
+                </TkButton>
               </TkCol>
             </TkRow>
           </TkForm>

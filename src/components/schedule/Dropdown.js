@@ -3,7 +3,6 @@ import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import { days, months, options } from "@/utils/Constants";
 import React from "react";
-import InputBox from "./InputBox";
 
 const Dropdown = ({
   className,
@@ -14,7 +13,6 @@ const Dropdown = ({
 }) => {
   return (
     <>
-      {/* *** "secondDropdown" is used to determine whether to render the second dropdown or not. *** */}
       <TkRow className={className}>
         {secondDropdown && (
           <TkCol lg={1} sm={1} className="align-self-center px-4">
@@ -26,7 +24,6 @@ const Dropdown = ({
           <TkSelect
             id="number"
             name="number"
-            // options={options}
             options={secondDropdown ? options : months}
             maxMenuHeight="130px"
           />

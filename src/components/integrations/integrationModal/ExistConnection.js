@@ -1,6 +1,5 @@
 import FormErrorText from "@/globalComponents/ErrorText";
 import TkButton from "@/globalComponents/TkButton";
-import TkCard, { TkCardBody } from "@/globalComponents/TkCard";
 import TkForm from "@/globalComponents/TkForm";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
@@ -14,27 +13,23 @@ const schema = Yup.object({
   connection: Yup.object().nullable().required("Field is required."),
 }).required();
 
-const ExistConnection = ({ onClickHandeler }) => {
+const ExistConnection = ({ onClickHandler }) => {
   const {
     control,
-    register,
-    formState: { errors, isDirty },
+    formState: { errors },
     handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = (data) => {
-    // console.log("data", data);
-    onClickHandeler();
+    onClickHandler();
   };
   return (
     <>
       <TkForm onSubmit={handleSubmit(onSubmit)} className="my-3">
         <TkRow>
           <TkCol lg={12} className="my-2">
-            {/* <TkCard> */}
-            {/* <TkCardBody> */}
             <Controller
               name="connection"
               control={control}
@@ -49,10 +44,8 @@ const ExistConnection = ({ onClickHandeler }) => {
               )}
             />
             {errors.connection?.message ? (
-                <FormErrorText>{errors.connection?.message}</FormErrorText>
+              <FormErrorText>{errors.connection?.message}</FormErrorText>
             ) : null}
-            {/* </TkCardBody> */}
-            {/* </TkCard> */}
           </TkCol>
 
           <TkCol lg={12} className="my-2">

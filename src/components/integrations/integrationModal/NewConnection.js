@@ -16,8 +16,6 @@ import * as Yup from "yup";
 const schema = Yup.object({
   integrationName: Yup.string().required("Integration name is required."),
 
-  // url: Yup.string().required("URL is required."),
-
   accountID: Yup.string().required("Account ID is required."),
 
   consumerKey: Yup.string().required("Consumer Key is required."),
@@ -30,7 +28,7 @@ const schema = Yup.object({
 }).required();
 
 const NewConnection = ({
-  onClickHandeler,
+  onClickHandler,
   integrationDetails,
   integrationID,
   toggle,
@@ -38,11 +36,10 @@ const NewConnection = ({
   getIntegrationId,
 }) => {
   const {
-    control,
     register,
     handleSubmit,
     setValue,
-    formState: { errors, idDirty },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -86,17 +83,12 @@ const NewConnection = ({
           setIntegrationsData(item);
           setValue("integrationName", item.integration.integrationName);
           setValue("accountID", item.accountId);
-          // setValue("consumerKey", item.consumerKey);
-          // setValue("consumerSecretKey", item.consumerSecretKey);
-          // setValue("accessToken", item.accessToken);
-          // setValue("accessSecretToken", item.accessSecretToken);
         }
       });
     }
   }, [configurationsData, setValue, title]);
 
   const onSubmit = (values) => {
-    // console.log("values in ns", values)
     const userId = sessionStorage.getItem("userId");
     showLoader();
     const recordTypeCredentials = {
@@ -115,7 +107,6 @@ const NewConnection = ({
         if (configurationsData?.length) {
           configurationsData.map((item) => {
             if (item.systemName === title) {
-              console.log("updated ns data");
               const updateConfigData = {
                 id: item.id,
                 accountId: values.accountID,
@@ -128,13 +119,16 @@ const NewConnection = ({
               updateConfiguration.mutate(updateConfigData, {
                 onSuccess: (data) => {
                   hideLoader();
-                  TkToastInfo("Updated Successfully", { hideProgressBar: true });
+                  TkToastInfo("Updated Successfully", {
+                    hideProgressBar: true,
+                  });
                   queryClient.invalidateQueries({
                     queryKey: ["configurationsData"],
                   });
-                  onClickHandeler();
+                  onClickHandler();
                 },
                 onError: (error) => {
+                  console.log(error)
                   hideLoader();
                   toggle();
                   TkToastError("Error in updating configuration");
@@ -143,7 +137,6 @@ const NewConnection = ({
             }
           });
         } else {
-          console.log("added ns data");
           addIntegration.mutate(integrationDetails, {
             onSuccess: (data) => {
               const addConfigData = {
@@ -161,12 +154,13 @@ const NewConnection = ({
               addConfigurations.mutate(addConfigData, {
                 onSuccess: (data) => {
                   hideLoader();
-                  onClickHandeler();
+                  onClickHandler();
                   queryClient.invalidateQueries({
                     queryKey: ["configurationsData"],
                   });
                 },
                 onError: (error) => {
+                  console.log(error)
                   hideLoader();
                   toggle();
                   TkToastError("Error in adding integration");
@@ -186,7 +180,6 @@ const NewConnection = ({
       },
       onError: (error) => {
         hideLoader();
-        // toggle();
         TkToastError("Error in authentication");
       },
     });
@@ -207,7 +200,6 @@ const NewConnection = ({
                   placeholder="Enter integration name"
                   requiredStarOnLabel={true}
                   invalid={errors.integrationName?.message ? true : false}
-                  // disabled={viewMode}
                   disabled={integrationsData ? true : false}
                 />
                 {errors.integrationName?.message ? (
@@ -226,7 +218,6 @@ const NewConnection = ({
                   placeholder="Enter account id"
                   requiredStarOnLabel={true}
                   invalid={errors.accountID?.message ? true : false}
-                  // disabled={viewMode}
                 />
                 {errors.accountID?.message ? (
                   <FormErrorText>{errors.accountID?.message}</FormErrorText>
@@ -242,7 +233,6 @@ const NewConnection = ({
                   placeholder="Enter consumer key"
                   requiredStarOnLabel={true}
                   invalid={errors.consumerKey?.message ? true : false}
-                  // disabled={viewMode}
                 />
                 {errors.consumerKey?.message ? (
                   <FormErrorText>{errors.consumerKey?.message}</FormErrorText>
@@ -258,7 +248,6 @@ const NewConnection = ({
                   placeholder="Enter consumer secret key"
                   requiredStarOnLabel={true}
                   invalid={errors.consumerSecretKey?.message ? true : false}
-                  // disabled={viewMode}
                 />
                 {errors.consumerSecretKey?.message ? (
                   <FormErrorText>
@@ -276,7 +265,6 @@ const NewConnection = ({
                   placeholder="Enter access token"
                   requiredStarOnLabel={true}
                   invalid={errors.accessToken?.message ? true : false}
-                  // disabled={viewMode}
                 />
                 {errors.accessToken?.message ? (
                   <FormErrorText>{errors.accessToken?.message}</FormErrorText>
@@ -292,7 +280,6 @@ const NewConnection = ({
                   placeholder="Enter access secret token"
                   requiredStarOnLabel={true}
                   invalid={errors.accessSecretToken?.message ? true : false}
-                  // disabled={viewMode}
                 />
                 {errors.accessSecretToken?.message ? (
                   <FormErrorText>
