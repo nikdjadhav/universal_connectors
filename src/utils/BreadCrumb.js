@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import PropTypes from "prop-types";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkButton from "@/globalComponents/TkButton";
-import TkInput from "@/globalComponents/TkInput";
 
 const checkURl = (str) => {
   // simple type checking if given string is a  url of our site
@@ -49,7 +48,6 @@ const BreadCrumb = ({
                       className="btn add-btn me-1"
                       onClick={onSyncClick}
                     >
-                      <i className="ri-add-line align-bottom me-1"></i>
                       {syncButton}
                     </TkButton>
                   </div>

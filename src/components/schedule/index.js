@@ -1,6 +1,6 @@
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import { scheduleHead } from "@/utils/Constants";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 const data = [
   {
@@ -22,11 +22,9 @@ const data = [
 ];
 
 const ScheduleTable = () => {
-  const [checkboxSelected, setCheckboxSelected] = useState([]);
 
   const selectedRowsId = useCallback((rows) => {
     const ids = data.map((row) => row.id);
-    setCheckboxSelected(ids);
   }, []);
 
   return (

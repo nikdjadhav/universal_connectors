@@ -16,6 +16,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useQueries } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
+import TkCheckBox from "@/globalComponents/TkCheckBox";
+import TkLabel from "@/globalComponents/TkLabel";
 
 const schema = Yup.object({
   integrationName: Yup.object().required("Integration name is required."),
@@ -24,6 +26,7 @@ const schema = Yup.object({
 const EventSchedule = () => {
   const {
     control,
+    register,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -35,6 +38,7 @@ const EventSchedule = () => {
   const [weeklyEvent, setWeeklyEvent] = useState(false);
   const [userId, setUserId] = useState(null);
   const [integrationOptions, setIntegrationOptions] = useState([]);
+  const [checkBoxValue, setCheckBoxValue] = useState(false);
 
   const apiResults = useQueries({
     queries: [
@@ -103,6 +107,19 @@ const EventSchedule = () => {
         </TkCol>
       </TkRow>
 
+      <TkRow className="mt-2">
+        <TkCol lg={4}>
+          <TkCheckBox 
+          {...register("realtime")}
+          type="checkbox"
+          id="realtime"
+          checked={checkBoxValue}
+          onChange={() => setCheckBoxValue(!checkBoxValue)}
+          />
+          <TkLabel id="realtime" className="form-check-label mx-2 h5">Realtime</TkLabel>
+        </TkCol>
+      </TkRow>
+
       <TkContainer className="my-5">
         <TkRow>
           <TkCol lg={3} sm={3}>
@@ -114,6 +131,7 @@ const EventSchedule = () => {
               className="mb-3"
               checked={realtimeEvent}
               onChange={() => toggleComponet("realtimeEvent")}
+              disabled={checkBoxValue ? true : false}
             >
               Realtime Event
             </TkRadioButton>
@@ -126,6 +144,7 @@ const EventSchedule = () => {
               checked={singleEvent}
               className="mb-3"
               onChange={() => toggleComponet("singleEvent")}
+              disabled={checkBoxValue ? true : false}
             >
               Single Event
             </TkRadioButton>
@@ -138,6 +157,7 @@ const EventSchedule = () => {
               checked={weeklyEvent}
               className="mb-3"
               onChange={() => toggleComponet("weeklyEvent")}
+              disabled={checkBoxValue ? true : false}
             >
               Weekly Event
             </TkRadioButton>

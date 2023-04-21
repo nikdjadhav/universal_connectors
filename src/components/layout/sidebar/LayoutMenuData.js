@@ -20,7 +20,7 @@ function sidebarOptions() {
     },
     {
       id: "schedule",
-      label: "Schedule",
+      label: "Sync Frequency",
       icon: "",
       link: "/schedule",
     },
