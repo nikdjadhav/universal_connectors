@@ -2,11 +2,7 @@ import TkTableContainer from "@/globalComponents/TkTableContainer";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
-import {
-  useMutation,
-  useQueries,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { formatDate, formatTime } from "@/utils/date";
@@ -14,12 +10,14 @@ import { TkToastError } from "@/globalComponents/TkToastContainer";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
 import DeleteModal from "@/utils/DeleteModal";
+import ToggleButton from "@/utils/ToggleButton";
 
 const FieldMappingTable = () => {
   const [mappedRecordData, setMappedRecordData] = useState([]);
   const [userId, setUserId] = useState();
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteFieldId, setDeleteFieldId] = useState();
+  const [toggleValue, setToggleValue] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -59,6 +57,11 @@ const FieldMappingTable = () => {
       setMappedRecordData(mappedFieldsData[0]);
     }
   }, [mappedFieldsData]);
+
+  const handleOnChange = (e) => {
+    console.log("e", e);
+    setToggleValue(e);
+  };
 
   const columnHead = [
     {
@@ -120,6 +123,20 @@ const FieldMappingTable = () => {
       accessor: "systemTwo",
       Cell: (props) => {
         return <a>{props.row.original?.integration.destinationName}</a>;
+      },
+    },
+    {
+      Header: "On/Off",
+      accessor: "onOff",
+      Cell: (props) => {
+        return (
+          <>
+            <ToggleButton
+              checked={toggleValue}
+              handleChange={handleOnChange}
+            />
+          </>
+        );
       },
     },
     {
