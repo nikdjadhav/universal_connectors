@@ -6,6 +6,7 @@ const userController = require("./controllers/user.controllers");
 const integrationController = require("./controllers/integration.controllers");
 const resletController = require("./controllers/restletsApi.controllers");
 const fieldMappingController = require("./controllers/fieldMapping.controllers");
+const scheduleController = require("./controllers/schedule.controllers");
 
 const app = express();
 dotenv.config();
@@ -89,10 +90,15 @@ v1Router.get(
   "/getMappedFieldsDetails/:id",
   fieldMappingController.getMappedFieldsDetails
 );
-// *** add fields routes
+// *** fields routes
 v1Router.post("/addFields", fieldMappingController.addFields);
 v1Router.get("/getFields/:id", fieldMappingController.getFields);
 v1Router.delete("/deleteField/:id", fieldMappingController.deleteField);
+
+// *** schedule routes
+v1Router.post("/scheduleTask", scheduleController.scheduleTask);
+
+console.log(new Date())
 
 app.listen(port, () => {
   console.log("Server is running on port " + port);

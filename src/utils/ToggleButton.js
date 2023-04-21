@@ -10,8 +10,9 @@ const ToggleButton = ({
        <ReactSwitch
         checked={checked}
         onChange={handleChange}
-        offColor="#E5E5E5"
-        onColor="#00C48C"
+        offColor="#D3D3D3"
+        // dark green
+        onColor="#008000"
         checkedIcon={false}
         uncheckedIcon={false}
         height={20}
