@@ -34,10 +34,11 @@ const WeeklyEvent = ({ toggleComponet }) => {
   useEffect(() => {
     if (!isDirty) {
       setValue("startDate", new Date());
+      setValue("endDate", new Date());
     }
   }, [isDirty, setValue]);
 
-  const [checkboxValue, setCheckboxValue] = useState(true);
+  const [checkboxValue, setCheckboxValue] = useState(false);
 
   const handleOnChange = (dates) => {
     if (dates) {
@@ -47,13 +48,26 @@ const WeeklyEvent = ({ toggleComponet }) => {
     }
   };
 
+  const handleOnChangeCheckbox = (e) => {
+    if (e.target.checked) {
+      setCheckboxValue(true);
+      setValue("endDate", null);
+    } else {
+      setCheckboxValue(false);
+      setValue("endDate", new Date());
+    }
+  };
+
   const onSubmit = (data) => {
     if (data.endDate) {
       data.noEndDate = false;
+      setCheckboxValue(false);
     } else {
-      data.endDate = null;
       data.noEndDate = true;
+      setCheckboxValue(true);
+      // data.endDate = null;
     }
+    // console.log(data);
   };
 
   const onCancel = () => {
@@ -173,7 +187,8 @@ const WeeklyEvent = ({ toggleComponet }) => {
               type="checkbox"
               id="noEndDate"
               checked={checkboxValue}
-              disabled={true}
+              // disabled={true}
+              onChange={handleOnChangeCheckbox}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
               No End Date

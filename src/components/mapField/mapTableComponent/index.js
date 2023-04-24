@@ -7,11 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import TkLabel from "@/globalComponents/TkLabel";
 import { useRouter } from "next/router";
-import {
-  useMutation,
-  useQueries,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import { API_BASE_URL } from "@/utils/Constants";
 import { TkToastError, TkToastInfo } from "@/globalComponents/TkToastContainer";
@@ -21,7 +17,6 @@ import TkNoData from "@/globalComponents/TkNoData";
 import DeleteModal from "@/utils/DeleteModal";
 
 const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
-
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -202,6 +197,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
 
   useEffect(() => {
     if (fieldsData?.length > 0) {
+      console.log("backend")
       fieldsData.map((field, index) => {
         setValue(
           `destinationFieldValue[${index}]`,
@@ -214,6 +210,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
       });
       setRows(fieldsData);
     } else if (excelSheetData !== undefined) {
+      console.log("google sheets")
       const sheetsData = [];
       excelSheetData[0]?.values[0].map((item, index) => {
         setValue(`destinationFieldValue[${index}]`, item);
@@ -242,12 +239,13 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
       Header: "Google Sheets™ Columns",
       accessor: "destinationFieldValue",
       Cell: ({ row }) => {
+        // console.log(row.original.destinationFieldValue)
         return (
           <TkInput
             type="text"
             {...register(`destinationFieldValue[${row.index}]`)}
             disabled={
-              row.original || row.original.destinationFieldValue ? true : false
+             row.original.destinationFieldValue ? true : false
             }
           />
         );
@@ -294,34 +292,37 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
     setRows([...rows, { googleSheets: "", netSuite: null }]);
   };
 
-  const onSubmit = (values) => {
-    const userId = sessionStorage.getItem("userId");
-    const tableRecord = values.destinationFieldValue.map(
-      (destinationFieldValue, index) => {
-        return {
-          userId: JSON.parse(userId),
-          mappedRecordId: JSON.parse(mappedRecordId),
-          sourceField: "NetSuite™",
-          destinationField: "Google Sheets™",
-          destinationFieldValue: destinationFieldValue,
-          sourceFieldValue: values.sourceFieldValue[index]?.label,
-        };
-      }
-    );
+  const onSubmit = (e, values) => {
+    console.log("values", values);
+    console.log("rows", e)
+    // const userId = sessionStorage.getItem("userId");
+    // const tableRecord = values.destinationFieldValue.map(
+    //   (destinationFieldValue, index) => {
+    //     return {
+    //       // id: values.id || null,
+    //       userId: JSON.parse(userId),
+    //       mappedRecordId: JSON.parse(mappedRecordId),
+    //       sourceField: "NetSuite™",
+    //       destinationField: "Google Sheets™",
+    //       destinationFieldValue: destinationFieldValue,
+    //       sourceFieldValue: values.sourceFieldValue[index]?.label,
+    //     };
+    //   }
+    // );
 
-    addFields.mutate(tableRecord, {
-      onSuccess: (data) => {
-        TkToastInfo("Added Successfully", { hideProgressBar: true });
-        queryClient.invalidateQueries({
-          queryKey: ["getFields"],
-        });
-        router.push("/fieldMapping");
-      },
-      onError: (error) => {
-        console.log("error", error);
-        TkToastError("Error for add fields");
-      },
-    });
+    // addFields.mutate(tableRecord, {
+    //   onSuccess: (data) => {
+    //     TkToastInfo("Added Successfully", { hideProgressBar: true });
+    //     queryClient.invalidateQueries({
+    //       queryKey: ["getFields"],
+    //     });
+    //     router.push("/fieldMapping");
+    //   },
+    //   onError: (error) => {
+    //     console.log("error", error);
+    //     TkToastError("Error for add fields");
+    //   },
+    // });
   };
 
   const toggleDeleteModel = (fieldId) => {
@@ -360,36 +361,60 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
 
     if (excelSheetData?.length > 0) {
       const sheetsRecord = [];
+      // excelSheetData[0]?.values[0].map((item, index) => {
+      //   rows.map((row) => {
+      //     if (row.destinationFieldValue === item) {
+      //       console.log("row.destinationFieldValue", row.destinationFieldValue)
+      //       sheetsRecord.push({
+      //         destinationFieldValue: row.destinationFieldValue,
+      //         sourceFieldValue: row.sourceFieldValue,
+      //       });
+      //     }
+      //     else {
+      //       console.log("item", item)
+      //       sheetsRecord.push({
+      //         id: index,
+      //         destinationFieldValue: item,
+      //         sourceFieldValue: null,
+      //       });
+      //     }
+      //   });
+      // });
+      // using return
       excelSheetData[0]?.values[0].map((item, index) => {
-        rows.map((row) => {
-          if (row.destinationFieldValue === item) {
-            sheetsRecord.push({
-              destinationFieldValue: row.destinationFieldValue,
-              sourceFieldValue: row.sourceFieldValue,
-            });
-          } else {
-            sheetsRecord.push({
-              id: index,
-              destinationFieldValue: item,
-              sourceFieldValue: null,
-            });
-          }
-        });
+        const row = rows.find((row) => row.destinationFieldValue === item);
+        if (row) {
+          console.log("if", row);
+          sheetsRecord.push({
+            destinationFieldValue: row.destinationFieldValue,
+            sourceFieldValue: row.sourceFieldValue,
+          });
+        } else {
+          console.log("else", item);
+
+          sheetsRecord.push({
+            id: index,
+            destinationFieldValue: item,
+            sourceFieldValue: null,
+          });
+        }
       });
 
-      const unique = [
-        ...new Set(sheetsRecord.map((item) => item.destinationFieldValue)),
-      ].map((destinationFieldValue) => {
-        return {
-          destinationFieldValue: destinationFieldValue,
-          sourceFieldValue: rows.find(
-            (row) => row.destinationFieldValue === destinationFieldValue
-          )?.sourceFieldValue,
-        };
-      });
+      // console.log("sheetsRecord", sheetsRecord);
+      // const unique = [
+      //   ...new Set(sheetsRecord.map((item) => item.destinationFieldValue)),
+      // ].map((destinationFieldValue) => {
+      //   return {
+      //     destinationFieldValue: destinationFieldValue,
+      //     sourceFieldValue: rows.find(
+      //       (row) => row.destinationFieldValue === destinationFieldValue
+      //     )?.sourceFieldValue,
+      //   };
+      // });
+      // console.log("unique",unique)
 
       // set values to table rows
-      unique.map((item, index) => {
+      sheetsRecord.map((item, index) => {
         setValue(`destinationFieldValue[${index}]`, item.destinationFieldValue);
         setValue(
           `sourceFieldValue[${index}]`,
@@ -402,10 +427,11 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         );
       });
 
-      setRows([...unique]);
+      setRows([...sheetsRecord]);
     }
   };
 
+  // console.log("rows", rows);
 
   return (
     <>

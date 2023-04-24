@@ -25,9 +25,10 @@ const RealtimeEvent = ({ toggleComponet }) => {
     resolver: yupResolver(schema),
   });
 
-  const [checkboxValue, setCheckboxValue] = useState(true);
+  const [checkboxValue, setCheckboxValue] = useState(false);
   useEffect(() => {
     setValue("startDate", new Date());
+    setValue("endDate", new Date());
   }, [setValue]);
 
   const handleOnChange = (dates) => {
@@ -38,14 +39,24 @@ const RealtimeEvent = ({ toggleComponet }) => {
     }
   };
 
-  
+  const handleOnChangeCheckbox = (e) => {
+    if (e.target.checked) {
+      setCheckboxValue(true);
+      setValue("endDate", null);
+    } else {
+      setCheckboxValue(false);
+      setValue("endDate", new Date());
+    }
+  };
 
   const onSubmit = (data) => {
     if (data.endDate) {
       data.noEndDate = false;
+      setCheckboxValue(false);
     } else {
-      data.endDate = null;
+      // data.endDate = null;
       data.noEndDate = true;
+      setCheckboxValue(true);
     }
     toggleComponet("singleEvent");
   };
@@ -118,7 +129,8 @@ const RealtimeEvent = ({ toggleComponet }) => {
               type="checkbox"
               id="noEndDate"
               checked={checkboxValue}
-              disabled={true}
+              // disabled={true}
+              onChange={handleOnChangeCheckbox}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
               No End Date

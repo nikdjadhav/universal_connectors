@@ -250,17 +250,17 @@ const getMappedFieldsDetails = async (req, res) => {
 };
 
 const addFields = async (req, res) => {
+  // console.log("req.body", req.body);
   try {
-    const fields = await prisma.fields.deleteMany({
-      where: {
-        mappedRecordId: {
-          in: req.body.map((field) => field.mappedRecordId),
+    const [deleteFields, addFields] = await prisma.$transaction([
+      prisma.fields.deleteMany({
+        where: {
+          mappedRecordId: {
+            in: req.body.map((field) => field.mappedRecordId),
+          },
         },
-      },
-    });
-
-    if (fields) {
-      const fields = await prisma.fields.createMany({
+      }),
+      prisma.fields.createMany({
         data: req.body.map((field) => ({
           userId: field.userId,
           mappedRecordId: field.mappedRecordId,
@@ -269,32 +269,46 @@ const addFields = async (req, res) => {
           sourceFieldValue: field.sourceFieldValue,
           destinationFieldValue: field.destinationFieldValue,
         })),
-      });
+      }),
+    ]);
+    // console.log("deleteFields", deleteFields);
 
-      if (fields) {
-        response({
-          res,
-          success: true,
-          status_code: 200,
-          data: [fields],
-          message: "Fields added successfully",
-        });
-        return;
-      } else {
-        response({
-          res,
-          success: false,
-          status_code: 400,
-          message: "Fields not added",
-        });
-        return;
-      }
+    // try {
+    //   const fields = await prisma.fields.deleteMany({
+    //     where: {
+    //       mappedRecordId: {
+    //         in: req.body.map((field) => field.mappedRecordId),
+    //       },
+    //     },
+    //   });
+
+    // if (fields) {
+    //   const fields = await prisma.fields.createMany({
+    //     data: req.body.map((field) => ({
+    //       userId: field.userId,
+    //       mappedRecordId: field.mappedRecordId,
+    //       sourceField: field.sourceField,
+    //       destinationField: field.destinationField,
+    //       sourceFieldValue: field.sourceFieldValue,
+    //       destinationFieldValue: field.destinationFieldValue,
+    //     })),
+    //   });
+
+    if (addFields) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: [addFields],
+        message: "Fields added successfully",
+      });
+      return;
     } else {
       response({
         res,
         success: false,
         status_code: 400,
-        message: "Fields not updated",
+        message: "Fields not added",
       });
       return;
     }
