@@ -27,7 +27,7 @@ const FieldMappingTable = () => {
   }, []);
 
   const deleteMappedRecord = useMutation({
-    mutationFn: tkFetch.deleteWithIdInUrl(
+    mutationFn: tkFetch.deleteWithIdsInUrl(
       `${API_BASE_URL}/deleteMappedRecordByID`
     ),
   });
@@ -131,10 +131,7 @@ const FieldMappingTable = () => {
       Cell: (props) => {
         return (
           <>
-            <ToggleButton
-              checked={toggleValue}
-              handleChange={handleOnChange}
-            />
+            <ToggleButton checked={toggleValue} handleChange={handleOnChange} />
           </>
         );
       },
@@ -143,11 +140,17 @@ const FieldMappingTable = () => {
       Header: "Action",
       accessor: "action",
       Cell: (props) => {
+        // console.log("props", props.row.original);
         return (
           <>
             <i
               className="ri-delete-bin-5-line px-2"
-              onClick={() => toggleDeleteModel(props.row.original.id)}
+              onClick={() =>
+                toggleDeleteModel(
+                  props.row.original.id,
+                  props.row.original.integrationId
+                )
+              }
             />
             <Link href={`/fieldMapping/${props.row.original.id}`}>
               <i className="ri-eye-fill" />
@@ -158,31 +161,32 @@ const FieldMappingTable = () => {
     },
   ];
 
-  const toggleDeleteModel = (fieldId) => {
-    setDeleteFieldId(fieldId);
+  const toggleDeleteModel = (fieldId, integrationId) => {
+    setDeleteFieldId({
+      id: fieldId,
+      integrationId: integrationId,
+    });
     setDeleteModal(true);
   };
 
   const onClickDelete = () => {
-    deleteMappedRecord.mutate(
-      { id: deleteFieldId },
-      {
-        onSuccess: (data) => {
-          queryClient.invalidateQueries({
-            queryKey: ["mappedFieldsDetails"],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["integrations"],
-          });
-          setDeleteModal(false);
-        },
-        onError: (error) => {
-          console.log("error", error);
-          TkToastError("Error for delete record");
-          setDeleteModal(false);
-        },
-      }
-    );
+    console.log("deleteFieldId", deleteFieldId);
+    deleteMappedRecord.mutate(deleteFieldId, {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: ["mappedFieldsDetails"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["integrations"],
+        });
+        setDeleteModal(false);
+      },
+      onError: (error) => {
+        console.log("error", error);
+        TkToastError("Error for delete record");
+        setDeleteModal(false);
+      },
+    });
   };
 
   return (

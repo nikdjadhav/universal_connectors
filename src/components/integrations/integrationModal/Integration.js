@@ -112,6 +112,7 @@ const Integration = ({
             queryKey: ["integrations"],
           });
           onClickHandler();
+          // sessionStorage.setItem("integrationId", integrationID);
         },
         onError: (error) => {
           console.log(error)

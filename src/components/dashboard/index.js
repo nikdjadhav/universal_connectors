@@ -15,7 +15,7 @@ import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import ModalButton from "../integrations/integrationModal";
 import TopBar from "../topBar";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
 import Link from "next/link";
 import { formatDate, formatTime } from "@/utils/date";
@@ -27,10 +27,7 @@ const DashBoard = () => {
   const [integrationID, setIntegrationID] = useState();
   const [userId, setUserId] = useState(null);
 
-  const {
-    data: integrations,
-    isLoading,
-  } = useQuery({
+  const { data: integrations, isLoading } = useQuery({
     queryKey: ["integrations", userId],
     queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
 

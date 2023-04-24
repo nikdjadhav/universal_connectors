@@ -56,7 +56,6 @@ const addMappedRecord = async (req, res) => {
 };
 
 const updateFieldMappingState = async (req, res) => {
-
   try {
     const recordMapping = await prisma.mappedRecords.updateMany({
       where: {
@@ -153,19 +152,33 @@ const getMappedRecordById = async (req, res) => {
 };
 
 const deleteMappedRecordByID = async (req, res) => {
-  try {
-    const recordMapping = await prisma.mappedRecords.delete({
-      where: {
-        id: Number(req.params.id),
-      },
-    });
+  // console.log("req.params", req.params)
 
-    if (recordMapping) {
+  try {
+    const [deleteRecordMapping, updateIntegrations] = await prisma.$transaction(
+      [
+        prisma.mappedRecords.delete({
+          where: {
+            id: Number(req.params.id),
+          },
+        }),
+        prisma.integrations.updateMany({
+          where: {
+            id: Number(req.params.integrationId),
+          },
+          data: {
+            fieldMapping: false,
+          },
+        }),
+      ]
+    );
+    // console.log("deleteRecordMapping", deleteRecordMapping)
+    if (deleteRecordMapping) {
       response({
         res,
         success: true,
         status_code: 200,
-        data: [recordMapping],
+        data: [deleteRecordMapping],
         message: "Mapped record deleted successfully",
       });
       return;

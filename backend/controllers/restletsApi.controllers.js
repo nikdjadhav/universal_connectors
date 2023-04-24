@@ -342,6 +342,7 @@ const getRedirectPage = async (req, res) => {
 };
 
 const addRefreshToken = async (req, res) => {
+  console.log("req.body==>", req.body)
   try {
     const code = req.body.code;
 
@@ -372,7 +373,7 @@ const addRefreshToken = async (req, res) => {
           data: [values.data],
           message: "Refresh token fetched successfully",
         });
-        takeAction(req.body.userId, values.data.refresh_token);
+        takeAction(req.body.id, req.body.userId, values.data.refresh_token);
       })
       .catch((error) => {
         response({
@@ -396,18 +397,24 @@ const addRefreshToken = async (req, res) => {
   }
 };
 
-const takeAction = async (userId, token) => {
-  const id = Number(userId);
+const takeAction = async (id, userId, token) => {
+  // const integrationID = Number(id);
+  const userID = Number(userId);
+  console.log("id", id);
 
   try {
     const getID = await prisma.credentials.findMany({
       where: {
-        userId: id,
+        userId: userID,
       },
       select: {
         userId: true,
+        // integrationID: true,
       },
     });
+    console.log("getID", getID)
+    console.log("getID", getID.length)
+
     if (getID.length > 0) {
       updateCredentials(id, token);
     } else {

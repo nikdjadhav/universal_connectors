@@ -14,9 +14,11 @@ const CallBack = () => {
   });
 
   useEffect(() => {
+    const integrationID = sessionStorage.getItem("integrationId");
     const id = sessionStorage.getItem("userId");
     if (router.query.code) {
       const dataToAdd = {
+        id: integrationID,
         userId: id,
         code: router.query.code,
       };
@@ -29,7 +31,7 @@ const CallBack = () => {
           setMessage("Error while logging in......");
         },
       });
-
+      // sessionStorage.removeItem("integrationId");
       window.close();
     }
   }, [addRefreshToken, router]);
