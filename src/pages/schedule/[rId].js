@@ -2,9 +2,15 @@ import Field from "@/components/schedule/Field";
 import TkContainer from "@/components/TkContainer";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import BreadCrumb from "@/utils/BreadCrumb";
+import { useRouter } from "next/router";
 import React from "react";
 
-const field = () => {
+const MapField = () => {
+  const router = useRouter();
+  const { rId } = router.query;
+
+
+
   return (
     <>
       <TkPageHead>
@@ -13,22 +19,22 @@ const field = () => {
 
       <div className="page-content">
         <BreadCrumb
-          parentTitle="Schedule"
-          parentLink="/schedule"
-          pageTitle="Field"
+          parentTitle="Event"
+          parentLink="/schedule/event"
+          pageTitle="Map Fields"
         />
 
         <TkContainer>
-          <Field />
+          <Field mappedRecordId={rId} />
         </TkContainer>
       </div>
     </>
   );
 };
 
-export default field;
+export default MapField;
 
-field.options = {
+MapField.options = {
   layout: true,
   auth: true,
 };

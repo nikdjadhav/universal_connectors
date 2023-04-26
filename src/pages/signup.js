@@ -126,7 +126,7 @@ const Register = () => {
       },
       onError: (err) => {
         console.log(err);
-        TkToastError("Invalid Credentials");
+        TkToastError("Something went wrong.");
       },
     });
   };

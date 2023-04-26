@@ -34,7 +34,7 @@ const LogTable = () => {
   return (
     <>
       {data.length ? (
-        <TkTableContainer columns={logsHead} data={data} />
+        <TkTableContainer columns={logsHead} data={data} showPagination={true} />
       ) : (
         "No data found"
       )}

@@ -17,6 +17,7 @@ import TkNoData from "@/globalComponents/TkNoData";
 import DeleteModal from "@/utils/DeleteModal";
 
 const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
+  console.log("mappedRecordId",mappedRecordId)
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -185,7 +186,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
               value1Entries.map(([key2, value2], index) => {
                 setNetsuiteValues((netsuiteValues) => [
                   ...netsuiteValues,
-                  { label: key + ":" + value2, value: key + "__" + key2 },
+                  { label: key + ": " + value2, value: key + "__" + key2 },
                 ]);
               });
             });

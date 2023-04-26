@@ -48,7 +48,7 @@ const DashBoard = () => {
   }, [integrations, userId]);
 
   const [searchText, setSearchText] = useState("");
-
+// TODO: check updateFilter function
   const [filters, updateFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
@@ -171,15 +171,15 @@ const DashBoard = () => {
       Cell: (props) => {
         if (props.value) {
           return (
-            <Link href="/schedule/event" className="">
-              <span className="">Yes</span>
+            <Link href="/schedule/event" >
+              <span >Yes</span>
               <i className="ri-edit-2-fill ps-2"></i>
             </Link>
           );
         } else {
           return (
-            <Link href="/schedule/event" className="">
-              <span className="">No</span>
+            <Link href="/schedule/event" >
+              <span >No</span>
               <i className="ri-add-fill ps-2"></i>
             </Link>
           );
@@ -192,15 +192,15 @@ const DashBoard = () => {
       Cell: (props) => {
         if (props.value) {
           return (
-            <Link href="/fieldMapping" className="">
-              <span className="">Yes</span>
+            <Link href="/fieldMapping" >
+              <span >Yes</span>
               <i className="ri-edit-2-fill ps-2"></i>
             </Link>
           );
         } else {
           return (
-            <Link href="/fieldMapping" className="">
-              <span className="">No</span>
+            <Link href="/fieldMapping" >
+              <span >No</span>
               <i className="ri-add-fill ps-2"></i>
             </Link>
           );
@@ -218,7 +218,7 @@ const DashBoard = () => {
         return (
           <>
             <i
-              className="ri-edit-2-fill mx-2 pointer-event"
+              className="ri-edit-2-fill mx-2 pointer-event avatar-xs table-text rounded-circle bg-light border d-flex justify-content-center align-items-center cursor-pointer"
               onClick={() => onClickOpenModal(props.row.original?.id)}
             />
           </>
@@ -233,6 +233,7 @@ const DashBoard = () => {
         <TkLoader />
       ) : integrationData.length > 0 ? (
         <>
+        {/* TODO: if search data not found display blank table */}
           <TopBar
             onSearchChange={searchDebounce(updateSearchText, searchonUI)}
           />

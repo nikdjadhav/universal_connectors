@@ -54,6 +54,7 @@ const FieldMappingTable = () => {
 
   useEffect(() => {
     if (mappedFieldsData) {
+      // TODO: remove state and use mappedFieldsData directly
       setMappedRecordData(mappedFieldsData[0]);
     }
   }, [mappedFieldsData]);
@@ -64,6 +65,10 @@ const FieldMappingTable = () => {
   };
 
   const columnHead = [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
     {
       Header: "Integration Name",
       accessor: "integrationName",
@@ -162,6 +167,7 @@ const FieldMappingTable = () => {
   ];
 
   const toggleDeleteModel = (fieldId, integrationId) => {
+    // TODO: use let instead of state
     setDeleteFieldId({
       id: fieldId,
       integrationId: integrationId,

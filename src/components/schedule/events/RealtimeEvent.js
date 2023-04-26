@@ -14,7 +14,7 @@ const schema = Yup.object({
   startDate: Yup.date().nullable().required("Start date is required"),
 }).required();
 
-const RealtimeEvent = ({ toggleComponet }) => {
+const RealtimeEvent = ({ toggleComponet, checkBoxValue }) => {
   const {
     control,
     register,
@@ -129,7 +129,7 @@ const RealtimeEvent = ({ toggleComponet }) => {
               type="checkbox"
               id="noEndDate"
               checked={checkboxValue}
-              // disabled={true}
+              // disabled={checkboxValue ? false : true}
               onChange={handleOnChangeCheckbox}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
@@ -140,7 +140,7 @@ const RealtimeEvent = ({ toggleComponet }) => {
 
         <TkRow className="justify-content-center mt-2">
           <TkCol lg={1} sm={2} className="">
-            <TkButton type="submit" className="btn-success">
+            <TkButton type="submit" className="btn-success" disabled={checkBoxValue}>
               Save
             </TkButton>
           </TkCol>

@@ -1,11 +1,11 @@
 import FormErrorText from "@/globalComponents/ErrorText";
 import TkButton from "@/globalComponents/TkButton";
 import TkForm from "@/globalComponents/TkForm";
+import TkInput from "@/globalComponents/TkInput";
+import TkLoader from "@/globalComponents/TkLoader";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
-import {
-  API_BASE_URL,
-} from "@/utils/Constants";
+import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueries } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 const schema = Yup.object({
+  MappedRecordName: Yup.string().required("Mapped record name is required."),
   integrationName: Yup.object()
     .nullable()
     .required("Integration name is required."),
@@ -25,6 +26,7 @@ const schema = Yup.object({
 const FieldMap = () => {
   const {
     control,
+    register,
     formState: { errors },
     handleSubmit,
     setValue,
@@ -126,7 +128,6 @@ const FieldMap = () => {
     }
   }, [accessTokenData]);
 
-
   // *** record types
   useEffect(() => {
     if (configData) {
@@ -180,11 +181,13 @@ const FieldMap = () => {
     const mapprdRecord = {
       userId: userId,
       integrationId: data.integrationName.value,
+      name: data.MappedRecordName,
       recordType: data.recordType.value,
       recordTypeTitle: data.recordType.label,
       url: data.googleSheetUrl.value,
       urlTitle: data.googleSheetUrl.label,
     };
+
     addMappedRecord.mutate(mapprdRecord, {
       onSuccess: (data) => {
         router.push(`/fieldMapping/${data[0].id}`);
@@ -199,14 +202,30 @@ const FieldMap = () => {
     <>
       <TkForm onSubmit={handleSubmit(onsubmit)}>
         <TkRow className="mt-5 justify-content-center">
-          <TkCol lg={4}>
+          <TkCol lg={5} className="mx-2 my-3">
+            <TkInput
+              {...register("MappedRecordName")}
+              id="MappedRecordName"
+              type="text"
+              labelName="Name"
+              placeholder="Enter mapped record name"
+              requiredStarOnLabel={true}
+              // invalid={errors.integrationName?.message ? true : false}
+              // disabled={integrationsData ? true : false}
+            />
+            {errors.MappedRecordName?.message ? (
+              <FormErrorText>{errors.MappedRecordName?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
+
+          <TkCol lg={5} className="mx-2 my-3">
             <Controller
               name="integrationName"
               control={control}
               render={({ field }) => (
                 <TkSelect
                   {...field}
-                  labelName="Integration Name"
+                  labelName="Integration"
                   id="integrationName"
                   options={integrationOptions || []}
                   maxMenuHeight="120px"
@@ -224,7 +243,7 @@ const FieldMap = () => {
             ) : null}
           </TkCol>
 
-          <TkCol lg={4}>
+          <TkCol lg={5} className="mx-2 my-3">
             <Controller
               name="recordType"
               control={control}
@@ -244,7 +263,7 @@ const FieldMap = () => {
             ) : null}
           </TkCol>
 
-          <TkCol lg={4}>
+          <TkCol lg={5} className="mx-2 my-3">
             <Controller
               name="googleSheetUrl"
               control={control}
@@ -265,8 +284,19 @@ const FieldMap = () => {
           </TkCol>
 
           <TkCol lg={12} className="d-flex justify-content-center">
-            <TkButton className="btn-success my-4" type="submit">
+            <TkButton
+              loading={addMappedRecord.isLoading}
+              className="btn-success m-4"
+              type="submit"
+            >
               Next
+            </TkButton>
+            <TkButton
+              className="btn-success m-4"
+              type="button"
+              onClick={() => history.back()}
+            >
+              Cancel
             </TkButton>
           </TkCol>
         </TkRow>

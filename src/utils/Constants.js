@@ -653,41 +653,7 @@ const data = [
   // }
 ];
 
-const scheduleHead = [
-  {
-    Header: "Integration Name",
-    accessor: "integrationName",
-  },
-  {
-    Header: "Event",
-    accessor: "event",
-  },
-  {
-    Header: "Start Date",
-    accessor: "startDate",
-  },
-  {
-    Header: "End Date",
-    accessor: "endDate",
-  },
-  {
-    Header: "Action",
-    accessor: "action",
-    Cell: () => {
-      return (
-        <>
-          <i className="ri-delete-bin-5-line" />
-          <Link href="/schedule/event">
-            <i className="ri-edit-2-fill mx-2" />
-          </Link>
-          {/* <Link href="/schedule/event">
-            <i className="ri-eye-fill" />
-          </Link> */}
-        </>
-      );
-    },
-  },
-];
+
 
 const logsHead = [
   {
@@ -771,7 +737,11 @@ const serachFields = {
     "integrationName",
     "sourceName",
     "destinationName",
-    "CreationDate",
+    "creationDate",
+    "modificationDate",
+    "schedule",
+    "fieldMapping",
+    "status"
   ],
 };
 
@@ -845,7 +815,6 @@ export {
   days,
   months,
   data,
-  scheduleHead,
   logsHead,
   serachFields,
   filterFields,
