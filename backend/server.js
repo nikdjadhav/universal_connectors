@@ -93,6 +93,7 @@ v1Router.delete("/deleteField/:id", fieldMappingController.deleteField);
 
 // *** schedule routes
 v1Router.post("/scheduleTask", scheduleController.scheduleTask);
+v1Router.get("/getMappedRecordByIntegrationId", scheduleController.getMappedRecordByIntegrationId);
 
 // console.log(new Date())
 

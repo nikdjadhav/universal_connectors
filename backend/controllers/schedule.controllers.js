@@ -40,6 +40,56 @@ const scheduleTask = async (req, res) => {
   } 
 };
 
+const getMappedRecordByIntegrationId = async (req, res) => {
+  const { id, integrationId } = req.query;
+  // console.log(id, integrationId)
+
+  try {
+    const mappedRecordData = await prisma.mappedRecords.findMany({
+      where: {
+        userId: Number(id),
+        integrationId: Number(integrationId),
+      },
+      select: {
+        id: true,
+        name: true,
+        source: true,
+        integrationId: true,
+      },
+    });
+    // console.log(mappedRecordData)
+    if (mappedRecordData) {
+      response({
+        res,
+        success: true,
+        status_code: 200,
+        data: mappedRecordData,
+        message: "Mapped record fetched successfully",
+      });
+      return;
+    } else {
+      response({
+        res,
+        success: false,
+        status_code: 400,
+        message: "Mapped record not fetched",
+      });
+      return;
+    }
+  } catch (error) {
+    response({
+      res,
+      success: false,
+      status_code: 400,
+      message: "Error in fetching Mapped record",
+    });
+    console.log("error", error);
+    return;
+  }
+};
+
+
 module.exports = {
   scheduleTask,
+  getMappedRecordByIntegrationId
 };

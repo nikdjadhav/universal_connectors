@@ -76,6 +76,7 @@ model MappedRecords {
   user             Users        @relation(fields: [userId], references: [id])
   integrationId    Int
   integration      Integrations @relation(fields: [integrationId], references: [id])
+  name             String
   source           String
   destination      String
   recordTypeTitle  String
