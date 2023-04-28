@@ -81,6 +81,7 @@ model MappedRecords {
   destination      String
   recordTypeTitle  String
   url              String
+  status           Boolean
   creationDate     DateTime     @default(now())
   modificationDate DateTime     @updatedAt
   Fields           Fields[]

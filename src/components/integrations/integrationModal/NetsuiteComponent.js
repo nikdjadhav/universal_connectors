@@ -38,7 +38,7 @@ const NetsuiteComponent = ({
             type="radio"
             name="connection"
             checked={existTab}
-            disabled
+            // disabled
             onChange={() => toggleComponet("two")}
           >
             Use existing connection

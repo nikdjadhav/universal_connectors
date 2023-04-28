@@ -3,9 +3,11 @@ import TkButton from "@/globalComponents/TkButton";
 import TkForm from "@/globalComponents/TkForm";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
-import { sourceName } from "@/utils/Constants";
+import { API_BASE_URL, sourceName } from "@/utils/Constants";
+import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
+import { useQueries } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -22,6 +24,49 @@ const ExistConnection = ({ onClickHandler }) => {
     resolver: yupResolver(schema),
   });
 
+  const [integrationOptions, setIntegrationOptions] = useState([]);
+  const [userId, setUserId] = useState(null);
+
+  const apiResults = useQueries({
+    queries: [
+      {
+        queryKey: ["integrationData", userId],
+        queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
+        enabled: !!userId,
+      },
+    ],
+  });
+
+  const [integrations] = apiResults;
+  const {
+    data: integrationsData,
+    isLoading: integrationsLoading,
+    error: integrationsError,
+  } = integrations;
+
+  useEffect(() => {
+    const userID = sessionStorage.getItem("userId");
+
+    if (userID) {
+      setUserId(JSON.parse(userID));
+      if (integrationsData) {
+        setIntegrationOptions(
+          integrationsData.map((item) => ({
+            label: item.integrationName,
+            value: item.id,
+          }))
+        );
+        // integrationsData.map((item) => {
+        //   // TODO: edit this
+        //   setIntegrationOptions((prev) => [
+        //     ...prev,
+        //     { label: item.integrationName, value: item.id },
+        //   ]);
+        // });
+      }
+    }
+  }, [integrationsData]);
+
   const onSubmit = (data) => {
     onClickHandler();
   };
@@ -37,9 +82,9 @@ const ExistConnection = ({ onClickHandler }) => {
                 <TkSelect
                   {...field}
                   id="connection"
-                  labelName="Select Connection"
+                  labelName="Connection List"
                   requiredStarOnLabel={true}
-                  options={sourceName}
+                  options={integrationOptions}
                 />
               )}
             />

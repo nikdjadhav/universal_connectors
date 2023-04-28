@@ -41,13 +41,10 @@ const FieldMap = () => {
   const [integrationId, setIntegrationId] = useState(null);
   const [configurationData, setConfigurationData] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
   const addMappedRecord = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addMappedRecord`),
-  });
-
-  const getFiles = useMutation({
-    mutationFn: tkFetch.post(`${API_BASE_URL}/getFiles`),
   });
 
   const apiResults = useQueries({
@@ -76,10 +73,18 @@ const FieldMap = () => {
         queryFn: tkFetch.get(`${API_BASE_URL}/getAccessToken/${userId}`),
         enabled: !!userId,
       },
+      {
+        queryKey: ["getFiles", accessToken],
+        queryFn: tkFetch.get(`${API_BASE_URL}/getFiles`, {
+          params: accessToken,
+        }),
+        enabled: !!accessToken,
+      },
     ],
   });
 
-  const [config, restlet, integrations, asscessToken] = apiResults;
+  const [config, restlet, integrations, asscessToken, getFilesData] =
+    apiResults;
   const {
     isLoading: isconfigLoading,
     isError: isConfigError,
@@ -104,29 +109,42 @@ const FieldMap = () => {
     error: accessTokenError,
     data: accessTokenData,
   } = asscessToken;
+  const {
+    isLoading: isFilesLoading,
+    isError: isFilesError,
+    error: filesError,
+    data: filesData,
+  } = getFilesData;
 
   useEffect(() => {
     if (accessTokenData) {
-      getFiles.mutate(
-        { accessToken: accessTokenData[0].access_token },
-        {
-          onSuccess: (data) => {
-            data[0].files.map((item) => {
-              if (item.mimeType === "application/vnd.google-apps.spreadsheet") {
-                setGoogleSheetUrl((prev) => [
-                  ...prev,
-                  { label: item.name, value: item.id },
-                ]);
-              }
-            });
-          },
-          onError: (error) => {
-            console.log("error", error);
-          },
-        }
-      );
+      setAccessToken({
+        accessToken: accessTokenData[0].access_token,
+      });
     }
   }, [accessTokenData]);
+
+  useEffect(() => {
+    if (filesData) {
+      // setGoogleSheetUrl(
+      //   filesData[0].files.map((item) => {
+      //     if (item.mimeType === "application/vnd.google-apps.spreadsheet") {
+      //       return { label: item.name, value: item.id };
+      //     }
+      //   })
+      // );
+
+      filesData[0].files.map((item) => {
+        if (item.mimeType === "application/vnd.google-apps.spreadsheet") {
+          // TODO: edit this
+          setGoogleSheetUrl((prev) => [
+            ...prev,
+            { label: item.name, value: item.id },
+          ]);
+        }
+      });
+    }
+  }, [filesData]);
 
   // *** record types
   useEffect(() => {
@@ -145,9 +163,12 @@ const FieldMap = () => {
       });
     }
     if (restletRecordTypes) {
-      restletRecordTypes[0].list.map((item) => {
-        setRecords((prev) => [...prev, { label: item.text, value: item.id }]);
-      });
+      setRecords(
+        restletRecordTypes[0].list.map((item) => ({
+          label: item.text,
+          value: item.id,
+        }))
+      );
     } else {
       setRecords([]);
     }
@@ -160,12 +181,12 @@ const FieldMap = () => {
     if (userID) {
       setUserId(JSON.parse(userID));
       if (integrationsData) {
-        integrationsData.map((item) => {
-          setIntegrationOptions((prev) => [
-            ...prev,
-            { label: item.integrationName, value: item.id },
-          ]);
-        });
+        setIntegrationOptions(
+          integrationsData.map((item) => ({
+            label: item.integrationName,
+            value: item.id,
+          }))
+        );
       }
     }
   }, [integrationsData]);

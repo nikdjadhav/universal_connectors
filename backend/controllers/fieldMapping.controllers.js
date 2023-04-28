@@ -13,6 +13,7 @@ const addMappedRecord = async (req, res) => {
           recordTypeTitle: req.body.recordTypeTitle,
           destination: req.body.url,
           url: req.body.urlTitle,
+          status: false,
           creationDate: new Date(),
           modificationDate: undefined,
         },
@@ -57,24 +58,27 @@ const addMappedRecord = async (req, res) => {
 };
 
 const updateFieldMappingState = async (req, res) => {
+  const { id } = req.params;
+  const { userId, stateValue } = req.body;
+ 
   try {
-    const recordMapping = await prisma.mappedRecords.updateMany({
+    const updateFieldMapping = await prisma.mappedRecords.updateMany({
       where: {
-        id: Number(req.params.id),
+        id: Number(id),
+        userId: Number(userId),
       },
       data: {
-        integration: {
-          fieldMapping: true,
-        },
+        status: stateValue,
       },
     });
-    if (recordMapping) {
+
+    if (updateFieldMapping) {
       response({
         res,
         success: true,
         status_code: 200,
-        data: [recordMapping],
-        message: "Mapped record fetched successfully",
+        data: [updateFieldMapping],
+        message: "Field Mapping state updated successfully",
       });
       return;
     } else {
@@ -82,7 +86,7 @@ const updateFieldMappingState = async (req, res) => {
         res,
         success: false,
         status_code: 400,
-        message: "Mapped record not fetched",
+        message: "Field Mapping state not updated",
       });
       return;
     }
@@ -91,15 +95,14 @@ const updateFieldMappingState = async (req, res) => {
       res,
       success: false,
       status_code: 400,
-      message: "Error in fetching Mapped record",
+      message: "Error in updating Field Mapping state",
     });
     console.log("error", error);
-    return;
   }
 };
 
 const getMappedRecordById = async (req, res) => {
-const { id } = req.params;
+  const { id } = req.params;
   try {
     const recordMapping = await prisma.mappedRecords.findMany({
       where: {
@@ -115,6 +118,7 @@ const { id } = req.params;
         url: true,
         creationDate: true,
         modificationDate: true,
+        status: true,
         integration: {
           select: {
             integrationName: true,
@@ -198,6 +202,7 @@ const deleteMappedRecordByID = async (req, res) => {
 };
 
 const getMappedFieldsDetails = async (req, res) => {
+  // console.log("req.params.id",req.params.id)
   try {
     const recordMapping = await prisma.mappedRecords.findMany({
       where: {
@@ -211,6 +216,7 @@ const getMappedFieldsDetails = async (req, res) => {
         source: true,
         recordTypeTitle: true,
         destination: true,
+        status: true,
         creationDate: true,
         modificationDate: true,
         integration: {

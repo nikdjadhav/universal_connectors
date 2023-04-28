@@ -342,7 +342,6 @@ const getRedirectPage = async (req, res) => {
 };
 
 const addRefreshToken = async (req, res) => {
-  console.log("req.body==>", req.body)
   try {
     const code = req.body.code;
 
@@ -373,7 +372,7 @@ const addRefreshToken = async (req, res) => {
           data: [values.data],
           message: "Refresh token fetched successfully",
         });
-        takeAction(req.body.id, req.body.userId, values.data.refresh_token);
+        takeAction(req.body.userId, values.data.refresh_token);
       })
       .catch((error) => {
         response({
@@ -397,10 +396,9 @@ const addRefreshToken = async (req, res) => {
   }
 };
 
-const takeAction = async (id, userId, token) => {
+const takeAction = async (userId, token) => {
   // const integrationID = Number(id);
   const userID = Number(userId);
-  console.log("id", id);
 
   try {
     const getID = await prisma.credentials.findMany({
@@ -412,13 +410,11 @@ const takeAction = async (id, userId, token) => {
         // integrationID: true,
       },
     });
-    console.log("getID", getID)
-    console.log("getID", getID.length)
 
     if (getID.length > 0) {
-      updateCredentials(id, token);
+      updateCredentials(userID, token);
     } else {
-      addCredentials(id, token);
+      addCredentials(userID, token);
     }
   } catch (error) {
     console.log("error", error);
@@ -436,6 +432,7 @@ const addCredentials = async (user_id, refresh_token) => {
       },
     });
     if (credentials) {
+      console.log("credentials added")
     } else {
       console.log("credentials not added");
     }
@@ -459,7 +456,7 @@ const updateCredentials = async (user_id, refresh_token) => {
     });
 
     if (credentials) {
-      console.log("credentials updated", credentials);
+      console.log("credentials updated");
     } else {
       console.log("credentials not updated");
     }
@@ -469,13 +466,13 @@ const updateCredentials = async (user_id, refresh_token) => {
 };
 
 const getAccessToken = async (req, res) => {
+  const { id } = req.params;
   try {
     const token = await prisma.credentials.findMany({
       where: {
-        userId: Number(req.params.id),
+        userId: Number(id),
       },
     });
-
     if (token) {
       const data = {
         refreshToken: token[0].refreshToken,
@@ -537,7 +534,9 @@ const getAccessToken = async (req, res) => {
 };
 
 const getFiles = async (req, res) => {
-  const accessToken = req.body.accessToken;
+  // console.log("req.query", req.query)
+  const { accessToken } = req.query;
+
   const url = "https://www.googleapis.com/drive/v3/files";
   const headers = {
     Authorization: `Bearer ${accessToken}`,

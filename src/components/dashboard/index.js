@@ -11,7 +11,7 @@ import {
   searchAndFilterData,
   searchDebounce,
 } from "@/utils/utilsFunctions";
-import React, { useCallback, useEffect, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import ModalButton from "../integrations/integrationModal";
 import TopBar from "../topBar";
@@ -23,29 +23,33 @@ import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
 
 const DashBoard = () => {
+  let userId = useRef(null);
+
   const [integrationData, setIntegrationData] = useState();
   const [integrationID, setIntegrationID] = useState();
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
 
   const { data: integrations, isLoading } = useQuery({
-    queryKey: ["integrations", userId],
-    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId}`),
-
-    enabled: !!userId,
+    queryKey: ["integrations", userId.current],
+    queryFn: tkFetch.get(`${API_BASE_URL}/getIntegrations/${userId.current}`),
+    enabled: !!userId.current,
   });
 
   useEffect(() => {
-    const userID = sessionStorage.getItem("userId");
-    if (userID) {
-      setUserId(JSON.parse(userID));
+    const id = sessionStorage.getItem("userId");
+    if (id) {
+      userId.current = JSON.parse(id);
+      // setUserId(JSON.parse(userID));
     }
   }, []);
+  console.log("userId on dashboard", userId)
+
 
   useEffect(() => {
-    if (userId) {
+    if (userId.current) {
       setIntegrationData(integrations);
     }
-  }, [integrations, userId]);
+  }, [integrations]);
 
   const [searchText, setSearchText] = useState("");
 // TODO: check updateFilter function
@@ -231,7 +235,7 @@ const DashBoard = () => {
     <>
       {isLoading ? (
         <TkLoader />
-      ) : integrationData.length > 0 ? (
+      ) : integrationData?.length > 0 ? (
         <>
         {/* TODO: if search data not found display blank table */}
           <TopBar

@@ -9,8 +9,6 @@ const MapField = () => {
   const router = useRouter();
   const { rId } = router.query;
 
-
-
   return (
     <>
       <TkPageHead>

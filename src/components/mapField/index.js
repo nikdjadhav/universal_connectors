@@ -1,23 +1,29 @@
 import TkTableContainer from "@/globalComponents/TkTableContainer";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Tooltip } from "@nextui-org/react";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import tkFetch from "@/utils/fetch";
-import { API_BASE_URL } from "@/utils/Constants";
+import { API_BASE_URL, minSearchLength, serachFields } from "@/utils/Constants";
 import { formatDate, formatTime } from "@/utils/date";
 import { TkToastError } from "@/globalComponents/TkToastContainer";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
 import DeleteModal from "@/utils/DeleteModal";
 import ToggleButton from "@/utils/ToggleButton";
+import TopBar from "../topBar";
+import {
+  isSearchonUI,
+  searchAndFilterData,
+  searchDebounce,
+} from "@/utils/utilsFunctions";
 
+let deleteFieldId = null;
 const FieldMappingTable = () => {
   const [mappedRecordData, setMappedRecordData] = useState([]);
   const [userId, setUserId] = useState();
   const [deleteModal, setDeleteModal] = useState(false);
-  const [deleteFieldId, setDeleteFieldId] = useState();
-  const [toggleValue, setToggleValue] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   const queryClient = useQueryClient();
 
@@ -25,10 +31,16 @@ const FieldMappingTable = () => {
     const id = sessionStorage.getItem("userId");
     setUserId(JSON.parse(id));
   }, []);
-
+  
   const deleteMappedRecord = useMutation({
     mutationFn: tkFetch.deleteWithIdsInUrl(
       `${API_BASE_URL}/deleteMappedRecordByID`
+    ),
+  });
+
+  const updateMappingState = useMutation({
+    mutationFn: tkFetch.putWithIdInUrl(
+      `${API_BASE_URL}/updateFieldMappingState`
     ),
   });
 
@@ -54,14 +66,24 @@ const FieldMappingTable = () => {
 
   useEffect(() => {
     if (mappedFieldsData) {
-      // TODO: remove state and use mappedFieldsData directly
       setMappedRecordData(mappedFieldsData[0]);
     }
   }, [mappedFieldsData]);
 
-  const handleOnChange = (e) => {
-    console.log("e", e);
-    setToggleValue(e);
+  const handleOnChange = (id, e) => {
+    const fieldMappedData = {
+      id: id,
+      userId: userId,
+      stateValue: e,
+    };
+    updateMappingState.mutate(fieldMappedData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("mappedFieldsDetails");
+      },
+      onError: () => {
+        TkToastError("Error updating field mapping state");
+      },
+    });
   };
 
   const columnHead = [
@@ -136,7 +158,10 @@ const FieldMappingTable = () => {
       Cell: (props) => {
         return (
           <>
-            <ToggleButton checked={toggleValue} handleChange={handleOnChange} />
+            <ToggleButton
+              checked={props.row.original.status}
+              handleChange={(e) => handleOnChange(props.row.original.id, e)}
+            />
           </>
         );
       },
@@ -167,16 +192,14 @@ const FieldMappingTable = () => {
   ];
 
   const toggleDeleteModel = (fieldId, integrationId) => {
-    // TODO: use let instead of state
-    setDeleteFieldId({
+    deleteFieldId = {
       id: fieldId,
       integrationId: integrationId,
-    });
+    };
     setDeleteModal(true);
   };
 
   const onClickDelete = () => {
-    console.log("deleteFieldId", deleteFieldId);
     deleteMappedRecord.mutate(deleteFieldId, {
       onSuccess: (data) => {
         queryClient.invalidateQueries({
@@ -195,12 +218,76 @@ const FieldMappingTable = () => {
     });
   };
 
+  // const [filters, updateFilters] = useReducer(
+  //   (state, newState) => ({ ...state, ...newState }),
+  //   {
+  //     [filterFields.dashboard.integrationName]: null,
+  //   }
+  // );
+  const searchonUI = isSearchonUI(mappedRecordData);
+  
+  const updateSearchText = (e) => {
+    if (e.target.value.length >= minSearchLength) {
+      setSearchText(e.target.value);
+    } else {
+      setSearchText("");
+    }
+  };
+
+  useEffect(() => {
+    if (mappedRecordData.length > 0) {
+      let doSearch = true;
+      let doFilter = true;
+      if (searchText === "") {
+        doSearch = false;
+      }
+
+      if (!doSearch && !doFilter) {
+        // setMappedRecordData(mappedFieldsData[0] || []);
+        // return;
+        console.log("one");
+      }
+
+      if (isSearchonUI(mappedRecordData)) {
+        console.log("two");
+
+        const newData = searchAndFilterData(
+          mappedRecordData,
+          searchText,
+          serachFields.MappedRecordTable
+          // filters
+        );
+        console.log("newData", newData)
+        console.log("newData length", newData.length)
+
+        if (newData.length === 0) {
+          console.log("no data");
+          // setMappedRecordData(mappedFieldsData[0] || []);
+          setMappedRecordData([]);
+
+          // return;
+        } else {
+          console.log("found data");
+
+          setMappedRecordData(newData);
+        }
+        // setMappedRecordData(newData);
+      }
+    }
+  }, [mappedRecordData, searchText]);
+ 
+console.log("mappedRecordData", mappedRecordData)
   return (
     <>
       {mappedFieldsLoading ? (
         <TkLoader />
-      ) : mappedRecordData.length > 0 ? (
+      ) : mappedRecordData
+      // .length > 0 
+      ? (
         <>
+          <TopBar
+            onSearchChange={searchDebounce(updateSearchText, searchonUI)}
+          />
           <DeleteModal
             show={deleteModal}
             onDeleteClick={onClickDelete}

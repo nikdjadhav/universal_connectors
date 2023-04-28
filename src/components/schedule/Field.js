@@ -3,7 +3,6 @@ import TkInput from "@/globalComponents/TkInput";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkModal, {
   TkModalBody,
-  TkModalFooter,
   TkModalHeader,
 } from "@/globalComponents/TkModal";
 import TkRadioButton from "@/globalComponents/TkRadioButton";

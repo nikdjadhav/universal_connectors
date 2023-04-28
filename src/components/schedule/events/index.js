@@ -2,12 +2,9 @@ import TkContainer from "@/globalComponents/TkContainer";
 import TkRadioButton from "@/globalComponents/TkRadioButton";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import React, { useEffect, useState } from "react";
-import DailyEvent from "./DailyEvent";
-import MonthlyEvent from "./MonthlyEvent";
 import RealtimeEvent from "./RealtimeEvent";
 import SingleEvent from "./SingleEvent";
 import WeeklyEvent from "./WeeklyEvent";
-import YearlyEvent from "./YearlyEvent";
 import { Controller, useForm } from "react-hook-form";
 import TkSelect from "@/globalComponents/TkSelect";
 import FormErrorText from "@/globalComponents/ErrorText";
@@ -171,7 +168,7 @@ const EventSchedule = () => {
                   requiredStarOnLabel={true}
                   onChange={(e) => {
                     field.onChange(e);
-                    onChangeIntegration(e)
+                    onChangeIntegration(e);
                   }}
                 />
               )}
@@ -333,14 +330,8 @@ const EventSchedule = () => {
               />
             ) : showComponent === "singleEvent" ? (
               <SingleEvent toggleComponet={toggleComponet} />
-            ) : showComponent === "dailyEvent" ? (
-              <DailyEvent />
             ) : showComponent === "weeklyEvent" ? (
               <WeeklyEvent toggleComponet={toggleComponet} />
-            ) : showComponent === "monthlyEvent" ? (
-              <MonthlyEvent />
-            ) : showComponent === "yearlyEvent" ? (
-              <YearlyEvent />
             ) : (
               <SingleEvent />
             )}

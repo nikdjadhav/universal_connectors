@@ -743,6 +743,9 @@ const serachFields = {
     "fieldMapping",
     "status"
   ],
+  MappedRecordTable: [
+    "name"
+  ]
 };
 
 const filterFields = {

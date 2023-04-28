@@ -76,7 +76,7 @@ const IntegrationCard = ({ modal, toggleModal }) => {
       <TkRow>
         {isLoading ? (
           <TkLoader />
-        ) : integrations.length > 0 ? (
+        ) : integrations?.length > 0 ? (
           integrations.map((item) => {
             return (
               <TkCol lg={3} key={item.id}>

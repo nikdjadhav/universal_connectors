@@ -3,7 +3,7 @@ import TkInput from "@/globalComponents/TkInput";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
 import TkTableContainer from "@/globalComponents/TkTableContainer";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import TkLabel from "@/globalComponents/TkLabel";
 import { useRouter } from "next/router";
@@ -17,10 +17,9 @@ import TkNoData from "@/globalComponents/TkNoData";
 import DeleteModal from "@/utils/DeleteModal";
 
 const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
-  console.log("mappedRecordId",mappedRecordId)
+  let sheetData = useRef(null);
   const queryClient = useQueryClient();
   const router = useRouter();
-
   const { register, handleSubmit, setValue, control } = useForm();
   const [netsuiteValues, setNetsuiteValues] = useState([]);
   const [rows, setRows] = useState([]);
@@ -30,7 +29,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteFieldId, setDeleteFieldId] = useState();
   const [userId, setUserId] = useState(null);
-  const [sheetData, setSheetData] = useState([]);
 
   const apiResults = useQueries({
     queries: [
@@ -66,10 +64,11 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         enabled: !!userId,
       },
       {
-        queryKey: ["getSheetsData", sheetData],
+        queryKey: ["getSheetsData", sheetData.current],
         queryFn: tkFetch.get(`${API_BASE_URL}/getSheetsData`, {
-          params: sheetData,
+          params: sheetData.current,
         }),
+        enabled: !!sheetData.current,
       },
     ],
   });
@@ -135,18 +134,19 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
 
     if (userID) {
       setUserId(JSON.parse(userID));
+      //TODO: use let for user id
     }
   }, []);
 
   useEffect(() => {
     if (accessTokenData && mappedRecordData) {
-      setSheetData({
+      sheetData.current = {
         sheetsId: mappedRecordData[0].destination,
         accessToken: accessTokenData[0].access_token,
-      });
+      }
     }
   }, [accessTokenData, mappedRecordData]);
-
+// console.log("sheetData", sheetData.current)
   useEffect(() => {
     if (configData) {
       configData.map((item) => {
@@ -172,6 +172,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
       ) {
         const entries = Object.entries(restletOptions[0]?.body[0]);
         entries.map(([key, value], index) => {
+          // TODO: map inside state fun
           setNetsuiteValues((netsuiteValues) => [
             ...netsuiteValues,
             { label: value, value: key },
@@ -184,6 +185,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
             valueEntries.map(([key1, value1], index) => {
               const value1Entries = Object.entries(value1);
               value1Entries.map(([key2, value2], index) => {
+                // TODO: map inside state fun
                 setNetsuiteValues((netsuiteValues) => [
                   ...netsuiteValues,
                   { label: key + ": " + value2, value: key + "__" + key2 },
@@ -198,7 +200,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
 
   useEffect(() => {
     if (fieldsData?.length > 0) {
-      console.log("backend")
       fieldsData.map((field, index) => {
         setValue(
           `destinationFieldValue[${index}]`,
@@ -210,8 +211,9 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         });
       });
       setRows(fieldsData);
-    } else if (excelSheetData !== undefined) {
-      console.log("google sheets")
+      return;
+    }
+    if (excelSheetData !== undefined) {
       const sheetsData = [];
       excelSheetData[0]?.values[0].map((item, index) => {
         setValue(`destinationFieldValue[${index}]`, item);
@@ -222,15 +224,16 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         });
       });
       setRows([...sheetsData]);
-    } else {
-      console.log("other case");
+      return;
     }
   }, [excelSheetData, fieldsData, setValue]);
 
   useEffect(() => {
     if (mappedRecordData) {
+      // TODO: use direct data insted of state :ERROR
       setMappedRecordDetails(mappedRecordData[0]);
       setIntegrationId(mappedRecordData[0].integrationId);
+
       integrationsName(mappedRecordData[0].integration?.integrationName);
     }
   }, [integrationsName, mappedRecordData]);
@@ -245,9 +248,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
           <TkInput
             type="text"
             {...register(`destinationFieldValue[${row.index}]`)}
-            disabled={
-             row.original.destinationFieldValue ? true : false
-            }
+            disabled={row.original.destinationFieldValue ? true : false}
           />
         );
       },
@@ -285,17 +286,15 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
       },
     },
   ];
-  const { append } = useFieldArray({
-    control,
-    name: "googleSheets",
-  });
+
   const handleAddRow = () => {
     setRows([...rows, { googleSheets: "", netSuite: null }]);
   };
 
-  const onSubmit = (e, values) => {
-    console.log("values", values);
-    console.log("rows", e)
+  const onSubmit = (values) => {
+    console.log("onSubmit values", values);
+    console.log("onSubmit rows", rows);
+
     // const userId = sessionStorage.getItem("userId");
     // const tableRecord = values.destinationFieldValue.map(
     //   (destinationFieldValue, index) => {
@@ -362,25 +361,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
 
     if (excelSheetData?.length > 0) {
       const sheetsRecord = [];
-      // excelSheetData[0]?.values[0].map((item, index) => {
-      //   rows.map((row) => {
-      //     if (row.destinationFieldValue === item) {
-      //       console.log("row.destinationFieldValue", row.destinationFieldValue)
-      //       sheetsRecord.push({
-      //         destinationFieldValue: row.destinationFieldValue,
-      //         sourceFieldValue: row.sourceFieldValue,
-      //       });
-      //     }
-      //     else {
-      //       console.log("item", item)
-      //       sheetsRecord.push({
-      //         id: index,
-      //         destinationFieldValue: item,
-      //         sourceFieldValue: null,
-      //       });
-      //     }
-      //   });
-      // });
+      
       // using return
       excelSheetData[0]?.values[0].map((item, index) => {
         const row = rows.find((row) => row.destinationFieldValue === item);
@@ -401,19 +382,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         }
       });
 
-      // console.log("sheetsRecord", sheetsRecord);
-      // const unique = [
-      //   ...new Set(sheetsRecord.map((item) => item.destinationFieldValue)),
-      // ].map((destinationFieldValue) => {
-      //   return {
-      //     destinationFieldValue: destinationFieldValue,
-      //     sourceFieldValue: rows.find(
-      //       (row) => row.destinationFieldValue === destinationFieldValue
-      //     )?.sourceFieldValue,
-      //   };
-      // });
-      // console.log("unique",unique)
-
       // set values to table rows
       sheetsRecord.map((item, index) => {
         setValue(`destinationFieldValue[${index}]`, item.destinationFieldValue);
@@ -432,7 +400,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
     }
   };
 
-  // console.log("rows", rows);
+  console.log("rows", rows);
 
   return (
     <>

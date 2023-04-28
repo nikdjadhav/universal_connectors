@@ -1,4 +1,4 @@
-import MapTableComponent from "@/components/mapField/mapTableComponent";
+import MapTableComponent from "@/components/mapField/MapTableComponent";
 import TkContainer from "@/components/TkContainer";
 import TkPageHead from "@/globalComponents/TkPageHead";
 import BreadCrumb from "@/utils/BreadCrumb";

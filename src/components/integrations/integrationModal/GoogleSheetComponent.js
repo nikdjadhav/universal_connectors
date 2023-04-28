@@ -41,7 +41,6 @@ const GoogleSheetComponent = ({
   const [loader, showLoader, hideLoader] = useFullPageLoader();
   const [integrationsData, setIntegrationsData] = useState();
   const [userID, setUserID] = useState();
-  const [authButton, setAuthButton] = useState("Authorize");
 
   const addConfigurations = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addConfigurations`),
@@ -99,6 +98,7 @@ const GoogleSheetComponent = ({
   useEffect(() => {
     const Id = sessionStorage.getItem("userId");
     if (Id) {
+      // TODO: use let
       setUserID(Id);
     }
   }, []);
@@ -113,12 +113,6 @@ const GoogleSheetComponent = ({
       });
     }
   }, [configurationsData, integrationID, setValue, title]);
-
-  useEffect(() => {
-    if (credentialDetailsData?.length) {
-      setAuthButton("Reauthorize");
-    }
-  }, [credentialDetailsData]);
 
   const onSubmit = (data) => {
     if (redirectUrl) {
@@ -202,7 +196,7 @@ const GoogleSheetComponent = ({
 
           <TkCol lg={12}>
             <TkButton type="submit" className="btn-success float-end">
-              {authButton}
+              {(credentialDetailsData?.length) ? "Reauthorize" : "Authorize"}
             </TkButton>
           </TkCol>
           {loader}
