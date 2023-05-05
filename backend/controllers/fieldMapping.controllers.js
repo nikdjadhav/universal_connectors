@@ -2,25 +2,37 @@ const prisma = require("../lib/prisma");
 const response = require("../lib/response");
 
 const addMappedRecord = async (req, res) => {
+  const {
+    userId,
+    integrationId,
+    MappedRecordName,
+    source,
+    destination,
+    recordTypeLabel,
+    recordTypeValue,
+    UrlLabel,
+    UrlValue,
+  } = req.body;
   try {
     const [recordMapping, updateCount] = await prisma.$transaction([
       prisma.mappedRecords.create({
         data: {
-          userId: req.body.userId,
-          integrationId: req.body.integrationId,
-          name: req.body.name,
-          source: req.body.recordType,
-          recordTypeTitle: req.body.recordTypeTitle,
-          destination: req.body.url,
-          url: req.body.urlTitle,
+          userId: Number(userId),
+          integrationId: Number(integrationId),
+          MappedRecordName: MappedRecordName,
+          source: source,
+          destination: destination,
+          recordTypeLabel: recordTypeLabel,
+          recordTypeValue: recordTypeValue,
+          UrlLabel: UrlLabel,
+          UrlValue: UrlValue,
           status: false,
-          creationDate: new Date(),
-          modificationDate: undefined,
         },
       }),
       prisma.integrations.updateMany({
         where: {
           id: Number(req.body.integrationId),
+          userId: Number(userId),
         },
         data: {
           fieldMapping: true,
@@ -60,7 +72,7 @@ const addMappedRecord = async (req, res) => {
 const updateFieldMappingState = async (req, res) => {
   const { id } = req.params;
   const { userId, stateValue } = req.body;
- 
+
   try {
     const updateFieldMapping = await prisma.mappedRecords.updateMany({
       where: {
@@ -113,12 +125,11 @@ const getMappedRecordById = async (req, res) => {
         userId: true,
         integrationId: true,
         source: true,
-        recordTypeTitle: true,
         destination: true,
-        url: true,
-        creationDate: true,
-        modificationDate: true,
-        status: true,
+        recordTypeLabel: true,
+        recordTypeValue: true,
+        UrlLabel: true,
+        UrlValue: true,
         integration: {
           select: {
             integrationName: true,
@@ -212,10 +223,11 @@ const getMappedFieldsDetails = async (req, res) => {
         id: true,
         userId: true,
         integrationId: true,
-        name: true,
+        MappedRecordName: true,
         source: true,
-        recordTypeTitle: true,
         destination: true,
+        recordTypeLabel: true,
+        UrlLabel: true,
         status: true,
         creationDate: true,
         modificationDate: true,
@@ -276,32 +288,11 @@ const addFields = async (req, res) => {
           sourceField: field.sourceField,
           destinationField: field.destinationField,
           sourceFieldValue: field.sourceFieldValue,
+          sourceFieldLabel: field.sourceFieldLabel,
           destinationFieldValue: field.destinationFieldValue,
         })),
       }),
     ]);
-    // console.log("deleteFields", deleteFields);
-
-    // try {
-    //   const fields = await prisma.fields.deleteMany({
-    //     where: {
-    //       mappedRecordId: {
-    //         in: req.body.map((field) => field.mappedRecordId),
-    //       },
-    //     },
-    //   });
-
-    // if (fields) {
-    //   const fields = await prisma.fields.createMany({
-    //     data: req.body.map((field) => ({
-    //       userId: field.userId,
-    //       mappedRecordId: field.mappedRecordId,
-    //       sourceField: field.sourceField,
-    //       destinationField: field.destinationField,
-    //       sourceFieldValue: field.sourceFieldValue,
-    //       destinationFieldValue: field.destinationFieldValue,
-    //     })),
-    //   });
 
     if (addFields) {
       response({

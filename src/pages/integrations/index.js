@@ -29,8 +29,6 @@ const Integrations = () => {
           onButtonClick={toggleModal}
         />
 
-        <h4>Integrations</h4>
-
         <IntegrationCard modal={modal} toggleModal={toggleModal} />
       </div>
     </>

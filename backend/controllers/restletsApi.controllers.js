@@ -53,6 +53,7 @@ const getRecordTypes = async (req, res) => {
     const data = {
       resttype: req.query.resttype,
       recordtype: req.query.recordtype,
+      columns: req.query.columns,
     };
 
     const payload = JSON.stringify(data);
@@ -579,8 +580,7 @@ const getFiles = async (req, res) => {
 };
 
 const getSheetsData = async (req, res) => {
-  const sheetsId = req.query.sheetsId;
-  const accessToken = req.query.accessToken;
+  const { sheetsId, accessToken } = req.query;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetsId}/values/A1:ZZ100000`;
   const headers = {
     Authorization: `Bearer ${accessToken}`,
@@ -661,6 +661,10 @@ const getcredentialDetailsById = async (req, res) => {
     });
   }
 };
+
+// const getSavedSearch = async (req, res) => {
+//   try {
+
 
 module.exports = {
   getRecordTypes,

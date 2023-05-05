@@ -93,6 +93,19 @@ v1Router.get("/getFields/:id", fieldMappingController.getFields);
 v1Router.delete("/deleteField/:id", fieldMappingController.deleteField);
 
 // *** schedule routes
+v1Router.post("/addRealTimeEvent", scheduleController.addRealTimeEvent);
+v1Router.post("/addSingleEvent", scheduleController.addSingleEvent);
+v1Router.post("/addWeeklyEvent", scheduleController.addWeeklyEvent);
+v1Router.get("/getSchedules/:id", scheduleController.getSchedules);
+v1Router.get("/getScheduleEventById", scheduleController.getScheduleEventById);
+v1Router.put("/updateRealTimeEvent/:id", scheduleController.updateRealTimeEvent);
+v1Router.put("/updateSingleEvent/:id", scheduleController.updateSingleEvent);
+v1Router.put("/updateWeeklyEvent/:id", scheduleController.updateWeeklyEvent);
+v1Router.delete("/deleteScheduleEvent/:id/:integrationId", scheduleController.deleteScheduleEvent);
+v1Router.post("/addCustomFilterFields", scheduleController.addCustomFilterFields);
+// v1Router.post("/addMappedFields", scheduleController.addMappedFields);
+// v1Router.get("/getMappedField", scheduleController.getMappedField);
+
 v1Router.post("/scheduleTask", scheduleController.scheduleTask);
 v1Router.get("/getMappedRecordByIntegrationId", scheduleController.getMappedRecordByIntegrationId);
 

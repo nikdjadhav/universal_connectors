@@ -5,12 +5,15 @@ import TkForm from "@/globalComponents/TkForm";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
 import TkSelect from "@/globalComponents/TkSelect";
-import { days, timeOptions } from "@/utils/Constants";
+import { API_BASE_URL, days, timeOptions } from "@/utils/Constants";
 import { useForm, Controller } from "react-hook-form";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorText from "@/globalComponents/ErrorText";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import tkFetch from "@/utils/fetch";
+import { useRouter } from "next/router";
 
 const schema = Yup.object({
   startDate: Yup.date().required("Start date is required"),
@@ -20,7 +23,14 @@ const schema = Yup.object({
   days: Yup.object().required("Day is required"),
 }).required();
 
-const WeeklyEvent = ({ toggleComponet }) => {
+const WeeklyEvent = ({
+  checkBoxValue,
+  toggleComponet,
+  eventId,
+  searchData,
+}) => {
+  let userId = useRef(null);
+
   const {
     control,
     register,
@@ -31,14 +41,60 @@ const WeeklyEvent = ({ toggleComponet }) => {
     resolver: yupResolver(schema),
   });
 
+  const router = useRouter();
+  const [checkboxValue, setCheckboxValue] = useState(false);
+  const [ids, setIds] = useState(null);
+
+  const addEvent = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addWeeklyEvent`),
+  });
+
+  const updateWeeklyEvent = useMutation({
+    mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateWeeklyEvent`),
+  });
+
+  const {
+    data: eventData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["eventData", ids],
+    queryFn: tkFetch.get(`${API_BASE_URL}/getScheduleEventById`, {
+      params: ids,
+    }),
+    enabled: !!ids,
+  });
+
   useEffect(() => {
-    if (!isDirty) {
+    userId.current = sessionStorage.getItem("userId");
+    if (userId.current && eventId) {
+      setIds({
+        id: eventId,
+        userId: userId.current,
+      });
+    }
+  }, [eventId]);
+
+  useEffect(() => {
+    if (eventData) {
+      if (eventData[0]?.eventType === "Weekly") {
+        setValue("startDate", eventData[0].startDate);
+        setValue("startTime", {
+          label: eventData[0].startTime,
+          value: eventData[0].startTime,
+        });
+        setValue("days", {
+          label: eventData[0].day,
+          value: eventData[0].day,
+        });
+        setValue("endDate", eventData[0].endDate);
+        setCheckboxValue(eventData[0].noEndDate);
+      }
+    } else {
       setValue("startDate", new Date());
       setValue("endDate", new Date());
     }
-  }, [isDirty, setValue]);
-
-  const [checkboxValue, setCheckboxValue] = useState(false);
+  }, [eventData, setValue]);
 
   const handleOnChange = (dates) => {
     if (dates) {
@@ -67,11 +123,70 @@ const WeeklyEvent = ({ toggleComponet }) => {
       setCheckboxValue(true);
       // data.endDate = null;
     }
-    // console.log(data);
+
+    if (eventId) {
+      console.log("update weekly event*******");
+      const eventData = {
+        id: eventId,
+        userId: JSON.parse(userId.current),
+        integrationId: searchData.integrationId,
+        mappedRecordId: searchData.mappedRecordId,
+        eventType: "Weekly",
+        startDate: data.startDate,
+        startTime: data.startTime.label,
+        day: data.days.label,
+        endDate: data.endDate,
+        noEndDate: data.noEndDate,
+        performType: searchData.perform,
+        // savedSearchType: searchData.savedSearchType,
+      };
+
+      if (searchData.savedSearchLabel) {
+        eventData.savedSearchLabel = searchData.savedSearchLabel;
+        eventData.savedSearchValue = searchData.savedSearchValue;
+      }
+
+      updateWeeklyEvent.mutate(eventData, {
+        onSuccess: (res) => {},
+        onError: (err) => {
+          console.log("err", err);
+        },
+      });
+    } else {
+      console.log("add weekly event******");
+
+      const eventData = {
+        userId: JSON.parse(userId.current),
+        integrationId: searchData.integrationId,
+        mappedRecordId: searchData.mappedRecordId,
+        eventType: "Weekly",
+        startDate: data.startDate,
+        startTime: data.startTime.label,
+        day: data.days.label,
+        endDate: data.endDate,
+        noEndDate: data.noEndDate,
+        performType: searchData.perform,
+        // savedSearchType: searchData.savedSearchType,
+      };
+      if (searchData.savedSearchLabel) {
+        eventData.savedSearchLabel = searchData.savedSearchLabel;
+        eventData.savedSearchValue = searchData.savedSearchValue;
+      }
+
+      addEvent.mutate(eventData, {
+        onSuccess: (res) => {},
+        onError: (err) => {
+          console.log("err", err);
+        },
+      });
+    }
+
+    router.push("/schedule");
   };
 
   const onCancel = () => {
-    toggleComponet("singleEvent");
+    // toggleComponet("singleEvent");
+    history.back();
   };
 
   return (
@@ -99,9 +214,9 @@ const WeeklyEvent = ({ toggleComponet }) => {
                   className="mb-3"
                   requiredStarOnLabel={true}
                   options={{
-                    minDate: "today",
-                    altInput: true,
-                    altFormat: "d M, Y",
+                    // minDate: "today",
+                    // altInput: true,
+                    // altFormat: "d M, Y",
                     dateFormat: "d M, Y",
                   }}
                 />
@@ -172,9 +287,9 @@ const WeeklyEvent = ({ toggleComponet }) => {
                     field.onChange(e);
                   }}
                   options={{
-                    minDate: "today",
-                    altInput: true,
-                    altFormat: "d M, Y",
+                    // minDate: "today",
+                    // altInput: true,
+                    // altFormat: "d M, Y",
                     dateFormat: "d M, Y",
                   }}
                 />
@@ -187,7 +302,6 @@ const WeeklyEvent = ({ toggleComponet }) => {
               type="checkbox"
               id="noEndDate"
               checked={checkboxValue}
-              // disabled={true}
               onChange={handleOnChangeCheckbox}
             />
             <TkLabel className="form-check-label mx-2 mb-3" id="noEndDate">
@@ -198,7 +312,11 @@ const WeeklyEvent = ({ toggleComponet }) => {
 
         <TkRow className="justify-content-center mt-2">
           <TkCol lg={1} sm={2} className="">
-            <TkButton type="submit" className="btn-success">
+            <TkButton
+              type="submit"
+              className="btn-success"
+              disabled={checkBoxValue}
+            >
               Save
             </TkButton>
           </TkCol>

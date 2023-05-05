@@ -109,9 +109,6 @@ const Login = () => {
   const googleLogin = () => {
     signInWithPopup(auth, googleProvider);
     const user = app.auth;
-    if (user) {
-      console.log("d", user);
-    }
   };
 
   return (

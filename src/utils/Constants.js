@@ -744,7 +744,13 @@ const serachFields = {
     "status"
   ],
   MappedRecordTable: [
-    "name"
+    "name",
+    "integrationName",
+    "recordTypeTitle",
+    "creationDate",
+    "modificationDate",
+    "systemOne",
+    "systemTwo"
   ]
 };
 

@@ -31,7 +31,7 @@ const FieldMappingTable = () => {
     const id = sessionStorage.getItem("userId");
     setUserId(JSON.parse(id));
   }, []);
-  
+
   const deleteMappedRecord = useMutation({
     mutationFn: tkFetch.deleteWithIdsInUrl(
       `${API_BASE_URL}/deleteMappedRecordByID`
@@ -89,7 +89,7 @@ const FieldMappingTable = () => {
   const columnHead = [
     {
       Header: "Name",
-      accessor: "name",
+      accessor: "MappedRecordName",
     },
     {
       Header: "Integration Name",
@@ -100,12 +100,13 @@ const FieldMappingTable = () => {
     },
     {
       Header: "Record Type",
-      accessor: "recordTypeTitle",
+      accessor: "recordTypeLabel",
     },
     {
       Header: "Creation Date",
       accessor: "creationDate",
       Cell: (props) => {
+        console.log(props.row.original)
         const date = formatDate(props.row.original?.creationDate);
         const time = formatTime(props.row.original?.creationDate);
         return (
@@ -140,14 +141,14 @@ const FieldMappingTable = () => {
     },
     {
       Header: "System One",
-      accessor: "systemOne",
+      accessor: "source",
       Cell: (props) => {
         return <a>{props.row.original?.integration.sourceName}</a>;
       },
     },
     {
       Header: "System Two",
-      accessor: "systemTwo",
+      accessor: "destination",
       Cell: (props) => {
         return <a>{props.row.original?.integration.destinationName}</a>;
       },
@@ -170,7 +171,6 @@ const FieldMappingTable = () => {
       Header: "Action",
       accessor: "action",
       Cell: (props) => {
-        // console.log("props", props.row.original);
         return (
           <>
             <i
@@ -225,7 +225,7 @@ const FieldMappingTable = () => {
   //   }
   // );
   const searchonUI = isSearchonUI(mappedRecordData);
-  
+
   const updateSearchText = (e) => {
     if (e.target.value.length >= minSearchLength) {
       setSearchText(e.target.value);
@@ -245,45 +245,34 @@ const FieldMappingTable = () => {
       if (!doSearch && !doFilter) {
         // setMappedRecordData(mappedFieldsData[0] || []);
         // return;
-        console.log("one");
       }
 
       if (isSearchonUI(mappedRecordData)) {
-        console.log("two");
-
         const newData = searchAndFilterData(
           mappedRecordData,
           searchText,
           serachFields.MappedRecordTable
           // filters
         );
-        console.log("newData", newData)
-        console.log("newData length", newData.length)
 
         if (newData.length === 0) {
-          console.log("no data");
           // setMappedRecordData(mappedFieldsData[0] || []);
           setMappedRecordData([]);
 
           // return;
         } else {
-          console.log("found data");
-
           setMappedRecordData(newData);
         }
         // setMappedRecordData(newData);
       }
     }
   }, [mappedRecordData, searchText]);
- 
-console.log("mappedRecordData", mappedRecordData)
+
   return (
     <>
       {mappedFieldsLoading ? (
         <TkLoader />
-      ) : mappedRecordData
-      // .length > 0 
-      ? (
+      ) : mappedRecordData.length > 0 ? (
         <>
           <TopBar
             onSearchChange={searchDebounce(updateSearchText, searchonUI)}

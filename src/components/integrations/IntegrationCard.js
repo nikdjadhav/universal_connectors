@@ -79,6 +79,8 @@ const IntegrationCard = ({ modal, toggleModal }) => {
         ) : integrations?.length > 0 ? (
           integrations.map((item) => {
             return (
+              <>
+              <h4>Integrations</h4>
               <TkCol lg={3} key={item.id}>
                 <TkCard
                   className="mt-4"
@@ -110,6 +112,7 @@ const IntegrationCard = ({ modal, toggleModal }) => {
                   </TkCardBody>
                 </TkCard>
               </TkCol>
+              </>
             );
           })
         ) : (

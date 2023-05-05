@@ -42,8 +42,6 @@ const DashBoard = () => {
       // setUserId(JSON.parse(userID));
     }
   }, []);
-  console.log("userId on dashboard", userId)
-
 
   useEffect(() => {
     if (userId.current) {

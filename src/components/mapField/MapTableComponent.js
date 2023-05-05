@@ -15,6 +15,7 @@ import { useFieldArray } from "react-hook-form";
 import TkLoader from "@/globalComponents/TkLoader";
 import TkNoData from "@/globalComponents/TkNoData";
 import DeleteModal from "@/utils/DeleteModal";
+import useFullPageLoader from "@/globalComponents/useFullPageLoader";
 
 const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
   let sheetData = useRef(null);
@@ -29,6 +30,8 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteFieldId, setDeleteFieldId] = useState();
   const [userId, setUserId] = useState(null);
+
+  const [loader, showLoader, hideLoader] = useFullPageLoader();
 
   const apiResults = useQueries({
     queries: [
@@ -121,6 +124,8 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
     isFetching: excelSheetFetching,
   } = googleSheetApi;
 
+  console.log("excelSheetData", excelSheetData)
+
   const addFields = useMutation({
     mutationFn: tkFetch.post(`${API_BASE_URL}/addFields`),
   });
@@ -138,15 +143,16 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
     }
   }, []);
 
+  console.log(mappedRecordData)
+
   useEffect(() => {
     if (accessTokenData && mappedRecordData) {
       sheetData.current = {
-        sheetsId: mappedRecordData[0].destination,
+        sheetsId: mappedRecordData[0].UrlValue,
         accessToken: accessTokenData[0].access_token,
-      }
+      };
     }
   }, [accessTokenData, mappedRecordData]);
-// console.log("sheetData", sheetData.current)
   useEffect(() => {
     if (configData) {
       configData.map((item) => {
@@ -172,10 +178,10 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
       ) {
         const entries = Object.entries(restletOptions[0]?.body[0]);
         entries.map(([key, value], index) => {
-          // TODO: map inside state fun
+           // TODO: map inside state fun
           setNetsuiteValues((netsuiteValues) => [
             ...netsuiteValues,
-            { label: value, value: key },
+            { label: value + " (field Id: " + key + ")", value: key },
           ]);
         });
         restletOptions[0]?.lines.map((item) => {
@@ -188,7 +194,10 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
                 // TODO: map inside state fun
                 setNetsuiteValues((netsuiteValues) => [
                   ...netsuiteValues,
-                  { label: key + ": " + value2, value: key + "__" + key2 },
+                  {
+                    label: key + ": " + value2 + " (Field Id: " + key2 + ")",
+                    value: key + "__" + key2,
+                  },
                 ]);
               });
             });
@@ -205,15 +214,20 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
           `destinationFieldValue[${index}]`,
           field.destinationFieldValue || field.googleSheets
         );
-        setValue(`sourceFieldValue[${index}]`, {
+        setValue(`sourceFieldValue[${index}]`,
+         {
           value: field.sourceFieldValue,
           label: field.sourceFieldValue,
-        });
+        }
+        );
       });
       setRows(fieldsData);
       return;
     }
-    if (excelSheetData !== undefined) {
+  }, [fieldsData, setValue]);
+
+  useEffect(() => {
+    if (fieldsData?.length === 0 && excelSheetData != undefined) {
       const sheetsData = [];
       excelSheetData[0]?.values[0].map((item, index) => {
         setValue(`destinationFieldValue[${index}]`, item);
@@ -227,6 +241,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
       return;
     }
   }, [excelSheetData, fieldsData, setValue]);
+  // excelSheetData, fieldsData, setValue
 
   useEffect(() => {
     if (mappedRecordData) {
@@ -238,12 +253,19 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
     }
   }, [integrationsName, mappedRecordData]);
 
+  // const customFilter = (option, searchText) => {
+  //   console.log("option", option);
+  //   console.log("searchText", searchText)
+  //   const label = option.label.toLowerCase();
+  //   const text = searchText.toLowerCase();
+  //   return label.includes(text);
+  // }
+
   const columns = [
     {
       Header: "Google Sheets™ Columns",
       accessor: "destinationFieldValue",
       Cell: ({ row }) => {
-        // console.log(row.original.destinationFieldValue)
         return (
           <TkInput
             type="text"
@@ -267,6 +289,8 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
                 options={netsuiteValues}
                 maxMenuHeight="100px"
                 isSerchable={true}
+                // getOptionLabel={(option) => option.label}
+                // filterOption={customFilter}
               />
             )}
           />
@@ -292,37 +316,34 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
   };
 
   const onSubmit = (values) => {
-    console.log("onSubmit values", values);
-    console.log("onSubmit rows", rows);
-
-    // const userId = sessionStorage.getItem("userId");
-    // const tableRecord = values.destinationFieldValue.map(
-    //   (destinationFieldValue, index) => {
-    //     return {
-    //       // id: values.id || null,
-    //       userId: JSON.parse(userId),
-    //       mappedRecordId: JSON.parse(mappedRecordId),
-    //       sourceField: "NetSuite™",
-    //       destinationField: "Google Sheets™",
-    //       destinationFieldValue: destinationFieldValue,
-    //       sourceFieldValue: values.sourceFieldValue[index]?.label,
-    //     };
-    //   }
-    // );
-
-    // addFields.mutate(tableRecord, {
-    //   onSuccess: (data) => {
-    //     TkToastInfo("Added Successfully", { hideProgressBar: true });
-    //     queryClient.invalidateQueries({
-    //       queryKey: ["getFields"],
-    //     });
-    //     router.push("/fieldMapping");
-    //   },
-    //   onError: (error) => {
-    //     console.log("error", error);
-    //     TkToastError("Error for add fields");
-    //   },
-    // });
+    const userId = sessionStorage.getItem("userId");
+    const tableRecord = values.destinationFieldValue.map(
+      (destinationFieldValue, index) => {
+        return {
+          // id: values.id || null,
+          userId: JSON.parse(userId),
+          mappedRecordId: JSON.parse(mappedRecordId),
+          sourceField: "NetSuite™",
+          destinationField: "Google Sheets™",
+          sourceFieldValue: values.sourceFieldValue[index]?.value,
+          sourceFieldLabel: values.sourceFieldValue[index]?.label,
+          destinationFieldValue: destinationFieldValue,
+        };
+      }
+    );
+    addFields.mutate(tableRecord, {
+      onSuccess: (data) => {
+        // TkToastInfo("Added Successfully", { hideProgressBar: true });
+        queryClient.invalidateQueries({
+          queryKey: ["getFields"],
+        });
+        router.push("/fieldMapping");
+      },
+      onError: (error) => {
+        console.log("error", error);
+        TkToastError("Error for add fields");
+      },
+    });
   };
 
   const toggleDeleteModel = (fieldId) => {
@@ -354,25 +375,25 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
   };
 
   const onClickRefresh = () => {
-    console.log("refresh...");
+    showLoader();
+    setValue("destinationFieldValue", null);
+    setValue("sourceFieldValue", null);
     queryClient.invalidateQueries({
       queryKey: ["getSheetsData"],
     });
 
     if (excelSheetData?.length > 0) {
       const sheetsRecord = [];
-      
+
       // using return
       excelSheetData[0]?.values[0].map((item, index) => {
         const row = rows.find((row) => row.destinationFieldValue === item);
         if (row) {
-          console.log("if", row);
           sheetsRecord.push({
             destinationFieldValue: row.destinationFieldValue,
             sourceFieldValue: row.sourceFieldValue,
           });
         } else {
-          console.log("else", item);
 
           sheetsRecord.push({
             id: index,
@@ -381,7 +402,6 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
           });
         }
       });
-
       // set values to table rows
       sheetsRecord.map((item, index) => {
         setValue(`destinationFieldValue[${index}]`, item.destinationFieldValue);
@@ -398,9 +418,9 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
 
       setRows([...sheetsRecord]);
     }
+    hideLoader();
   };
 
-  console.log("rows", rows);
 
   return (
     <>
@@ -415,7 +435,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         <TkCol>
           <TkLabel>
             <span className="fw-bold">
-              Integration Name: {mappedRecordDetails.recordTypeTitle}
+              Record Type: {mappedRecordDetails.recordTypeLabel}
             </span>
             &nbsp;&nbsp;
           </TkLabel>
@@ -423,7 +443,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         <TkCol>
           <TkLabel>
             <span className="fw-bold">
-              Google Sheets™ Url: {mappedRecordDetails.url}
+              Google Sheets™ Url: {mappedRecordDetails.UrlLabel}
             </span>
             &nbsp;&nbsp;
           </TkLabel>
@@ -450,7 +470,7 @@ const MapTableComponent = ({ mappedRecordId, integrationsName }) => {
         ) : (
           <TkNoData />
         )}
-
+        {loader}
         <TkButton
           className="btn-success my-2 me-2"
           onClick={handleAddRow}

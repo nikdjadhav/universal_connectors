@@ -1,4 +1,6 @@
+import FormErrorText from "@/globalComponents/ErrorText";
 import TkButton from "@/globalComponents/TkButton";
+import TkForm from "@/globalComponents/TkForm";
 import TkInput from "@/globalComponents/TkInput";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkModal, {
@@ -11,17 +13,26 @@ import TkSelect from "@/globalComponents/TkSelect";
 import { API_BASE_URL } from "@/utils/Constants";
 import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import * as Yup from "yup";
+
+const schema = Yup.object({
+  netsuiteFields: Yup.object().required("Field name is required."),
+  operator: Yup.object().required("Operator is required."),
+  // googleSheetFields: Yup.object().required("Field name is required."),
+}).required();
 
 const Field = ({ mappedRecordId }) => {
   const {
     control,
     register,
+    handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(),
+    resolver: yupResolver(schema),
   });
 
   const [userId, setUserId] = useState(null);
@@ -45,6 +56,10 @@ const Field = ({ mappedRecordId }) => {
     { label: "empty", value: 8 },
     { label: "notEmpty", value: 9 },
   ];
+
+  const addCustomFilterFields = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addCustomFilterFields`),
+  })
 
   const apiResults = useQueries({
     queries: [
@@ -84,8 +99,13 @@ const Field = ({ mappedRecordId }) => {
     ],
   });
 
-  const [mappedRecord, config, restletData, asscessToken, googleSheetApi] =
-    apiResults;
+  const [
+    mappedRecord,
+    config,
+    restletData,
+    asscessToken,
+    googleSheetApi,
+  ] = apiResults;
   const { data: mappedRecordData, isLoading: mappedRecordLoading } =
     mappedRecord;
   const {
@@ -125,7 +145,7 @@ const Field = ({ mappedRecordId }) => {
         accessToken: accessTokenData[0].access_token,
       });
     }
-  }, [accessTokenData, mappedRecordData]);
+  }, [accessTokenData, mappedRecordData, mappedRecordId]);
 
   useEffect(() => {
     if (configData) {
@@ -156,7 +176,7 @@ const Field = ({ mappedRecordId }) => {
         entries.map(([key, value], index) => {
           setNetsuiteOptions((netsuiteValues) => [
             ...netsuiteValues,
-            { label: value, value: key },
+            { label: value + " (field Id: " + key + ")", value: key },
           ]);
         });
         restletOptions[0]?.lines.map((item) => {
@@ -168,7 +188,10 @@ const Field = ({ mappedRecordId }) => {
               value1Entries.map(([key2, value2], index) => {
                 setNetsuiteOptions((netsuiteValues) => [
                   ...netsuiteValues,
-                  { label: key + ": " + value2, value: key + "__" + key2 },
+                  {
+                    label: key + ": " + value2 + " (Field Id: " + key2 + ")",
+                    value: key + "__" + key2,
+                  },
                 ]);
               });
             });
@@ -207,83 +230,124 @@ const Field = ({ mappedRecordId }) => {
     toggle();
   };
 
+  const onSubmit = (data) => {
+    const mappedField = {
+      userId: userId,
+      integrationId: integrationId,
+      mappedRecordId: JSON.parse(mappedRecordId),
+      sourceFieldValue: data.netsuiteFields.value,
+      sourceFieldLabel: data.netsuiteFields.label,
+      destinationFieldValue: data.googleSheetFields.label
+        ? data.googleSheetFields.label
+        : data.googleSheetFields,
+      operator: data.operator.label,
+      fieldType: checkedValue,
+    };
+  };
+
   return (
     <>
-      <TkRow className="mt-1 mb-5">
-        <TkCol lg={4}>
-          <Controller
-            name="netsuiteFields"
-            control={control}
-            render={({ field }) => (
-              <TkSelect
-                {...field}
-                labelName="Netsuite fields"
-                id="netsuiteFields"
-                options={netsuiteOptions}
-                maxMenuHeight="100px"
-                requiredStarOnLabel={true}
-              />
-            )}
-          />
-        </TkCol>
+      <TkForm onSubmit={handleSubmit(onSubmit)}>
+        <TkRow className="mt-1 mb-5">
+          <TkCol lg={4}>
+            <Controller
+              name="netsuiteFields"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Netsuite fields"
+                  id="netsuiteFields"
+                  options={netsuiteOptions}
+                  maxMenuHeight="100px"
+                  requiredStarOnLabel={true}
+                />
+              )}
+            />
+            {errors.netsuiteFields?.message ? (
+              <FormErrorText>{errors.netsuiteFields?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
 
-        <TkCol lg={4}>
-          <Controller
-            name="operator"
-            control={control}
-            render={({ field }) => (
-              <TkSelect
-                {...field}
-                labelName="Operator"
-                id="operator"
-                options={operators}
-                maxMenuHeight="100px"
-                requiredStarOnLabel={true}
-              />
-            )}
-          />
-        </TkCol>
+          <TkCol lg={4}>
+            <Controller
+              name="operator"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Operator"
+                  id="operator"
+                  options={operators}
+                  maxMenuHeight="100px"
+                  requiredStarOnLabel={true}
+                />
+              )}
+            />
+            {errors.operator?.message ? (
+              <FormErrorText>{errors.operator?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
 
-        <TkCol lg={4}>
-          <TkLabel>Google sheet fields</TkLabel>
-          <div className="d-flex">
-            {checkedValue === "dropdownField" ? (
-              <Controller
-                name="googleSheetFields"
-                control={control}
-                render={({ field }) => (
-                  <TkSelect
-                    {...field}
-                    // labelName="Google sheet fields"
-                    id="googleSheetFields"
-                    options={googleSheetOptions}
-                    maxMenuHeight="100px"
-                    requiredStarOnLabel={true}
+          <TkCol lg={4}>
+            <TkLabel>Google sheet fields</TkLabel>
+            <div className="d-flex">
+              {checkedValue === "dropdownField" ? (
+                <>
+                  <Controller
+                    name="googleSheetFields"
+                    control={control}
+                    render={({ field }) => (
+                      <TkSelect
+                        {...field}
+                        id="googleSheetFields"
+                        options={googleSheetOptions}
+                        maxMenuHeight="100px"
+                      />
+                    )}
                   />
-                )}
-              />
-            ) : (
-              <TkInput
-                {...register("GoogleSheetFields")}
-                id="GoogleSheetFields"
-                type="text"
-                // labelName="Google sheet fields"
-                placeholder="Enter Google sheet field"
-                requiredStarOnLabel={true}
-              />
-            )}
-            <i class="ri-settings-3-line fs-2" onClick={onClickModal} />
-          </div>
-        </TkCol>
+                  {/* {errors.googleSheetFields?.message ? (
+                    <FormErrorText>
+                      {errors.googleSheetFields?.message}
+                    </FormErrorText>
+                  ) : null} */}
+                </>
+              ) : (
+                <>
+                  <TkInput
+                    {...register("googleSheetFields")}
+                    id="googleSheetFields"
+                    type="text"
+                    placeholder="Enter Google sheet field"
+                  />
+                  {/* {errors.googleSheetFields?.message ? (
+                    <FormErrorText>
+                      {errors.googleSheetFields?.message}
+                    </FormErrorText>
+                  ) : null} */}
+                </>
+              )}
+              <i className="ri-settings-3-line fs-2" onClick={onClickModal} />
+            </div>
+          </TkCol>
 
-        <TkCol lg={3}>
-          <TkButton className="btn-success my-5 me-3">Save</TkButton>
-        {/* </TkCol>
+          <TkCol lg={3}>
+            <TkButton type="submit" className="btn-success my-5 me-3">
+              Save
+            </TkButton>
+            {/* </TkCol>
 
         <TkCol lg={3}> */}
-          <TkButton className="btn-success my-5" type="button" onClick={()=>history.back()}>Cancel</TkButton>
-        </TkCol>
-      </TkRow>
+            <TkButton
+              className="btn-success my-5"
+              type="button"
+              onClick={() => history.back()}
+            >
+              Cancel
+            </TkButton>
+          </TkCol>
+        </TkRow>
+      </TkForm>
 
       <TkModal isOpen={modal} centered={true}>
         <TkModalHeader toggle={toggle}></TkModalHeader>

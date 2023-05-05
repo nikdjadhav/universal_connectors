@@ -39,7 +39,6 @@ const ForgetPasswordPage = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
     const sendLink = fetch("/api/v1/users/password/forgot", {
       method: "POST",
       headers: {
@@ -53,7 +52,6 @@ const ForgetPasswordPage = () => {
           TkToastSuccess("Password reset link sent to your email.");
           router.push("/login");
         } else {
-          // console.log(data);
           TkToastError(data.message);
         }
       })

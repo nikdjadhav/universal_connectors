@@ -5,8 +5,13 @@ import TkDate from "@/globalComponents/TkDate";
 import TkForm from "@/globalComponents/TkForm";
 import TkLabel from "@/globalComponents/TkLabel";
 import TkRow, { TkCol } from "@/globalComponents/TkRow";
+import { API_BASE_URL } from "@/utils/Constants";
+import { formatDate } from "@/utils/date";
+import tkFetch from "@/utils/fetch";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -14,7 +19,8 @@ const schema = Yup.object({
   startDate: Yup.date().nullable().required("Start date is required"),
 }).required();
 
-const RealtimeEvent = ({ toggleComponet, checkBoxValue }) => {
+const RealtimeEvent = ({ checkBoxValue, eventId, searchData }) => {
+  let userId = useRef(null);
   const {
     control,
     register,
@@ -25,11 +31,53 @@ const RealtimeEvent = ({ toggleComponet, checkBoxValue }) => {
     resolver: yupResolver(schema),
   });
 
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [checkboxValue, setCheckboxValue] = useState(false);
+  const [ids, setIds] = useState(null);
+
+  const addEvent = useMutation({
+    mutationFn: tkFetch.post(`${API_BASE_URL}/addRealTimeEvent`),
+  });
+
+  const updateRealTimeEvent = useMutation({
+    mutationFn: tkFetch.putWithIdInUrl(`${API_BASE_URL}/updateRealTimeEvent`),
+  });
+
+  const {
+    data: eventData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["eventData", ids],
+    queryFn: tkFetch.get(`${API_BASE_URL}/getScheduleEventById`, {
+      params: ids,
+    }),
+    enabled: !!ids,
+  });
+
   useEffect(() => {
-    setValue("startDate", new Date());
-    setValue("endDate", new Date());
-  }, [setValue]);
+    userId.current = sessionStorage.getItem("userId");
+    if (userId.current && eventId) {
+      setIds({
+        id: eventId,
+        userId: JSON.parse(userId.current),
+      });
+    }
+  }, [eventId]);
+
+  useEffect(() => {
+    if (eventData) {
+      if (eventData[0]?.eventType === "Realtime") {
+        setValue("startDate", eventData[0].startDate);
+        setValue("endDate", eventData[0].endDate);
+        setCheckboxValue(eventData[0].noEndDate);
+      }
+    } else {
+      setValue("startDate", new Date());
+      setValue("endDate", new Date());
+    }
+  }, [eventData, setValue]);
 
   const handleOnChange = (dates) => {
     if (dates) {
@@ -54,11 +102,66 @@ const RealtimeEvent = ({ toggleComponet, checkBoxValue }) => {
       data.noEndDate = false;
       setCheckboxValue(false);
     } else {
-      // data.endDate = null;
       data.noEndDate = true;
       setCheckboxValue(true);
     }
-    toggleComponet("singleEvent");
+    if (eventId) {
+      console.log("update realtime Event**********");
+      const realtimeEventData = {
+        id: eventId,
+        userId: JSON.parse(userId.current),
+        integrationId: searchData.integrationId,
+        mappedRecordId: searchData.mappedRecordId,
+        eventType: "Realtime",
+        startDate: data.startDate,
+        endDate: data.endDate,
+        noEndDate: data.noEndDate,
+        performType: searchData.perform,
+        // savedSearchType: searchData.savedSearchType,
+      };
+
+      if (searchData.savedSearchLabel) {
+        realtimeEventData.savedSearchLabel = searchData.savedSearchLabel;
+        realtimeEventData.savedSearchValue = searchData.savedSearchValue;
+      }
+
+      updateRealTimeEvent.mutate(realtimeEventData, {
+        onSuccess: (res) => {},
+        onError: (err) => {
+          console.log("err", err);
+        },
+      });
+    } else {
+      console.log("add realtime Event**********");
+      const eventData = {
+        userId: JSON.parse(userId.current),
+        integrationId: searchData.integrationId,
+        mappedRecordId: searchData.mappedRecordId,
+        eventType: "Realtime",
+        startDate: data.startDate,
+        endDate: data.endDate,
+        noEndDate: data.noEndDate,
+        performType: searchData.perform,
+        // savedSearchType: searchData.savedSearchType,
+      };
+
+      if (searchData.savedSearchLabel) {
+        eventData.savedSearchLabel = searchData.savedSearchLabel;
+        eventData.savedSearchValue = searchData.savedSearchValue;
+      }
+
+      addEvent.mutate(eventData, {
+        onSuccess: (res) => {},
+        onError: (err) => {
+          console.log("err", err);
+        },
+      });
+    }
+
+    queryClient.invalidateQueries({
+      queryKey: ["schedule", userId],
+    });
+    router.push("/schedule");
   };
   const onCancel = () => {
     history.back();
@@ -83,9 +186,9 @@ const RealtimeEvent = ({ toggleComponet, checkBoxValue }) => {
                   className="mb-3"
                   requiredStarOnLabel={true}
                   options={{
-                    minDate: "today",
-                    altInput: true,
-                    altFormat: "d M, Y",
+                    // minDate: "today",
+                    // altInput: true,
+                    // altFormat: "d M, Y",
                     dateFormat: "d M, Y",
                   }}
                 />
@@ -114,9 +217,9 @@ const RealtimeEvent = ({ toggleComponet, checkBoxValue }) => {
                     field.onChange(e);
                   }}
                   options={{
-                    minDate: "today",
-                    altInput: true,
-                    altFormat: "d M, Y",
+                    // minDate: "today",
+                    // altInput: true,
+                    // altFormat: "d M, Y",
                     dateFormat: "d M, Y",
                   }}
                 />
@@ -139,13 +242,17 @@ const RealtimeEvent = ({ toggleComponet, checkBoxValue }) => {
         </TkRow>
 
         <TkRow className="justify-content-center mt-2">
-          <TkCol lg={1} sm={2} className="">
-            <TkButton type="submit" className="btn-success" disabled={checkBoxValue}>
+          <TkCol lg={1} sm={2}>
+            <TkButton
+              type="submit"
+              className="btn-success"
+              disabled={checkBoxValue}
+            >
               Save
             </TkButton>
           </TkCol>
 
-          <TkCol lg={2} sm={4} className="">
+          <TkCol lg={1} sm={2}>
             <TkButton type="button" onClick={onCancel} className="btn-success">
               Cancel
             </TkButton>

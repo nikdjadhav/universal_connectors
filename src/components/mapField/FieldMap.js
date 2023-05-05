@@ -34,6 +34,17 @@ const FieldMap = () => {
     resolver: yupResolver(schema),
   });
 
+  const sourceOptions = [
+    {
+      label: "NetSuite™",
+      value: 1,
+    },
+    {
+      label: "Google Sheets™",
+      value: 2,
+    },
+  ];
+
   const router = useRouter();
   const [integrationOptions, setIntegrationOptions] = useState([]);
   const [records, setRecords] = useState([]);
@@ -202,11 +213,13 @@ const FieldMap = () => {
     const mapprdRecord = {
       userId: userId,
       integrationId: data.integrationName.value,
-      name: data.MappedRecordName,
-      recordType: data.recordType.value,
-      recordTypeTitle: data.recordType.label,
-      url: data.googleSheetUrl.value,
-      urlTitle: data.googleSheetUrl.label,
+      MappedRecordName: data.MappedRecordName,
+      source: data.source.label,
+      destination: data.destination.label,
+      recordTypeLabel: data.recordType.label,
+      recordTypeValue: data.recordType.value,
+      UrlLabel: data.googleSheetUrl.label,
+      UrlValue: data.googleSheetUrl.value,
     };
 
     addMappedRecord.mutate(mapprdRecord, {
@@ -261,6 +274,46 @@ const FieldMap = () => {
             />
             {errors.integrationName?.message ? (
               <FormErrorText>{errors.integrationName?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
+
+          <TkCol lg={5} className="mx-2 my-3">
+            <Controller
+              name="source"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Source"
+                  id="source"
+                  options={sourceOptions}
+                  maxMenuHeight="120px"
+                  requiredStarOnLabel={true}
+                />
+              )}
+            />
+            {errors.source?.message ? (
+              <FormErrorText>{errors.source?.message}</FormErrorText>
+            ) : null}
+          </TkCol>
+
+          <TkCol lg={5} className="mx-2 my-3">
+            <Controller
+              name="destination"
+              control={control}
+              render={({ field }) => (
+                <TkSelect
+                  {...field}
+                  labelName="Destination"
+                  id="destination"
+                  options={sourceOptions}
+                  maxMenuHeight="120px"
+                  requiredStarOnLabel={true}
+                />
+              )}
+            />
+            {errors.destination?.message ? (
+              <FormErrorText>{errors.destination?.message}</FormErrorText>
             ) : null}
           </TkCol>
 
