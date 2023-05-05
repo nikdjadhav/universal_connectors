@@ -1,6 +1,14 @@
 {
     "name": "vercel-testing",
     "version": "2",
+    "builds": [{
+        "src": "server.js",
+        "use": "@vercel/node"
+    }],
+    "routes": [{
+        "src": "/.*",
+        "dest": "server.js"
+    }],
     "description": "node express testing",
     "main": "server.js",
     "engines": {
