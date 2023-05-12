@@ -24,7 +24,7 @@ app.use(allowCrossDomain);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+console.log("testing")
 const v1Router = express.Router();
 app.use("/v1", v1Router);
 
